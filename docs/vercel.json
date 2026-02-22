@@ -5,27 +5,65 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/landing/index.html" },
-    { "source": "/docs", "destination": "/overview.html" },
-    { "source": "/docs/:path*", "destination": "/:path*" }
+    {
+      "source": "/",
+      "destination": "/landing"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/landing"
+    },
+    {
+      "source": "/docs",
+      "destination": "/overview"
+    },
+    {
+      "source": "/docs/:path*",
+      "destination": "/:path*"
+    }
   ],
   "redirects": [
-    { "source": "/public", "destination": "/landing/index.html", "statusCode": 301 },
-    { "source": "/public/:path*", "destination": "/landing/:path*", "statusCode": 301 }
+    {
+      "source": "/landing/index.html",
+      "destination": "/landing",
+      "statusCode": 301
+    },
+    {
+      "source": "/public",
+      "destination": "/landing",
+      "statusCode": 301
+    },
+    {
+      "source": "/public/:path*",
+      "destination": "/landing/:path*",
+      "statusCode": 301
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     },
     {
       "source": "/(.*\\.(?:css|js|svg|png|ico|woff2?))",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ]

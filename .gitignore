@@ -41,3 +41,4 @@ storage/cache/*
 # Testing
 .phpunit.result.cache
 coverage/
+.vercel
