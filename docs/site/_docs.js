@@ -18,7 +18,7 @@ function applyTheme(t) {
   document.getElementById('navbar').style.background = isDark ? 'rgba(14,14,26,.75)' : 'transparent';
   document.getElementById('navbar').style.borderBottomColor = isDark ? 'rgba(255,255,255,.055)' : 'rgba(0,0,0,.06)';
   document.getElementById('navbar').style.backdropFilter = isDark ? 'saturate(180%) blur(24px)' : 'saturate(180%) blur(20px)';
-  const logoSrc = isDark ? '../public/images/logo/open-genetics-logo-white.svg' : '../public/images/logo/open-genetics-logo.svg';
+  const logoSrc = isDark ? 'images/logo/open-genetics-logo-white.svg' : 'images/logo/open-genetics-logo.svg';
   document.getElementById('nav-logo').src = logoSrc;
   const fl = document.getElementById('footer-logo');
   if (fl) fl.src = logoSrc;

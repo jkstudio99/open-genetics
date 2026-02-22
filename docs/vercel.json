@@ -5,7 +5,13 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/", "destination": "/landing/index.html" },
+    { "source": "/docs", "destination": "/overview.html" },
+    { "source": "/docs/:path*", "destination": "/:path*" }
+  ],
+  "redirects": [
+    { "source": "/public", "destination": "/landing/index.html", "statusCode": 301 },
+    { "source": "/public/:path*", "destination": "/landing/:path*", "statusCode": 301 }
   ],
   "headers": [
     {
