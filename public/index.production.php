@@ -2,7 +2,7 @@
 
 /**
  * 🧬 OpenGenetics — Public Entry Point (Production for InfinityFree)
- *
+ * 
  * All API requests are routed through this file via .htaccess.
  * Initializes environment, autoloading, i18n, and dispatches routing.
  */
