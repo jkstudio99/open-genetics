@@ -1,0 +1,31 @@
+# Dependencies
+/vendor/
+node_modules/
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+.windsurf/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Cache
+storage/cache/*
+!storage/cache/.gitkeep
+
+# Build
+/dist/
+*.min.js.map
+
+# Testing
+.phpunit.result.cache
+coverage/

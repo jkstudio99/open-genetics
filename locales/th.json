@@ -1,0 +1,103 @@
+{
+    "app": {
+        "name": "OpenGenetics",
+        "tagline": "PHP Micro-Framework ระดับองค์กร",
+        "description": "สร้าง API ที่ปลอดภัยและขยายได้ด้วยระบบควบคุมสิทธิ์ระดับ DNA"
+    },
+    "nav": {
+        "home": "หน้าแรก",
+        "dashboard": "แดชบอร์ด",
+        "users": "ผู้ใช้งาน",
+        "settings": "ตั้งค่า",
+        "audit_logs": "บันทึกกิจกรรม",
+        "logout": "ออกจากระบบ"
+    },
+    "auth": {
+        "login": "เข้าสู่ระบบ",
+        "register": "สมัครสมาชิก",
+        "logout": "ออกจากระบบ",
+        "forgot_password": "ลืมรหัสผ่าน",
+        "reset_password": "รีเซ็ตรหัสผ่าน",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "confirm_password": "ยืนยันรหัสผ่าน",
+        "remember_me": "จดจำฉัน",
+        "no_account": "ยังไม่มีบัญชี?",
+        "has_account": "มีบัญชีอยู่แล้ว?",
+        "login_success": "เข้าสู่ระบบสำเร็จ",
+        "register_success": "สมัครสมาชิกสำเร็จ",
+        "invalid_credentials": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+        "token_sent": "ส่งโทเค็นรีเซ็ตรหัสผ่านไปที่อีเมลของคุณแล้ว"
+    },
+    "common": {
+        "search": "ค้นหา...",
+        "add": "เพิ่มใหม่",
+        "edit": "แก้ไข",
+        "delete": "ลบ",
+        "save": "บันทึก",
+        "cancel": "ยกเลิก",
+        "confirm": "ยืนยัน",
+        "status": "สถานะ",
+        "actions": "การดำเนินการ",
+        "loading": "กำลังโหลด...",
+        "no_data": "ไม่พบข้อมูล",
+        "active": "ใช้งาน",
+        "inactive": "ปิดใช้งาน",
+        "created_at": "สร้างเมื่อ",
+        "updated_at": "อัปเดตเมื่อ",
+        "success": "สำเร็จ",
+        "error": "ข้อผิดพลาด",
+        "warning": "คำเตือน",
+        "total": "ทั้งหมด",
+        "page": "หน้า",
+        "next": "ถัดไป",
+        "previous": "ก่อนหน้า"
+    },
+    "dashboard": {
+        "title": "แดชบอร์ด",
+        "total_users": "ผู้ใช้ทั้งหมด",
+        "active_users": "ผู้ใช้ที่ใช้งาน",
+        "recent_activities": "กิจกรรมล่าสุด",
+        "system_overview": "ภาพรวมระบบ"
+    },
+    "users": {
+        "title": "จัดการผู้ใช้งาน",
+        "email": "อีเมล",
+        "role": "บทบาท",
+        "status": "สถานะ",
+        "created": "วันที่สร้าง",
+        "admin": "ผู้ดูแลระบบ",
+        "hr": "ทรัพยากรบุคคล",
+        "employee": "พนักงาน"
+    },
+    "audit": {
+        "title": "บันทึกกิจกรรม",
+        "action": "การกระทำ",
+        "entity": "เอนทิตี",
+        "user": "ผู้ใช้",
+        "timestamp": "เวลา",
+        "details": "รายละเอียด",
+        "create": "สร้าง",
+        "update": "แก้ไข",
+        "delete_action": "ลบ"
+    },
+    "landing": {
+        "hero_title": "พิมพ์เขียว DNA สำหรับ Enterprise API",
+        "hero_subtitle": "สร้างแอปพลิเคชัน PHP ที่ปลอดภัยและขยายได้ด้วยระบบควบคุมสิทธิ์ระดับ DNA, รองรับหลายภาษา และประสิทธิภาพระดับสูง",
+        "cta_start": "เริ่มต้นใช้งาน",
+        "cta_docs": "อ่านเอกสาร",
+        "feature_auth": "Genetic Authentication",
+        "feature_auth_desc": "ระบบยืนยันตัวตน JWT พร้อม Bcrypt 12 รอบ และบันทึกกิจกรรมอัตโนมัติ",
+        "feature_rbac": "RBAC 3 ระดับ",
+        "feature_rbac_desc": "บทบาท Admin, HR และ Employee ถูกบังคับใช้ในระดับ DNA ของทุกคำขอ",
+        "feature_i18n": "i18n แบบทันที",
+        "feature_i18n_desc": "สลับระหว่างภาษาไทยและอังกฤษได้ทันที — ไม่ต้องรีโหลดหน้าเว็บ",
+        "feature_sdk": "Genetic SDK",
+        "feature_sdk_desc": "เชื่อมต่อ React หรือ Vanilla JS กับ API ของคุณด้วยโค้ดเพียงบรรทัดเดียว"
+    },
+    "theme": {
+        "light": "สว่าง",
+        "dark": "มืด",
+        "system": "ตามระบบ"
+    }
+}

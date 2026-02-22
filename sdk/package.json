@@ -1,0 +1,43 @@
+{
+    "name": "@opengenetics/sdk",
+    "version": "1.0.0",
+    "description": "🧬 Genetic SDK — Connect React or Vanilla JS to OpenGenetics API with one line of code",
+    "main": "genetics.min.js",
+    "module": "react/useGenetics.jsx",
+    "files": [
+        "genetics.min.js",
+        "react/useGenetics.jsx",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "echo 'No build required — SDK is ready to use'"
+    },
+    "keywords": [
+        "opengenetics",
+        "sdk",
+        "jwt",
+        "auth",
+        "i18n",
+        "react-hook",
+        "vanilla-js",
+        "rbac"
+    ],
+    "author": "OpenGenetics Team",
+    "license": "MIT",
+    "peerDependencies": {
+        "react": ">=18.0.0",
+        "react-dom": ">=18.0.0"
+    },
+    "peerDependenciesMeta": {
+        "react": {
+            "optional": true
+        },
+        "react-dom": {
+            "optional": true
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/opengenetics/sdk"
+    }
+}

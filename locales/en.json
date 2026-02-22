@@ -1,0 +1,103 @@
+{
+    "app": {
+        "name": "OpenGenetics",
+        "tagline": "Enterprise-grade PHP Micro-Framework",
+        "description": "Build secure, scalable APIs with genetic-level access control."
+    },
+    "nav": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "users": "Users",
+        "settings": "Settings",
+        "audit_logs": "Audit Logs",
+        "logout": "Logout"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "forgot_password": "Forgot Password",
+        "reset_password": "Reset Password",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "remember_me": "Remember me",
+        "no_account": "Don't have an account?",
+        "has_account": "Already have an account?",
+        "login_success": "Login successful",
+        "register_success": "Registration successful",
+        "invalid_credentials": "Invalid email or password",
+        "token_sent": "Password reset token has been sent to your email"
+    },
+    "common": {
+        "search": "Search...",
+        "add": "Add New",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "status": "Status",
+        "actions": "Actions",
+        "loading": "Loading...",
+        "no_data": "No data available",
+        "active": "Active",
+        "inactive": "Inactive",
+        "created_at": "Created At",
+        "updated_at": "Updated At",
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "total": "Total",
+        "page": "Page",
+        "next": "Next",
+        "previous": "Previous"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "total_users": "Total Users",
+        "active_users": "Active Users",
+        "recent_activities": "Recent Activities",
+        "system_overview": "System Overview"
+    },
+    "users": {
+        "title": "User Management",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "created": "Created",
+        "admin": "Admin",
+        "hr": "HR",
+        "employee": "Employee"
+    },
+    "audit": {
+        "title": "Audit Logs",
+        "action": "Action",
+        "entity": "Entity",
+        "user": "User",
+        "timestamp": "Timestamp",
+        "details": "Details",
+        "create": "Create",
+        "update": "Update",
+        "delete_action": "Delete"
+    },
+    "landing": {
+        "hero_title": "The Genetic Blueprint for Enterprise APIs",
+        "hero_subtitle": "Build secure, scalable PHP applications with DNA-level access control, multi-language support, and blazing-fast performance.",
+        "cta_start": "Get Started",
+        "cta_docs": "Read Docs",
+        "feature_auth": "Genetic Authentication",
+        "feature_auth_desc": "JWT-based auth with Bcrypt 12-round hashing and automatic audit trails.",
+        "feature_rbac": "3-Level RBAC",
+        "feature_rbac_desc": "Admin, HR, and Employee roles enforced at the DNA level of every request.",
+        "feature_i18n": "Instant i18n",
+        "feature_i18n_desc": "Switch between Thai and English instantly — no page reload required.",
+        "feature_sdk": "Genetic SDK",
+        "feature_sdk_desc": "Connect React or Vanilla JS to your API with just one line of code."
+    },
+    "theme": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    }
+}

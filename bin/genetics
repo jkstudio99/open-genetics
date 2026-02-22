@@ -1,0 +1,642 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * 🧬 OpenGenetics — Genetic CLI
+ * 
+ * Install globally:
+ *   composer global require open-genetics/framework
+ *   genetics new my-project
+ * 
+ * Project commands:
+ *   php genetics mutate            — Create tables & seed RBAC
+ *   php genetics seed              — Seed RBAC roles & admin user
+ *   php genetics status            — Show database connection status
+ *   php genetics make:endpoint     — Scaffold a new API endpoint
+ *   php genetics make:middleware   — Scaffold a new middleware
+ *   php genetics serve             — Start PHP development server
+ *   php genetics new <name>        — Create a new OpenGenetics project
+ *   php genetics help              — Show this help message
+ */
+
+declare(strict_types=1);
+
+// ─── Resolve project root ───
+// When installed globally via composer, __DIR__ = ~/.composer/vendor/open-genetics/framework/bin
+// When used locally, __DIR__ = /path/to/project/bin
+$projectRoot = findProjectRoot();
+
+// Banner
+echo "\n";
+echo "  ╔═══════════════════════════════════════════╗\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v1.0.0    ║\n";
+echo "  ║  Enterprise PHP Micro-Framework            ║\n";
+echo "  ╚═══════════════════════════════════════════╝\n";
+echo "\n";
+
+// Parse command
+$command = $argv[1] ?? 'help';
+
+// Commands that don't need a project context
+if ($command === 'new') {
+    newProject($argv[2] ?? null);
+    exit(0);
+}
+
+if ($command === 'help' || $command === '--help' || $command === '-h') {
+    help();
+    exit(0);
+}
+
+if ($command === '--version' || $command === '-v') {
+    echo "  OpenGenetics Framework v1.0.0\n\n";
+    exit(0);
+}
+
+if ($command === 'serve') {
+    serve($projectRoot);
+    exit(0);
+}
+
+// Commands that require a project context — bootstrap the framework
+if (!$projectRoot) {
+    echo "  ❌ No OpenGenetics project found in current directory.\n";
+    echo "  Run `genetics new my-project` to create one.\n\n";
+    exit(1);
+}
+
+bootstrapProject($projectRoot);
+
+match ($command) {
+    'mutate'          => mutate(),
+    'seed'            => seed(),
+    'status'          => status(),
+    'make:endpoint'   => makeEndpoint($projectRoot, $argv[2] ?? null),
+    'make:middleware'  => makeMiddleware($projectRoot, $argv[2] ?? null),
+    default           => unknownCommand($command),
+};
+
+// ═══════════════════════════════════════════════════════
+// Helper: Find project root
+// ═══════════════════════════════════════════════════════
+
+function findProjectRoot(): ?string
+{
+    // 1. Check if we're inside a project (cwd or parent has composer.json with open-genetics)
+    $dir = getcwd();
+    for ($i = 0; $i < 5; $i++) {
+        if (file_exists($dir . '/src/bootstrap.php') && file_exists($dir . '/api')) {
+            return $dir;
+        }
+        // Check if bin/genetics is in this dir (running from project root)
+        if (file_exists($dir . '/bin/genetics') && file_exists($dir . '/src/bootstrap.php')) {
+            return $dir;
+        }
+        $parent = dirname($dir);
+        if ($parent === $dir) break;
+        $dir = $parent;
+    }
+
+    // 2. Check relative to this script (for local usage: /project/bin/genetics)
+    $scriptDir = dirname(__DIR__);
+    if (file_exists($scriptDir . '/src/bootstrap.php') && file_exists($scriptDir . '/api')) {
+        return $scriptDir;
+    }
+
+    return null;
+}
+
+function bootstrapProject(string $root): void
+{
+    require_once $root . '/src/bootstrap.php';
+
+    \OpenGenetics\Core\Env::load($root);
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: new — Create a new project
+// ═══════════════════════════════════════════════════════
+
+function newProject(?string $name): void
+{
+    if (empty($name)) {
+        echo "  ❌ Usage: genetics new <project-name>\n";
+        echo "  Example: genetics new my-api\n\n";
+        return;
+    }
+
+    $targetDir = getcwd() . '/' . $name;
+
+    if (is_dir($targetDir)) {
+        echo "  ❌ Directory '{$name}' already exists.\n\n";
+        return;
+    }
+
+    echo "  📦 Creating new OpenGenetics project: {$name}\n\n";
+
+    // Determine skeleton source
+    $skeletonDir = findSkeletonDir();
+
+    if (!$skeletonDir) {
+        // Fallback: create from scratch
+        echo "  📁 Creating project structure...\n";
+        createProjectFromScratch($targetDir, $name);
+    } else {
+        echo "  📁 Copying project skeleton...\n";
+        copyDirectory($skeletonDir, $targetDir, [
+            'vendor', '.git', '.DS_Store', '.env',
+            'node_modules', 'bin',
+        ]);
+    }
+
+    // Create .env from example
+    if (file_exists($targetDir . '/.env.example')) {
+        copy($targetDir . '/.env.example', $targetDir . '/.env');
+        echo "  ✅ .env created from .env.example\n";
+    }
+
+    // Generate JWT secret
+    $envFile = $targetDir . '/.env';
+    if (file_exists($envFile)) {
+        $env = file_get_contents($envFile);
+        $secret = bin2hex(random_bytes(32));
+        $env = str_replace(
+            'JWT_SECRET=your-secret-key-change-this',
+            'JWT_SECRET=' . $secret,
+            $env
+        );
+        file_put_contents($envFile, $env);
+        echo "  🔑 JWT_SECRET generated\n";
+    }
+
+    echo "\n  ✅ Project created: {$name}/\n\n";
+    echo "  Next steps:\n";
+    echo "    cd {$name}\n";
+    echo "    composer install\n";
+    echo "    php bin/genetics mutate\n";
+    echo "    php bin/genetics serve\n\n";
+}
+
+function findSkeletonDir(): ?string
+{
+    // When installed globally, skeleton is at the package root
+    $packageRoot = dirname(__DIR__);
+    if (file_exists($packageRoot . '/src/bootstrap.php') && file_exists($packageRoot . '/api')) {
+        return $packageRoot;
+    }
+    return null;
+}
+
+function copyDirectory(string $src, string $dst, array $exclude = []): void
+{
+    if (!is_dir($dst)) {
+        mkdir($dst, 0755, true);
+    }
+
+    $items = scandir($src);
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
+        if (in_array($item, $exclude, true)) continue;
+
+        $srcPath = $src . '/' . $item;
+        $dstPath = $dst . '/' . $item;
+
+        if (is_dir($srcPath)) {
+            copyDirectory($srcPath, $dstPath, $exclude);
+        } else {
+            copy($srcPath, $dstPath);
+        }
+    }
+}
+
+function createProjectFromScratch(string $dir, string $name): void
+{
+    // Create directory structure
+    $dirs = [
+        '', 'api', 'api/auth', 'src', 'src/Auth', 'src/Audit',
+        'src/Core', 'src/I18n', 'public', 'public/styles',
+        'locales', 'sdk', 'bin',
+    ];
+
+    foreach ($dirs as $d) {
+        mkdir($dir . '/' . $d, 0755, true);
+    }
+
+    // Create composer.json for the new project
+    $composerJson = json_encode([
+        'name' => 'my-project/' . $name,
+        'description' => 'An OpenGenetics API project',
+        'type' => 'project',
+        'license' => 'MIT',
+        'require' => [
+            'php' => '>=8.1',
+            'open-genetics/framework' => '^1.0',
+        ],
+        'autoload' => [
+            'psr-4' => ['App\\' => 'src/'],
+        ],
+        'scripts' => [
+            'mutate' => 'php bin/genetics mutate',
+            'seed'   => 'php bin/genetics seed',
+            'serve'  => 'php bin/genetics serve',
+        ],
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    file_put_contents($dir . '/composer.json', $composerJson . "\n");
+    echo "  ✅ composer.json\n";
+
+    // Create .env.example
+    $envExample = <<<'ENV'
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=my-api-db
+DB_USER=root
+DB_PASS=
+
+JWT_SECRET=your-secret-key-change-this
+JWT_EXPIRATION=86400
+
+APP_ENV=development
+APP_DEBUG=true
+APP_URL=http://localhost:8080
+APP_TIMEZONE=Asia/Bangkok
+
+CORS_ORIGIN=*
+BCRYPT_COST=12
+ENV;
+
+    file_put_contents($dir . '/.env.example', $envExample . "\n");
+    echo "  ✅ .env.example\n";
+
+    // Create .gitignore
+    $gitignore = <<<'GIT'
+/vendor/
+node_modules/
+.env
+.idea/
+.vscode/
+*.swp
+.DS_Store
+*.log
+GIT;
+
+    file_put_contents($dir . '/.gitignore', $gitignore . "\n");
+    echo "  ✅ .gitignore\n";
+
+    echo "  ✅ Directory structure created\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: serve — Start dev server
+// ═══════════════════════════════════════════════════════
+
+function serve(?string $root): void
+{
+    if (!$root) {
+        echo "  ❌ No OpenGenetics project found.\n\n";
+        return;
+    }
+
+    $host = '127.0.0.1';
+    $port = 8080;
+
+    // Find available port
+    for ($p = $port; $p <= 8099; $p++) {
+        $sock = @fsockopen($host, $p, $errno, $errstr, 0.1);
+        if ($sock) {
+            fclose($sock);
+            continue;
+        }
+        $port = $p;
+        break;
+    }
+
+    $publicDir = $root . '/public';
+
+    echo "  🚀 Starting development server...\n";
+    echo "  🌐 http://{$host}:{$port}\n";
+    echo "  📂 Document root: {$publicDir}\n";
+    echo "  Press Ctrl+C to stop.\n\n";
+
+    passthru("php -S {$host}:{$port} -t " . escapeshellarg($publicDir));
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: mutate — Create database tables
+// ═══════════════════════════════════════════════════════
+
+function mutate(): void
+{
+    echo "  🔬 Mutating database schema...\n\n";
+
+    $pdo = \OpenGenetics\Core\Database::connect();
+
+    $statements = [
+        'roles' => "CREATE TABLE IF NOT EXISTS `roles` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `role_name` VARCHAR(50) NOT NULL UNIQUE,
+            `description` VARCHAR(255) DEFAULT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+        'users' => "CREATE TABLE IF NOT EXISTS `users` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `email` VARCHAR(255) NOT NULL UNIQUE,
+            `password_hash` VARCHAR(255) NOT NULL,
+            `role_id` INT UNSIGNED NOT NULL DEFAULT 3,
+            `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+            `tenant_id` VARCHAR(100) DEFAULT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            INDEX `idx_users_email` (`email`),
+            INDEX `idx_users_role` (`role_id`),
+            INDEX `idx_users_tenant` (`tenant_id`),
+            INDEX `idx_users_active` (`is_active`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+        'password_resets' => "CREATE TABLE IF NOT EXISTS `password_resets` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `email` VARCHAR(255) NOT NULL,
+            `token` VARCHAR(255) NOT NULL UNIQUE,
+            `expires_at` TIMESTAMP NOT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX `idx_resets_email` (`email`),
+            INDEX `idx_resets_token` (`token`),
+            INDEX `idx_resets_expires` (`expires_at`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+        'audit_logs' => "CREATE TABLE IF NOT EXISTS `audit_logs` (
+            `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT UNSIGNED DEFAULT NULL,
+            `action` VARCHAR(50) NOT NULL,
+            `entity` VARCHAR(100) NOT NULL,
+            `payload` JSON DEFAULT NULL,
+            `ip_address` VARCHAR(45) DEFAULT NULL,
+            `user_agent` VARCHAR(500) DEFAULT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            CONSTRAINT `fk_audit_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            INDEX `idx_audit_user` (`user_id`),
+            INDEX `idx_audit_action` (`action`),
+            INDEX `idx_audit_entity` (`entity`),
+            INDEX `idx_audit_created` (`created_at`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    ];
+
+    foreach ($statements as $table => $sql) {
+        try {
+            $pdo->exec($sql);
+            echo "  ✅ Table `{$table}` — created/verified\n";
+        } catch (\PDOException $e) {
+            echo "  ❌ Error ({$table}): " . $e->getMessage() . "\n";
+        }
+    }
+
+    echo "\n  🧬 Mutation complete!\n\n";
+
+    // Auto-seed after mutation
+    seed();
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: seed — Seed RBAC data
+// ═══════════════════════════════════════════════════════
+
+function seed(): void
+{
+    echo "  🌱 Seeding RBAC data...\n\n";
+
+    $pdo = \OpenGenetics\Core\Database::connect();
+
+    // Seed roles
+    $roles = [
+        [1, 'ADMIN', 'Full system administrator'],
+        [2, 'HR', 'Human Resources manager'],
+        [3, 'EMPLOYEE', 'Regular employee'],
+    ];
+
+    foreach ($roles as [$id, $name, $desc]) {
+        try {
+            $stmt = $pdo->prepare(
+                "INSERT INTO `roles` (`id`, `role_name`, `description`)
+                 VALUES (:id, :name, :desc)
+                 ON DUPLICATE KEY UPDATE `description` = VALUES(`description`)"
+            );
+            $stmt->execute(['id' => $id, 'name' => $name, 'desc' => $desc]);
+            echo "  ✅ Role `{$name}` — seeded\n";
+        } catch (\PDOException $e) {
+            echo "  ⚠️  Role `{$name}`: " . $e->getMessage() . "\n";
+        }
+    }
+
+    // Seed admin user
+    $adminEmail = 'admin@opengenetics.io';
+    $adminPass  = password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]);
+
+    try {
+        $existing = \OpenGenetics\Core\Database::query(
+            "SELECT id FROM users WHERE email = :email",
+            ['email' => $adminEmail]
+        );
+
+        if (empty($existing)) {
+            \OpenGenetics\Core\Database::execute(
+                "INSERT INTO `users` (`email`, `password_hash`, `role_id`, `is_active`)
+                 VALUES (:email, :hash, 1, 1)",
+                ['email' => $adminEmail, 'hash' => $adminPass]
+            );
+            echo "  ✅ Admin user `{$adminEmail}` — created\n";
+        } else {
+            echo "  ℹ️  Admin user `{$adminEmail}` — already exists\n";
+        }
+    } catch (\PDOException $e) {
+        echo "  ❌ Admin seeding error: " . $e->getMessage() . "\n";
+    }
+
+    echo "\n  🌱 Seeding complete!\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: status — Check database
+// ═══════════════════════════════════════════════════════
+
+function status(): void
+{
+    echo "  📊 Checking database connection...\n\n";
+
+    try {
+        $pdo = \OpenGenetics\Core\Database::connect();
+        $info = $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        echo "  ✅ Connected to MySQL {$info}\n";
+        echo "  📦 Database: " . \OpenGenetics\Core\Env::get('DB_NAME') . "\n";
+        echo "  🖥️  Host: " . \OpenGenetics\Core\Env::get('DB_HOST') . ":" . \OpenGenetics\Core\Env::get('DB_PORT') . "\n";
+
+        // Count tables
+        $tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+        echo "  📋 Tables: " . count($tables) . " (" . implode(', ', $tables) . ")\n";
+    } catch (\Throwable $e) {
+        echo "  ❌ Connection failed: " . $e->getMessage() . "\n";
+    }
+
+    echo "\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: make:endpoint — Scaffold API endpoint
+// ═══════════════════════════════════════════════════════
+
+function makeEndpoint(string $root, ?string $name): void
+{
+    if (empty($name)) {
+        echo "  ❌ Usage: php bin/genetics make:endpoint <name>\n";
+        echo "  Example: php bin/genetics make:endpoint users/export\n\n";
+        return;
+    }
+
+    $name = trim($name, '/');
+    $filePath = $root . '/api/' . $name . '.php';
+
+    if (file_exists($filePath)) {
+        echo "  ⚠️  Endpoint already exists: api/{$name}.php\n\n";
+        return;
+    }
+
+    // Create directory if needed
+    $dir = dirname($filePath);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+
+    // Generate PascalCase class name
+    $parts = explode('/', $name);
+    $className = '';
+    foreach ($parts as $part) {
+        $segments = explode('-', $part);
+        $className .= implode('', array_map('ucfirst', $segments));
+    }
+
+    $template = <<<PHP
+<?php
+
+/**
+ * GET|POST /api/{$name}
+ * 
+ * Auto-generated endpoint via `php bin/genetics make:endpoint`.
+ */
+
+use OpenGenetics\Auth\Guard;
+use OpenGenetics\Core\Database;
+use OpenGenetics\Core\Response;
+
+class {$className}
+{
+    public static function get(array \$body): void
+    {
+        Guard::requireAuth();
+
+        Response::success(['message' => '{$className} endpoint works']);
+    }
+
+    public static function post(array \$body): void
+    {
+        Guard::requireAuth();
+
+        // TODO: Implement POST handler
+        Response::success(null, 'Created', 201);
+    }
+}
+
+PHP;
+
+    file_put_contents($filePath, $template);
+    echo "  ✅ Created endpoint: api/{$name}.php\n";
+    echo "  📝 Class: {$className}\n";
+    echo "  🔗 Route: GET|POST /api/{$name}\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: make:middleware — Scaffold middleware
+// ═══════════════════════════════════════════════════════
+
+function makeMiddleware(string $root, ?string $name): void
+{
+    if (empty($name)) {
+        echo "  ❌ Usage: php bin/genetics make:middleware <Name>\n";
+        echo "  Example: php bin/genetics make:middleware RateLimit\n\n";
+        return;
+    }
+
+    $className = ucfirst($name);
+    $filePath = $root . '/src/Middleware/' . $className . '.php';
+
+    if (file_exists($filePath)) {
+        echo "  ⚠️  Middleware already exists: src/Middleware/{$className}.php\n\n";
+        return;
+    }
+
+    $dir = dirname($filePath);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+
+    $template = <<<PHP
+<?php
+
+namespace OpenGenetics\Middleware;
+
+/**
+ * {$className} Middleware
+ * 
+ * Auto-generated via `php bin/genetics make:middleware`.
+ */
+class {$className}
+{
+    public static function handle(): void
+    {
+        // TODO: Implement middleware logic
+        // Throw \\RuntimeException to halt the request.
+    }
+}
+
+PHP;
+
+    file_put_contents($filePath, $template);
+    echo "  ✅ Created middleware: src/Middleware/{$className}.php\n";
+    echo "  📝 Namespace: OpenGenetics\\Middleware\\{$className}\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: help
+// ═══════════════════════════════════════════════════════
+
+function help(): void
+{
+    echo "  Usage: genetics <command> [arguments]\n\n";
+
+    echo "  \033[33mProject Commands:\033[0m\n";
+    echo "    mutate              Create database tables & seed RBAC\n";
+    echo "    seed                Seed RBAC roles & admin user\n";
+    echo "    status              Show database connection status\n";
+    echo "    serve               Start PHP development server\n\n";
+
+    echo "  \033[33mScaffolding:\033[0m\n";
+    echo "    make:endpoint       Create a new API endpoint file\n";
+    echo "    make:middleware     Create a new middleware class\n";
+    echo "    new <name>          Create a new OpenGenetics project\n\n";
+
+    echo "  \033[33mInfo:\033[0m\n";
+    echo "    help, --help, -h    Show this help message\n";
+    echo "    --version, -v       Show version\n\n";
+
+    echo "  \033[33mGlobal Install:\033[0m\n";
+    echo "    composer global require open-genetics/framework\n";
+    echo "    genetics new my-api\n\n";
+}
+
+function unknownCommand(string $cmd): void
+{
+    echo "  ❌ Unknown command: {$cmd}\n\n";
+    echo "  Run `php bin/genetics help` to see available commands.\n\n";
+}

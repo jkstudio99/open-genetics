@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenGenetics — Enterprise PHP Micro-Framework</title>
+<meta name="description" content="OpenGenetics PHP Framework — JWT Auth, RBAC, i18n, Audit Trail และ Genetic SDK สำหรับสร้าง REST API ที่ปลอดภัย เร็ว และขยายได้">
+<link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+<link rel="manifest" href="favicon/site.webmanifest">
+<meta name="theme-color" content="#06060f">
+<meta property="og:title" content="OpenGenetics PHP Framework">
+<meta property="og:description" content="Enterprise PHP Micro-Framework — JWT Auth, RBAC 3 ระดับ, i18n, Genetic SDK">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','Noto Sans Thai','sans-serif'],mono:['JetBrains Mono','monospace']},transitionTimingFunction:{'out-expo':'cubic-bezier(0.16,1,0.3,1)'},transitionDuration:{'600':'600ms','800':'800ms'}}}}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Inter','Noto Sans Thai',sans-serif;background:#0e0e1a;color:#e2e8f0;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+/* Gradient text */
+.grad-text{background:linear-gradient(135deg,#818cf8 0%,#00cfff 55%,#a5b4fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-text2{background:linear-gradient(90deg,#818cf8,#00cfff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* Orbs */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;will-change:transform}
+.orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(30,24,207,.22) 0%,transparent 65%);top:-250px;left:-180px;filter:blur(80px)}
+.orb-2{width:600px;height:600px;background:radial-gradient(circle,rgba(0,207,255,.12) 0%,transparent 65%);top:60px;right:-180px;filter:blur(90px)}
+.orb-3{width:500px;height:500px;background:radial-gradient(circle,rgba(108,99,255,.14) 0%,transparent 65%);bottom:15%;left:28%;filter:blur(100px)}
+/* Grid */
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,black 30%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,black 30%,transparent 100%)}
+/* Glass cards */
+.glass{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
+/* Code */
+.code-panel{display:none}.code-panel.active{display:block}
+.kw{color:#c084fc}.fn{color:#60a5fa}.st{color:#fbbf24}.cm{color:#475569}.vr{color:#34d399}.cl{color:#f472b6}
+/* Animations */
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 8px #00cfff,0 0 16px rgba(0,207,255,.4)}50%{box-shadow:0 0 14px #00cfff,0 0 28px rgba(0,207,255,.7)}}
+.dot-pulse{animation:pulse-dot 2.2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.float-anim{animation:float 6s ease-in-out infinite}
+/* Section label */
+.section-label::before{content:'';display:inline-block;width:18px;height:1.5px;background:#6c63ff;border-radius:2px;margin-right:8px;vertical-align:middle}
+/* Scrollbar */
+.code-block::-webkit-scrollbar{height:4px}.code-block::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
+/* Copy button — Elysia style */
+.copy-btn{position:absolute;top:10px;right:10px;padding:6px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.35);cursor:pointer;transition:all .3s cubic-bezier(0.16,1,0.3,1);opacity:0;line-height:0}
+.copy-wrap:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(108,99,255,.15);color:#a5b4fc;border-color:rgba(108,99,255,.3)}
+.copy-btn.copied{color:#34d399!important;border-color:rgba(52,211,153,.3)!important;opacity:1}
+/* Search */
+.search-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.search-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding-top:18vh}
+@keyframes search-pop-in{from{opacity:0;transform:scale(.95) translateY(-12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes search-pop-out{from{opacity:1;transform:scale(1) translateY(0)}to{opacity:0;transform:scale(.95) translateY(-12px)}}
+@keyframes search-fade-in{from{opacity:0}to{opacity:1}}
+.search-overlay.open .search-box{animation:search-pop-in .25s cubic-bezier(.16,1,.3,1) forwards}
+.search-overlay.closing{display:flex;align-items:flex-start;justify-content:center;padding-top:18vh}
+.search-overlay.closing .search-box{animation:search-pop-out .18s cubic-bezier(.4,0,1,1) forwards}
+.search-overlay.open{animation:search-fade-in .2s ease forwards}
+.search-box{width:min(560px,90vw);background:#12121f;border:1px solid rgba(108,99,255,.2);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5),0 0 40px rgba(108,99,255,.1)}
+.search-input{width:100%;padding:16px 20px;background:transparent;border:none;outline:none;color:#e2e8f0;font-size:16px;font-family:inherit}
+.search-input::placeholder{color:rgba(255,255,255,.25)}
+.search-hint{padding:12px 20px;color:rgba(255,255,255,.2);font-size:13px}
+.search-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background 120ms;border-bottom:1px solid rgba(255,255,255,.03)}
+.search-item:hover,.search-item.active{background:rgba(108,99,255,.1)}
+.search-item .si-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(108,99,255,.12);color:#818cf8;flex-shrink:0}
+.search-item .si-title{font-size:14px;font-weight:600;color:#e2e8f0}
+.search-item .si-desc{font-size:12px;color:rgba(255,255,255,.3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px}
+.search-item mark{background:rgba(108,99,255,.3);color:#a5b4fc;border-radius:2px;padding:0 2px}
+.search-no-result{padding:24px 20px;text-align:center;color:rgba(255,255,255,.2);font-size:14px}
+/* Spinning circles — Elysia style (24s spin) */
+.hero-circle{position:absolute;border-radius:50%;pointer-events:none;animation:spin-circle linear infinite}
+@keyframes spin-circle{to{transform:rotate(360deg)}}
+/* Hero overlay — very slow spin like Elysia (900s) */
+.hero-overlay{position:absolute;inset:0;border-radius:50%;pointer-events:none;opacity:.08;animation:spin-circle 900s linear infinite}
+/* Search trigger glow animation */
+@keyframes search-glow{0%,100%{box-shadow:0 0 0 rgba(108,99,255,0),0 0 0 rgba(0,207,255,0)}50%{box-shadow:0 0 12px rgba(108,99,255,.15),0 0 24px rgba(0,207,255,.08)}}
+#search-trigger{animation:search-glow 4s ease-in-out infinite}
+#search-trigger:hover{box-shadow:0 0 16px rgba(108,99,255,.25),0 0 32px rgba(0,207,255,.12)!important;border-color:rgba(108,99,255,.3)!important;background:rgba(108,99,255,.08)!important}
+
+/* ═══ LIGHT MODE — CSS Variables + Attribute Selectors ═══ */
+:root{--c-bg:#0e0e1a;--c-text:#e2e8f0;--c-text2:#94a3b8;--c-text3:rgba(255,255,255,.28);--c-border:rgba(255,255,255,.06);--c-code-bg:#0d0d1a;--c-code-text:#e2e8f0;--c-card-bg:rgba(255,255,255,.025);--c-card-border:rgba(255,255,255,.06);--c-search-bg:#12121f;--c-kw:#c084fc;--c-fn:#60a5fa;--c-st:#fbbf24;--c-cm:#475569;--c-vr:#34d399;--c-cl:#f472b6}
+[data-theme="light"]{--c-bg:#f5f5fa;--c-text:#1e293b;--c-text2:#475569;--c-text3:#94a3b8;--c-border:rgba(0,0,0,.08);--c-code-bg:#f1f5f9;--c-code-text:#334155;--c-card-bg:rgba(255,255,255,.8);--c-card-border:rgba(0,0,0,.08);--c-search-bg:#ffffff;--c-kw:#7c3aed;--c-fn:#2563eb;--c-st:#d97706;--c-cm:#94a3b8;--c-vr:#059669;--c-cl:#db2777}
+/* Text — attribute selector matches text-white, text-white/40, etc. */
+[data-theme="light"] [class*="text-white"]{color:#1e293b!important}
+[data-theme="light"] [class*="text-white/4"],[data-theme="light"] [class*="text-white/3"],[data-theme="light"] [class*="text-white/5"],[data-theme="light"] [class*="text-white/6"]{color:#475569!important}
+[data-theme="light"] [class*="text-white/2"],[data-theme="light"] [class*="text-white/1"]{color:#64748b!important}
+[data-theme="light"] [class*="text-white/7"],[data-theme="light"] [class*="text-white/8"]{color:#1e293b!important}
+[data-theme="light"] [class*="text-indigo"]{color:#4338ca!important}
+[data-theme="light"] h1,[data-theme="light"] h2,[data-theme="light"] h3,[data-theme="light"] h4{color:#1e293b!important}
+[data-theme="light"] p{color:#475569!important}
+/* Gradient text */
+[data-theme="light"] .grad-text{background:linear-gradient(135deg,#4f46e5 0%,#0891b2 55%,#6366f1 100%)!important;-webkit-background-clip:text!important;background-clip:text!important}
+[data-theme="light"] .grad-text2{background:linear-gradient(90deg,#4f46e5,#0891b2)!important;-webkit-background-clip:text!important;background-clip:text!important}
+/* BG transparent overrides */
+[data-theme="light"] [class*="bg-white/"]{background:transparent!important}
+[data-theme="light"] [class*="bg-indigo-500/2"]{background:rgba(79,70,229,.1)!important}
+/* Navbar — transparent in light */
+[data-theme="light"] #navbar{background:transparent!important;border-bottom-color:rgba(0,0,0,.06)!important;box-shadow:none!important}
+[data-theme="light"] #navbar svg{color:#475569!important}
+[data-theme="light"] #navbar a{color:#334155!important}
+[data-theme="light"] #navbar a:hover{color:#1e293b!important}
+[data-theme="light"] #navbar button{color:#475569!important}
+[data-theme="light"] #navbar button:hover{color:#1e293b!important}
+[data-theme="light"] #search-trigger{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.1)!important;color:#64748b!important;animation:search-glow-light 4s ease-in-out infinite!important}
+@keyframes search-glow-light{0%,100%{box-shadow:0 0 0 rgba(79,70,229,0)}50%{box-shadow:0 0 10px rgba(79,70,229,.08),0 0 20px rgba(79,70,229,.04)}}
+[data-theme="light"] #search-trigger kbd{background:rgba(0,0,0,.06)!important;border-color:rgba(0,0,0,.1)!important;color:#94a3b8!important}
+[data-theme="light"] #search-trigger svg{opacity:.6!important}
+/* Hero */
+[data-theme="light"] .hero-circle{border-color:rgba(79,70,229,.06)!important}
+[data-theme="light"] #hero-badge{background:rgba(79,70,229,.06)!important;border-color:rgba(79,70,229,.15)!important}
+/* Cards */
+[data-theme="light"] .glass{background:var(--c-card-bg)!important;border-color:var(--c-card-border)!important;box-shadow:0 1px 3px rgba(0,0,0,.06)!important}
+[data-theme="light"] section [class*="rounded-2xl"][class*="border"]{background:var(--c-card-bg)!important;border-color:var(--c-card-border)!important;box-shadow:0 1px 4px rgba(0,0,0,.05)!important}
+[data-theme="light"] section [class*="rounded-2xl"][class*="border"]:hover{border-color:rgba(79,70,229,.25)!important}
+/* Code */
+[data-theme="light"] .code-block,[data-theme="light"] pre{background:var(--c-code-bg)!important;color:var(--c-code-text)!important;border-color:rgba(0,0,0,.1)!important;box-shadow:none!important}
+[data-theme="light"] .kw{color:var(--c-kw)!important}[data-theme="light"] .fn{color:var(--c-fn)!important}[data-theme="light"] .st{color:var(--c-st)!important}[data-theme="light"] .cm{color:var(--c-cm)!important}[data-theme="light"] .vr{color:var(--c-vr)!important}[data-theme="light"] .cl{color:var(--c-cl)!important}
+/* Table */
+[data-theme="light"] th{background:rgba(0,0,0,.03)!important;color:var(--c-text)!important;border-color:var(--c-border)!important}
+[data-theme="light"] td{color:var(--c-text2)!important;border-color:var(--c-border)!important}
+/* Search */
+[data-theme="light"] .search-overlay{background:rgba(0,0,0,.3)!important}
+[data-theme="light"] .search-box{background:var(--c-search-bg)!important;border-color:rgba(79,70,229,.18)!important;box-shadow:0 24px 60px rgba(0,0,0,.12)!important}
+[data-theme="light"] .search-input{color:var(--c-text)!important}
+[data-theme="light"] .search-input::placeholder{color:#94a3b8!important}
+[data-theme="light"] .search-item .si-title{color:var(--c-text)!important}
+[data-theme="light"] .search-item .si-desc{color:var(--c-text2)!important}
+[data-theme="light"] .search-item:hover,[data-theme="light"] .search-item.active{background:rgba(79,70,229,.06)!important}
+[data-theme="light"] .search-hint,.search-no-result{color:#94a3b8!important}
+/* Copy */
+[data-theme="light"] .copy-btn{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.1)!important;color:#64748b!important}
+[data-theme="light"] .copy-btn:hover{background:rgba(79,70,229,.1)!important;color:#4f46e5!important}
+/* Footer */
+[data-theme="light"] footer{background:rgba(0,0,0,.02)!important;border-top-color:rgba(0,0,0,.06)!important}
+/* Section label */
+[data-theme="light"] .section-label{color:#4f46e5!important}
+[data-theme="light"] .section-label::before{background:#4f46e5!important}
+/* Blue/indigo buttons always white text */
+[data-theme="light"] [class*="bg-indigo"],[data-theme="light"] [style*="background:linear-gradient(135deg,#1e18cf"],[data-theme="light"] [style*="background:linear-gradient(135deg, #1e18cf"]{color:#fff!important}
+[data-theme="light"] a[class*="bg-indigo"],[data-theme="light"] button[class*="bg-indigo"]{color:#fff!important}
+/* Slate text (card titles, req items) */
+[data-theme="light"] [class*="text-slate-1"],[data-theme="light"] [class*="text-slate-2"]{color:var(--c-text)!important}
+/* Feature card icon containers */
+[data-theme="light"] .feat-card{background:var(--c-card-bg)!important;border-color:var(--c-card-border)!important;box-shadow:0 1px 4px rgba(0,0,0,.05)!important}
+[data-theme="light"] .feat-card:hover{background:rgba(79,70,229,.04)!important;border-color:rgba(79,70,229,.25)!important}
+/* Quickstart step cards + req cards */
+[data-theme="light"] .step-card,[data-theme="light"] .req-card{background:rgba(255,255,255,.85)!important;border-color:rgba(0,0,0,.08)!important;box-shadow:0 1px 4px rgba(0,0,0,.04)!important}
+[data-theme="light"] .step-card:hover,[data-theme="light"] .req-card:hover{background:rgba(255,255,255,.95)!important;border-color:rgba(79,70,229,.2)!important}
+/* Inline code in light */
+[data-theme="light"] code[class*="text-indigo"]{background:rgba(79,70,229,.08)!important;color:#4f46e5!important;border-color:rgba(79,70,229,.15)!important}
+/* Dividers */
+[data-theme="light"] [class*="bg-white/[0.1"]{background:rgba(0,0,0,.1)!important}
+/* Comparison table wrapper */
+[data-theme="light"] #comparison [class*="rounded-2xl"]{border-color:rgba(0,0,0,.1)!important;box-shadow:0 1px 4px rgba(0,0,0,.04)!important}
+/* Requirements section bg */
+[data-theme="light"] #requirements{background:rgba(0,0,0,.015)!important;border-top-color:rgba(0,0,0,.06)!important;border-bottom-color:rgba(0,0,0,.06)!important}
+/* Comparison table */
+[data-theme="light"] table{border-color:rgba(0,0,0,.08)!important}
+[data-theme="light"] th{background:rgba(0,0,0,.03)!important;color:var(--c-text2)!important;border-bottom-color:rgba(0,0,0,.08)!important}
+[data-theme="light"] th[class*="text-indigo"]{color:#4f46e5!important;background:rgba(79,70,229,.06)!important}
+[data-theme="light"] td{color:var(--c-text2)!important;border-bottom-color:rgba(0,0,0,.06)!important}
+[data-theme="light"] td[class*="text-indigo"]{color:#4f46e5!important;background:rgba(79,70,229,.03)!important}
+[data-theme="light"] td[class*="text-emerald"]{color:#059669!important}
+/* Code example section bg */
+[data-theme="light"] #code{background:rgba(0,0,0,.02)!important;border-top-color:rgba(0,0,0,.06)!important;border-bottom-color:rgba(0,0,0,.06)!important}
+/* Code tabs */
+[data-theme="light"] .code-tab{background:rgba(0,0,0,.03)!important;color:var(--c-text2)!important;border-color:rgba(0,0,0,.08)!important}
+[data-theme="light"] .code-tab.active,[data-theme="light"] .code-tab[data-active="true"]{background:var(--c-code-bg)!important;color:#4f46e5!important;border-color:rgba(79,70,229,.2)!important}
+/* CTA docs button — readable in light */
+[data-theme="light"] #cta-docs-btn{color:#4f46e5!important;border-color:rgba(79,70,229,.25)!important;background:rgba(79,70,229,.06)!important}
+[data-theme="light"] #cta-docs-btn:hover{color:#4338ca!important;border-color:rgba(79,70,229,.4)!important;background:rgba(79,70,229,.1)!important}
+/* Footer card — Elysia style */
+.footer-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:48px 52px;display:flex;align-items:center;gap:48px;flex-wrap:wrap;max-width:820px;margin:0 auto}
+[data-theme="light"] .footer-card{background:rgba(0,0,0,.025)!important;border-color:rgba(0,0,0,.08)!important}
+[data-theme="light"] .footer-card .fc-desc{color:#64748b!important}
+[data-theme="light"] .footer-card .fc-label{color:#94a3b8!important}
+[data-theme="light"] .footer-card .fc-value{color:#334155!important}
+[data-theme="light"] .footer-card .fc-icon{color:#4f46e5!important}
+[data-theme="light"] footer .ft-links a{color:#475569!important}
+[data-theme="light"] footer .ft-links a:hover{color:#4f46e5!important}
+[data-theme="light"] footer .ft-copy{color:#94a3b8!important}
+[data-theme="light"] footer .ft-copy a{color:#4f46e5!important}
+/* Hero copy button — subtle in light */
+[data-theme="light"] #hero-copy{color:#94a3b8!important}
+[data-theme="light"] #hero-copy:hover{color:#4f46e5!important;background:rgba(79,70,229,.08)!important}
+/* Hero composer command pill */
+[data-theme="light"] #hero-btns code[class*="bg-indigo"]{background:rgba(79,70,229,.08)!important;color:#4f46e5!important}
+/* Step card inline command codes (dark bg → light bg) */
+[data-theme="light"] .step-card .copy-wrap code{background:rgba(79,70,229,.06)!important;color:#4f46e5!important;border-color:rgba(79,70,229,.15)!important;-webkit-text-fill-color:#4f46e5!important}
+[data-theme="light"] .step-card .copy-btn{color:#94a3b8!important}
+[data-theme="light"] .step-card .copy-btn:hover{color:#4f46e5!important}
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="grid-bg"></div>
+
+<!-- NAVBAR — Elysia-style -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 h-14 transition-all duration-300" style="background:rgba(14,14,26,.75);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-bottom:1px solid rgba(255,255,255,.055)">
+  <div class="relative max-w-[1400px] mx-auto h-full flex items-center px-5">
+    <!-- Left: Logo -->
+    <a href="index.html" class="flex items-center shrink-0">
+      <img id="nav-logo" src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" class="h-[26px] w-auto">
+    </a>
+    <!-- Center: Search (absolutely centered) -->
+    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <button id="search-trigger" class="hidden sm:flex items-center gap-2.5 px-4 py-[7px] rounded-full text-[13px] text-white/28 hover:text-white/45 hover:border-white/15 transition-all ease-out-expo duration-300 cursor-text" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);min-width:240px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="shrink-0 opacity-50"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        Search
+        <kbd class="ml-auto text-[11px] font-mono px-1.5 py-0.5 rounded" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3);line-height:1.2">⌘K</kbd>
+      </button>
+    </div>
+    <!-- Right: Nav + Icons -->
+    <div class="flex items-center gap-0.5 shrink-0 ml-auto">
+      <a href="../docs/index.html" class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">Docs</a>
+      <a href="../docs/blog.html" class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">Blog</a>
+      <a href="../docs/sdk.html" class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">SDK</a>
+      <div class="w-px h-4 mx-1.5 hidden md:block" style="background:rgba(255,255,255,.1)"></div>
+      <!-- Theme toggle -->
+      <button id="theme-toggle" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="Toggle theme">
+        <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
+        <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>
+      </button>
+      <!-- Lang toggle -->
+      <button id="lang-toggle" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="Switch language">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802"/></svg>
+      </button>
+      <!-- GitHub -->
+      <a href="https://github.com/open-genetics/framework" target="_blank" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="GitHub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      </a>
+      <!-- X / Twitter -->
+      <a href="https://x.com" target="_blank" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="X / Twitter">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- SEARCH MODAL -->
+<div id="search-modal" class="search-overlay">
+  <div class="search-box">
+    <div class="flex items-center px-4" style="border-bottom:1px solid rgba(255,255,255,.06)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="text-white/30 shrink-0 mr-3"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+      <input id="search-input" type="text" class="search-input" placeholder="Search documentation..." autofocus>
+      <kbd class="text-[11px] font-mono px-1.5 py-0.5 rounded shrink-0 cursor-pointer" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3)" onclick="closeSearch()">ESC</kbd>
+    </div>
+    <div id="search-results" class="max-h-[320px] overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:rgba(108,99,255,.3) transparent"></div>
+    <div id="search-empty" class="search-hint">
+      <span class="text-white/15">Type to search across features, quick start, code examples...</span>
+    </div>
+    <div id="search-footer" class="hidden px-4 py-2.5 text-[11px] text-white/20 flex items-center gap-3" style="border-top:1px solid rgba(255,255,255,.05)">
+      <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">↑↓</kbd> navigate</span>
+      <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">↵</kbd> select</span>
+      <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="relative z-10 min-h-screen flex items-center justify-center text-center px-6 pt-32 pb-24 overflow-hidden">
+  <!-- Decorative spinning circles — Elysia style -->
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+    <div class="hero-circle w-[36rem] h-[36rem] border-l border-indigo-500/15 rotate-12" style="animation-duration:24s"></div>
+    <div class="hero-circle w-[52rem] h-[52rem] border-t border-l border-cyan-500/10 rotate-45" style="animation-duration:30s"></div>
+    <div class="hero-circle w-[68rem] h-[68rem] border-l border-indigo-400/[0.07]" style="animation-duration:24s;animation-direction:reverse"></div>
+    <div class="hero-circle w-[84rem] h-[84rem] border-r border-cyan-400/[0.05] rotate-45" style="animation-duration:36s"></div>
+    <div class="hidden lg:block hero-circle w-[100rem] h-[100rem] border-l border-t border-indigo-400/[0.04]" style="animation-duration:24s"></div>
+  </div>
+  <!-- Hero overlay — very slow 900s spin like Elysia -->
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[.035]" aria-hidden="true">
+    <div class="w-[120rem] h-[120rem] rounded-full border border-indigo-500/30" style="animation:spin-circle 900s linear infinite;background:radial-gradient(circle,transparent 40%,rgba(108,99,255,.04) 70%,transparent 100%)"></div>
+  </div>
+  <div class="relative z-20 max-w-[820px] mx-auto">
+    <div id="hero-badge" class="inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[13px] font-medium text-indigo-300 mb-9 transition-all ease-out-expo duration-600" style="background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);backdrop-filter:blur(8px)">
+      <span class="w-1.5 h-1.5 rounded-full bg-[#00cfff] dot-pulse"></span>
+      v1.0.0 — Stable Release
+    </div>
+    <img id="hero-logo" src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" class="mx-auto mb-8 block w-auto float-anim" style="height:clamp(56px,7vw,84px);filter:drop-shadow(0 0 28px rgba(0,207,255,.35)) drop-shadow(0 0 60px rgba(108,99,255,.2))">
+    <h1 id="hero-h1" class="font-extrabold tracking-[-0.03em] text-white mb-5 leading-[1.08]" style="font-size:clamp(38px,6.5vw,72px)">
+      PHP <span class="grad-text">Micro-Framework</span>
+    </h1>
+    <p id="hero-sub" class="text-white/40 max-w-[580px] mx-auto mb-10 leading-[1.8]" style="font-size:clamp(15px,2vw,18px)" data-i18n="hero.subtitle">
+      เฟรมเวิร์ค PHP ที่มาพร้อม <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">i18n</strong> และ <strong class="text-white/70 font-medium">Genetic SDK</strong><br>
+      สร้าง REST API ที่ปลอดภัย เร็ว และขยายได้ — บน XAMPP
+    </p>
+    <!-- CTA — Elysia-style: pill button + translucent install cmd + stroke copy icon -->
+    <div id="hero-btns" class="flex gap-3 items-center justify-center flex-wrap group/cta">
+      <a href="../docs/index.html" id="hero-get-started" class="text-white font-semibold text-lg bg-indigo-500 px-7 py-2.5 rounded-full shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-105 transition-all ease-out-expo duration-300" data-i18n="hero.btn.start">
+        Get Started
+      </a>
+      <code class="text-indigo-300 font-mono font-medium text-sm sm:text-base bg-indigo-500/20 px-5 py-2.5 rounded-full whitespace-nowrap">composer create-project open-genetics/framework my-api</code>
+      <button id="hero-copy" class="p-2.5 rounded-full text-indigo-400/40 hover:text-indigo-400 hover:bg-indigo-500/15 transition-all ease-out-expo duration-300" onclick="copyText('composer create-project open-genetics/framework my-api',this)" title="Copy">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+    <!-- Scroll hint with arrow -->
+    <div id="hero-scroll" class="mt-12 flex items-center justify-center gap-2">
+      <p class="text-white/20 text-sm" data-i18n="hero.scroll">See why developers love OpenGenetics</p>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="text-white/20 animate-bounce"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="relative z-10 py-28 px-6">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3" data-i18n="feat.title">คุณสมบัติ</p>
+      <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)" data-i18n-html="feat.heading">พร้อมใช้งาน<span class="grad-text2"> ตั้งแต่วันแรก</span></h2>
+      <p class="text-base text-white/38" data-i18n="feat.subtitle">ไม่ต้องตั้งค่าซับซ้อน — ทุกอย่างอยู่ในกล่องเดียว</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+        <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5" style="background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.speed.title">รวดเร็ว &lt; 50ms</h3>
+        <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.speed.desc">Micro-framework ที่เบาที่สุด — ไม่มี ORM overhead, PDO Singleton และ File-based Routing ตอบสนองใต้ 50ms</p>
+      </div>
+
+      <div class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+        <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5" style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.jwt.title">JWT Authentication</h3>
+        <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.jwt.desc">ระบบยืนยันตัวตน HS256 ในตัว พร้อม Bcrypt 12 รอบ รองรับ firebase/php-jwt และ native PHP fallback</p>
+      </div>
+
+      <div class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+        <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5" style="background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.rbac.title">RBAC 3 ระดับ</h3>
+        <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.rbac.desc">Guard ควบคุมสิทธิ์ Admin, HR, Employee ในระดับ DNA ของทุก API request — เพียงบรรทัดเดียว</p>
+      </div>
+
+      <div class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+        <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5" style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.i18n.title">i18n Engine</h3>
+        <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.i18n.desc">สลับภาษา Thai/English ทันทีผ่าน X-Locale header หรือ ?lang= param — Lazy load ประหยัด ~0.5ms</p>
+      </div>
+
+      <div class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+        <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5" style="background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.sdk.title">Dual SDK</h3>
+        <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.sdk.desc">React Hook + Vanilla JS SDK พร้อมใช้งาน — ครอบคลุม auth, RBAC, i18n และ API calls ในไฟล์เดียว</p>
+      </div>
+
+      <div class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+        <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5" style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.audit.title">Audit Trail</h3>
+        <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.audit.desc">บันทึก log ทุก action อัตโนมัติแบบ Non-blocking — ติดตาม CREATE, UPDATE, DELETE, LOGIN ได้ทันที</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CODE EXAMPLES -->
+<section id="code" class="relative z-10 py-28 px-6" style="background:rgba(255,255,255,.018);border-top:1px solid rgba(255,255,255,.042);border-bottom:1px solid rgba(255,255,255,.042)">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3" data-i18n="code.title">ตัวอย่างโค้ด</p>
+      <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)" data-i18n-html="code.heading">เขียนน้อย <span class="grad-text2">ได้มาก</span></h2>
+      <p class="text-base text-white/38" data-i18n="code.subtitle">API พร้อมใช้งานใน 10 บรรทัด — ไม่ต้องประกาศ route</p>
+    </div>
+    <div class="max-w-[860px] mx-auto reveal">
+      <div class="flex gap-1 mb-[-1px] relative z-10">
+        <button class="code-tab active px-6 py-2.5 rounded-t-xl text-[13px] font-semibold cursor-pointer font-sans transition-all" onclick="switchTab(this,'tab-auth')" style="background:#080817;color:#a5b4fc;border:1px solid rgba(108,99,255,.28);border-bottom:none">Auth API</button>
+        <button class="code-tab px-6 py-2.5 rounded-t-xl text-[13px] font-semibold cursor-pointer font-sans transition-all" onclick="switchTab(this,'tab-rbac')" style="background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.07);border-bottom:none">RBAC Guard</button>
+        <button class="code-tab px-6 py-2.5 rounded-t-xl text-[13px] font-semibold cursor-pointer font-sans transition-all" onclick="switchTab(this,'tab-db')" style="background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.07);border-bottom:none">Database</button>
+      </div>
+      <div class="code-block rounded-b-2xl rounded-tr-2xl overflow-x-auto font-mono text-[13px] leading-[2.05] text-slate-200" style="background:#080817;border:1px solid rgba(108,99,255,.22);padding:32px 36px;box-shadow:0 0 60px rgba(108,99,255,.12),0 24px 80px rgba(0,0,0,.5)">
+        <div id="tab-auth" class="code-panel active"><pre><span class="cm">// api/auth/login.php — POST /api/auth/login</span>
+<span class="kw">use</span> OpenGenetics\Auth\<span class="cl">AuthService</span>;
+<span class="kw">use</span> OpenGenetics\Core\<span class="cl">Response</span>;
+
+<span class="vr">$body</span> = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(<span class="st">'php://input'</span>), <span class="kw">true</span>);
+
+<span class="kw">try</span> {
+    <span class="vr">$result</span> = <span class="cl">AuthService</span>::<span class="fn">login</span>(<span class="vr">$body</span>[<span class="st">'email'</span>], <span class="vr">$body</span>[<span class="st">'password'</span>]);
+    <span class="cl">Response</span>::<span class="fn">success</span>(<span class="vr">$result</span>, <span class="st">'Login successful'</span>);
+} <span class="kw">catch</span> (\<span class="cl">RuntimeException</span> <span class="vr">$e</span>) {
+    <span class="cl">Response</span>::<span class="fn">error</span>(<span class="vr">$e</span>-><span class="fn">getMessage</span>(), <span class="vr">$e</span>-><span class="fn">getCode</span>());
+}</pre></div>
+        <div id="tab-rbac" class="code-panel"><pre><span class="cm">// api/users.php — GET /api/users (Admin only)</span>
+<span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
+<span class="kw">use</span> OpenGenetics\Core\{<span class="cl">Database</span>, <span class="cl">Response</span>};
+
+<span class="cl">Guard</span>::<span class="fn">requireRole</span>(<span class="cl">Guard</span>::<span class="vr">ADMIN</span>); <span class="cm">// 401/403 อัตโนมัติ</span>
+
+<span class="vr">$users</span> = <span class="cl">Database</span>::<span class="fn">query</span>(
+    <span class="st">"SELECT id, email, role_name FROM users WHERE is_active = 1"</span>
+);
+
+<span class="cl">Response</span>::<span class="fn">success</span>(<span class="vr">$users</span>);</pre></div>
+        <div id="tab-db" class="code-panel"><pre><span class="cm">// PDO Singleton — real prepared statements</span>
+<span class="kw">use</span> OpenGenetics\Core\<span class="cl">Database</span>;
+
+<span class="cm">// Query (fetch all)</span>
+<span class="vr">$rows</span> = <span class="cl">Database</span>::<span class="fn">query</span>(
+    <span class="st">"SELECT * FROM users WHERE role_id = :role"</span>,
+    [<span class="st">'role'</span> => <span class="nb">2</span>]
+);
+
+<span class="cm">// Execute (insert/update/delete)</span>
+<span class="cl">Database</span>::<span class="fn">execute</span>(
+    <span class="st">"UPDATE users SET is_active = :a WHERE id = :id"</span>,
+    [<span class="st">'a'</span> => <span class="nb">0</span>, <span class="st">'id'</span> => <span class="nb">5</span>]
+);
+
+<span class="cm">// Transaction</span>
+<span class="cl">Database</span>::<span class="fn">transaction</span>(<span class="kw">fn</span>() => <span class="fn">doWork</span>());</pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="comparison" class="relative z-10 py-28 px-6">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3" data-i18n="cmp.title">เปรียบเทียบ</p>
+      <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)" data-i18n-html="cmp.heading">ทำไมต้อง <span class="grad-text2">OpenGenetics</span></h2>
+      <p class="text-base text-white/38" data-i18n="cmp.subtitle">เทียบกับ framework ยอดนิยมสำหรับ REST API</p>
+    </div>
+    <div class="max-w-[860px] mx-auto reveal overflow-hidden rounded-2xl" style="border:1px solid rgba(255,255,255,.065)">
+      <table class="w-full text-[14px] border-collapse">
+        <thead>
+          <tr>
+            <th class="text-left px-5 py-3.5 text-[13px] font-semibold text-white/35" style="background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.07)">คุณสมบัติ</th>
+            <th class="text-center px-5 py-3.5 text-[13px] font-bold text-indigo-300" style="background:rgba(108,99,255,.08);border-bottom:1px solid rgba(255,255,255,.07)">OpenGenetics</th>
+            <th class="text-center px-5 py-3.5 text-[13px] font-semibold text-white/35" style="background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.07)">Laravel</th>
+            <th class="text-center px-5 py-3.5 text-[13px] font-semibold text-white/35" style="background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.07)">Slim</th>
+            <th class="text-center px-5 py-3.5 text-[13px] font-semibold text-white/35" style="background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.07)">Lumen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+            <td class="px-5 py-3 text-white/62" style="border-bottom:1px solid rgba(255,255,255,.04)">Response Time</td>
+            <td class="px-5 py-3 text-center font-bold text-indigo-300" style="background:rgba(108,99,255,.04);border-bottom:1px solid rgba(255,255,255,.04)">&lt; 50ms</td>
+            <td class="px-5 py-3 text-center text-white/38" style="border-bottom:1px solid rgba(255,255,255,.04)">~200ms</td>
+            <td class="px-5 py-3 text-center text-white/38" style="border-bottom:1px solid rgba(255,255,255,.04)">~80ms</td>
+            <td class="px-5 py-3 text-center text-white/38" style="border-bottom:1px solid rgba(255,255,255,.04)">~120ms</td>
+          </tr>
+          <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+            <td class="px-5 py-3 text-white/62" style="border-bottom:1px solid rgba(255,255,255,.04)">JWT Built-in</td>
+            <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="background:rgba(108,99,255,.04);border-bottom:1px solid rgba(255,255,255,.04)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Package</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Package</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Package</td>
+          </tr>
+          <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+            <td class="px-5 py-3 text-white/62" style="border-bottom:1px solid rgba(255,255,255,.04)">RBAC Built-in</td>
+            <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="background:rgba(108,99,255,.04);border-bottom:1px solid rgba(255,255,255,.04)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Package</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">—</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">—</td>
+          </tr>
+          <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+            <td class="px-5 py-3 text-white/62" style="border-bottom:1px solid rgba(255,255,255,.04)">i18n Built-in</td>
+            <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="background:rgba(108,99,255,.04);border-bottom:1px solid rgba(255,255,255,.04)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">—</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">—</td>
+          </tr>
+          <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+            <td class="px-5 py-3 text-white/62" style="border-bottom:1px solid rgba(255,255,255,.04)">Audit Trail</td>
+            <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="background:rgba(108,99,255,.04);border-bottom:1px solid rgba(255,255,255,.04)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Package</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">—</td>
+            <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">—</td>
+          </tr>
+          <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+            <td class="px-5 py-3 text-white/62">Frontend SDK</td>
+            <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="background:rgba(108,99,255,.04)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> Dual</td>
+            <td class="px-5 py-3 text-center text-white/20">—</td>
+            <td class="px-5 py-3 text-center text-white/20">—</td>
+            <td class="px-5 py-3 text-center text-white/20">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- REQUIREMENTS -->
+<section id="requirements" class="relative z-10 py-28 px-6" style="background:rgba(255,255,255,.018);border-top:1px solid rgba(255,255,255,.042);border-bottom:1px solid rgba(255,255,255,.042)">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3" data-i18n="req.title">ความต้องการ</p>
+      <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)" data-i18n-html="req.heading">System <span class="grad-text2">Requirements</span></h2>
+      <p class="text-base text-white/38" data-i18n="req.subtitle">ใช้งานได้บน XAMPP ทันที — ไม่ต้องติดตั้งเพิ่ม</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 max-w-[860px] mx-auto">
+      <div class="req-card flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-lg transition-all ease-out-expo duration-600">
+        <span class="text-emerald-400 flex items-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+        <div><div class="text-[15px] font-semibold text-slate-100">PHP 8.1+</div><div class="text-[13px] text-white/38 mt-0.5">pdo, json, mbstring</div></div>
+      </div>
+      <div class="req-card flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-lg transition-all ease-out-expo duration-600">
+        <span class="text-emerald-400 flex items-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+        <div><div class="text-[15px] font-semibold text-slate-100">MySQL 5.7+</div><div class="text-[13px] text-white/38 mt-0.5">หรือ MariaDB 10.3+</div></div>
+      </div>
+      <div class="req-card flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-lg transition-all ease-out-expo duration-600">
+        <span class="text-emerald-400 flex items-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+        <div><div class="text-[15px] font-semibold text-slate-100">Composer 2+</div><div class="text-[13px] text-white/38 mt-0.5">Dependency manager</div></div>
+      </div>
+      <div class="req-card flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-lg transition-all ease-out-expo duration-600">
+        <span class="text-emerald-400 flex items-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+        <div><div class="text-[15px] font-semibold text-slate-100">Apache / XAMPP</div><div class="text-[13px] text-white/38 mt-0.5">mod_rewrite enabled</div></div>
+      </div>
+      <div class="req-card flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-lg transition-all ease-out-expo duration-600">
+        <span class="text-emerald-400 flex items-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+        <div><div class="text-[15px] font-semibold text-slate-100">PDO Extension</div><div class="text-[13px] text-white/38 mt-0.5">pdo_mysql driver</div></div>
+      </div>
+      <div class="req-card flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-lg transition-all ease-out-expo duration-600">
+        <span class="text-emerald-400 flex items-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+        <div><div class="text-[15px] font-semibold text-slate-100">Mbstring Extension</div><div class="text-[13px] text-white/38 mt-0.5">UTF-8 / ภาษาไทย</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK START -->
+<section id="quickstart" class="relative z-10 py-28 px-6">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3" data-i18n="qs.title">เริ่มต้นใช้งาน</p>
+      <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)" data-i18n-html="qs.heading">เริ่มต้นด้วย<span class="grad-text2"> Composer</span></h2>
+      <p class="text-base text-white/38" data-i18n="qs.subtitle">5 ขั้นตอน — เหมือนติดตั้ง Laravel</p>
+    </div>
+    <div class="max-w-[740px] mx-auto flex flex-col gap-3">
+
+      <div class="step-card flex gap-5 items-start rounded-2xl px-6 py-6 cursor-default border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-[1.02] hover:shadow-lg transition-all ease-out-expo duration-600">
+        <div class="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center font-extrabold text-sm text-white shrink-0" style="background:linear-gradient(135deg,#1e18cf,#6c63ff);box-shadow:0 0 18px rgba(108,99,255,.55)">1</div>
+        <div class="min-w-0 flex-1">
+          <h4 class="text-[15px] font-bold mb-1.5 text-slate-100" data-i18n="qs.step1">สร้างโปรเจกต์</h4>
+          <div class="copy-wrap relative">
+            <code class="inline-block font-mono text-[13px] text-[#00cfff] px-3.5 py-1.5 rounded-lg mt-1 pr-10" style="background:rgba(0,0,0,.45);border:1px solid rgba(0,207,255,.14)">composer create-project open-genetics/framework my-api</code>
+            <button class="copy-btn" onclick="copyText('composer create-project open-genetics/framework my-api',this)" style="top:6px;right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg></button>
+          </div>
+          <p class="text-[13px] text-white/38 mt-2 leading-relaxed">แล้ว <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">cd my-api</code></p>
+        </div>
+      </div>
+
+      <div class="step-card flex gap-5 items-start rounded-2xl px-6 py-6 cursor-default border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-[1.02] hover:shadow-lg transition-all ease-out-expo duration-600">
+        <div class="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center font-extrabold text-sm text-white shrink-0" style="background:linear-gradient(135deg,#1e18cf,#6c63ff);box-shadow:0 0 18px rgba(108,99,255,.55)">2</div>
+        <div>
+          <h4 class="text-[15px] font-bold mb-1.5 text-slate-100" data-i18n="qs.step2">ติดตั้ง Dependencies</h4>
+          <div class="copy-wrap relative inline-block">
+            <code class="inline-block font-mono text-[13px] text-[#00cfff] px-3.5 py-1.5 rounded-lg mt-1 pr-10" style="background:rgba(0,0,0,.45);border:1px solid rgba(0,207,255,.14)">composer install</code>
+            <button class="copy-btn" onclick="copyText('composer install',this)" style="top:6px;right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card flex gap-5 items-start rounded-2xl px-6 py-6 cursor-default border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-[1.02] hover:shadow-lg transition-all ease-out-expo duration-600">
+        <div class="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center font-extrabold text-sm text-white shrink-0" style="background:linear-gradient(135deg,#1e18cf,#6c63ff);box-shadow:0 0 18px rgba(108,99,255,.55)">3</div>
+        <div>
+          <h4 class="text-[15px] font-bold mb-1.5 text-slate-100" data-i18n="qs.step3">ตั้งค่า Environment</h4>
+          <div class="copy-wrap relative inline-block">
+            <code class="inline-block font-mono text-[13px] text-[#00cfff] px-3.5 py-1.5 rounded-lg mt-1 pr-10" style="background:rgba(0,0,0,.45);border:1px solid rgba(0,207,255,.14)">cp .env.example .env</code>
+            <button class="copy-btn" onclick="copyText('cp .env.example .env',this)" style="top:6px;right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg></button>
+          </div>
+          <p class="text-[13px] text-white/38 mt-2 leading-relaxed" data-i18n="qs.step3.desc">สร้างฐานข้อมูลใน phpMyAdmin แล้วแก้ไข <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">DB_HOST</code>, <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">DB_NAME</code>, <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">DB_PASS</code></p>
+        </div>
+      </div>
+
+      <div class="step-card flex gap-5 items-start rounded-2xl px-6 py-6 cursor-default border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-[1.02] hover:shadow-lg transition-all ease-out-expo duration-600">
+        <div class="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center font-extrabold text-sm text-white shrink-0" style="background:linear-gradient(135deg,#1e18cf,#6c63ff);box-shadow:0 0 18px rgba(108,99,255,.55)">4</div>
+        <div>
+          <h4 class="text-[15px] font-bold mb-1.5 text-slate-100" data-i18n="qs.step4">Genetic Scaffolding</h4>
+          <div class="copy-wrap relative inline-block">
+            <code class="inline-block font-mono text-[13px] text-[#00cfff] px-3.5 py-1.5 rounded-lg mt-1 pr-10" style="background:rgba(0,0,0,.45);border:1px solid rgba(0,207,255,.14)">php bin/genetics mutate</code>
+            <button class="copy-btn" onclick="copyText('php bin/genetics mutate',this)" style="top:6px;right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg></button>
+          </div>
+          <p class="text-[13px] text-white/38 mt-2 leading-relaxed" data-i18n="qs.step4.desc">สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ &mdash; Default: <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">admin@opengenetics.io</code> / <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">password</code></p>
+        </div>
+      </div>
+
+      <div class="step-card flex gap-5 items-start rounded-2xl px-6 py-6 cursor-default border border-white/[0.06] bg-white/[0.02] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-[1.02] hover:shadow-lg transition-all ease-out-expo duration-600">
+        <div class="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center font-extrabold text-sm text-white shrink-0" style="background:linear-gradient(135deg,#1e18cf,#6c63ff);box-shadow:0 0 18px rgba(108,99,255,.55)">5</div>
+        <div>
+          <h4 class="text-[15px] font-bold mb-1.5 text-slate-100" data-i18n="qs.step5">เริ่มสร้าง API</h4>
+          <div class="copy-wrap relative inline-block">
+            <code class="inline-block font-mono text-[13px] text-[#00cfff] px-3.5 py-1.5 rounded-lg mt-1 pr-10" style="background:rgba(0,0,0,.45);border:1px solid rgba(0,207,255,.14)">php bin/genetics serve</code>
+            <button class="copy-btn" onclick="copyText('php bin/genetics serve',this)" style="top:6px;right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg></button>
+          </div>
+          <p class="text-[13px] text-white/38 mt-2 leading-relaxed" data-i18n="qs.step5.desc">เปิด dev server ที่ <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">http://127.0.0.1:8080</code> — สร้างไฟล์ <code class="text-indigo-300 bg-indigo-500/15 px-1.5 py-0.5 rounded text-xs font-mono">api/your-endpoint.php</code> ได้ทันที</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="relative z-10 py-32 px-6 text-center overflow-hidden" style="background:rgba(255,255,255,.018);border-top:1px solid rgba(255,255,255,.042)">
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(108,99,255,.14) 0%,transparent 70%)"></div>
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 h-px w-[600px]" style="background:linear-gradient(90deg,transparent,rgba(108,99,255,.5),transparent)"></div>
+  <div class="relative z-10 max-w-[680px] mx-auto reveal">
+    <h2 class="font-extrabold tracking-[-0.025em] text-white mb-4" style="font-size:clamp(30px,4.5vw,52px)" data-i18n="dl.title">
+      เริ่มต้นกับ <span class="grad-text2">OpenGenetics</span>
+    </h2>
+    <p class="text-[17px] text-white/42 mb-10" data-i18n="dl.subtitle">เวอร์ชัน 1.0.0 พร้อมใช้งาน — ฟรีและ Open Source (MIT License)</p>
+    <div class="flex gap-3 justify-center flex-wrap items-center">
+      <a href="https://github.com/open-genetics/framework" target="_blank"
+         class="inline-flex items-center gap-2 text-white font-semibold bg-indigo-500 px-6 py-3 rounded-full shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-110 transition-all ease-out-expo duration-300"
+         data-i18n="dl.btn.github">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        ดาวน์โหลดจาก GitHub
+      </a>
+      <a href="../docs/index.html" id="cta-docs-btn"
+         class="inline-flex items-center gap-2 text-white/70 font-semibold px-6 py-3 rounded-full border border-white/10 bg-white/[0.04] hover:text-white hover:border-indigo-500/30 hover:bg-indigo-500/10 hover:scale-105 transition-all ease-out-expo duration-300 backdrop-blur-sm"
+         data-i18n="dl.btn.docs">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
+        อ่านคู่มือฉบับเต็ม
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER — Elysia style -->
+<footer class="relative z-10 py-14 px-6">
+  <div class="max-w-[1100px] mx-auto">
+    <!-- Footer Card -->
+    <div class="footer-card">
+      <!-- Left: Logo + tagline -->
+      <div style="flex:1;min-width:200px">
+        <div class="flex items-center gap-4 mb-3">
+          <img id="footer-logo" src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" style="height:64px;width:auto;opacity:.9">
+        </div>
+        <p class="fc-desc" style="font-size:16px;color:rgba(255,255,255,.35);margin:0;line-height:1.6;font-style:italic">Enterprise PHP Micro-Framework</p>
+      </div>
+      <!-- Right: 4 feature highlights -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px 44px;flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg class="fc-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
+          <div><div class="fc-label" style="font-size:12px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;font-weight:600">Speed</div><div class="fc-value" style="font-size:18px;font-weight:700;color:rgba(255,255,255,.85)">&lt; 50ms</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg class="fc-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+          <div><div class="fc-label" style="font-size:12px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;font-weight:600">Security</div><div class="fc-value" style="font-size:18px;font-weight:700;color:rgba(255,255,255,.85)">OWASP</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg class="fc-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+          <div><div class="fc-label" style="font-size:12px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;font-weight:600">Developer Experience</div><div class="fc-value" style="font-size:18px;font-weight:700;color:rgba(255,255,255,.85)">Exceptional</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg class="fc-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+          <div><div class="fc-label" style="font-size:12px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;font-weight:600">Frontend SDK</div><div class="fc-value" style="font-size:18px;font-weight:700;color:rgba(255,255,255,.85)">Dual SDK</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Links row -->
+    <div class="ft-links flex gap-6 justify-center mt-6 mb-3 flex-wrap">
+      <a href="../docs/index.html" class="text-[13px] text-white/28 hover:text-indigo-400 transition-colors">Documentation</a>
+      <a href="../docs/api-reference.html" class="text-[13px] text-white/28 hover:text-indigo-400 transition-colors">API Reference</a>
+      <a href="../docs/cli.html" class="text-[13px] text-white/28 hover:text-indigo-400 transition-colors">CLI</a>
+      <a href="https://github.com/open-genetics/framework" target="_blank" class="text-[13px] text-white/28 hover:text-indigo-400 transition-colors">GitHub</a>
+      <a href="../docs/deployment.html" class="text-[13px] text-white/28 hover:text-indigo-400 transition-colors">Deployment</a>
+    </div>
+    <!-- Built with -->
+    <p class="ft-copy text-center" style="font-size:14px;color:rgba(255,255,255,.22)">Built with <span style="color:#f472b6">&#10084;</span> for PHP developers by <a href="https://github.com/jkstudio99" target="_blank" style="color:#818cf8;text-decoration:none;font-weight:500">jkstudio99</a></p>
+  </div>
+</footer>
+
+<script src="scripts/i18n-page.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ══════════════════════════════════════════════
+// GSAP Animations
+// ══════════════════════════════════════════════
+
+// ── Hero entrance (stagger fade-in + slide-up) — snappy ──
+const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+tl.fromTo('#hero-badge',  { opacity:0, y:22 }, { opacity:1, y:0, duration:.55, delay:.08 })
+  .fromTo('#hero-logo',   { opacity:0, scale:.92, y:16 }, { opacity:1, scale:1, y:0, duration:.6 }, '-=.35')
+  .fromTo('#hero-h1',     { opacity:0, y:20 }, { opacity:1, y:0, duration:.55 }, '-=.4')
+  .fromTo('#hero-sub',    { opacity:0, y:16 }, { opacity:1, y:0, duration:.5 }, '-=.38')
+  .fromTo('#hero-btns',   { opacity:0, y:16 }, { opacity:1, y:0, duration:.5 }, '-=.35')
+  .fromTo('#hero-scroll', { opacity:0, y:10 }, { opacity:1, y:0, duration:.4 }, '-=.25');
+
+// ── Decorative circles fade in ──
+gsap.utils.toArray('.hero-circle').forEach((c, i) => {
+  gsap.fromTo(c, { opacity:0 }, { opacity:1, duration:1.8, ease:'power2.out', delay:.3 + i * .18 });
+});
+
+// ── Navbar solidify on scroll ──
+ScrollTrigger.create({
+  start: 'top -60',
+  onEnter()  {
+    if (document.documentElement.getAttribute('data-theme') !== 'light') {
+      document.getElementById('navbar').style.cssText += ';background:rgba(14,14,26,.95)!important;border-bottom-color:rgba(255,255,255,.08)!important';
+    }
+  },
+  onLeaveBack() {
+    if (document.documentElement.getAttribute('data-theme') !== 'light') {
+      document.getElementById('navbar').style.cssText += ';background:rgba(14,14,26,.7)!important;border-bottom-color:rgba(255,255,255,.05)!important';
+    }
+  },
+});
+
+// ── Section reveals ──
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.fromTo(el, { opacity:0, y:28 }, { opacity:1, y:0, duration:.9, ease:'expo.out',
+    scrollTrigger: { trigger:el, start:'top 85%', toggleActions:'play none none none' }
+  });
+});
+
+// ── Feature cards stagger ──
+gsap.utils.toArray('.feat-card').forEach((card, i) => {
+  gsap.fromTo(card, { opacity:0, y:32 }, { opacity:1, y:0, duration:.8, ease:'expo.out', delay: i * .06,
+    scrollTrigger: { trigger:card, start:'top 88%', toggleActions:'play none none none' }
+  });
+});
+
+// ── Step cards stagger ──
+gsap.utils.toArray('.step-card').forEach((card, i) => {
+  gsap.fromTo(card, { opacity:0, y:24 }, { opacity:1, y:0, duration:.7, ease:'expo.out', delay: i * .08,
+    scrollTrigger: { trigger:card, start:'top 88%', toggleActions:'play none none none' }
+  });
+});
+
+// ── Req cards stagger ──
+gsap.utils.toArray('.req-card').forEach((card, i) => {
+  gsap.fromTo(card, { opacity:0, y:20 }, { opacity:1, y:0, duration:.6, ease:'expo.out', delay: i * .06,
+    scrollTrigger: { trigger:card, start:'top 90%', toggleActions:'play none none none' }
+  });
+});
+
+// ── Orb parallax on mousemove ──
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX / window.innerWidth  - .5) * 24;
+  const y = (e.clientY / window.innerHeight - .5) * 24;
+  gsap.to('.orb-1', { x: x*.8, y: y*.8, duration:2.5, ease:'power1.out' });
+  gsap.to('.orb-2', { x:-x*.6, y:-y*.6, duration:3,   ease:'power1.out' });
+  gsap.to('.orb-3', { x: x*.4, y: y*.4, duration:3.5, ease:'power1.out' });
+});
+
+// ══════════════════════════════════════════════
+// Code Tabs
+// ══════════════════════════════════════════════
+function switchTab(btn, panelId) {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.querySelectorAll('.code-tab').forEach(t => {
+    t.classList.remove('active');
+    t.removeAttribute('data-active');
+    t.style.background = isLight ? 'rgba(0,0,0,.03)' : 'rgba(255,255,255,.04)';
+    t.style.color = isLight ? '#475569' : 'rgba(255,255,255,.4)';
+    t.style.borderColor = isLight ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.07)';
+  });
+  btn.classList.add('active');
+  btn.setAttribute('data-active', 'true');
+  btn.style.background = isLight ? '#f1f5f9' : '#080817';
+  btn.style.color = isLight ? '#4f46e5' : '#a5b4fc';
+  btn.style.borderColor = isLight ? 'rgba(79,70,229,.2)' : 'rgba(108,99,255,.28)';
+  document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// Copy to Clipboard — with checkmark feedback
+// ══════════════════════════════════════════════
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    const svg = btn.querySelector('svg');
+    const orig = svg.innerHTML;
+    svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>';
+    setTimeout(() => { btn.classList.remove('copied'); svg.innerHTML = orig; }, 1800);
+  });
+}
+
+// ══════════════════════════════════════════════
+// Theme Toggle — ALWAYS start dark, then respect localStorage
+// ══════════════════════════════════════════════
+let currentTheme = localStorage.getItem('og_theme') || 'dark';
+const themeToggle = document.getElementById('theme-toggle');
+const moonIcon = document.getElementById('theme-icon-moon');
+const sunIcon = document.getElementById('theme-icon-sun');
+
+function applyTheme(t) {
+  const isDark = (t === 'dark');
+  document.documentElement.classList.toggle('dark', isDark);
+  document.documentElement.setAttribute('data-theme', t);
+  moonIcon.classList.toggle('hidden', !isDark);
+  sunIcon.classList.toggle('hidden', isDark);
+  document.body.style.background = isDark ? '#0e0e1a' : '#f5f5fa';
+  document.body.style.color = isDark ? '#e2e8f0' : '#1e293b';
+  document.querySelectorAll('.orb, .grid-bg').forEach(el => el.style.opacity = isDark ? '1' : '0');
+  // Navbar — transparent in light mode; clear any ScrollTrigger overrides
+  const nav = document.getElementById('navbar');
+  nav.style.cssText = 'background:' + (isDark ? 'rgba(14,14,26,.75)' : 'transparent') + ';backdrop-filter:saturate(180%) blur(' + (isDark ? '24' : '20') + 'px);-webkit-backdrop-filter:saturate(180%) blur(' + (isDark ? '24' : '20') + 'px);border-bottom:1px solid ' + (isDark ? 'rgba(255,255,255,.055)' : 'rgba(0,0,0,.06)') + ';';
+  // Re-apply active code tab colors for new theme
+  const activeTab = document.querySelector('.code-tab.active');
+  if (activeTab) {
+    document.querySelectorAll('.code-tab').forEach(t => {
+      if (t === activeTab) return;
+      t.style.background = isDark ? 'rgba(255,255,255,.04)' : 'rgba(0,0,0,.03)';
+      t.style.color = isDark ? 'rgba(255,255,255,.4)' : '#475569';
+      t.style.borderColor = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.08)';
+    });
+    activeTab.style.background = isDark ? '#080817' : '#f1f5f9';
+    activeTab.style.color = isDark ? '#a5b4fc' : '#4f46e5';
+    activeTab.style.borderColor = isDark ? 'rgba(108,99,255,.28)' : 'rgba(79,70,229,.2)';
+  }
+  // Logo swap (navbar + hero + footer)
+  const logoSrc = isDark ? 'images/logo/open-genetics-logo-white.svg' : 'images/logo/open-genetics-logo.svg';
+  document.getElementById('nav-logo').src = logoSrc;
+  document.getElementById('hero-logo').src = logoSrc;
+  document.getElementById('hero-logo').style.filter = isDark ? 'drop-shadow(0 0 28px rgba(0,207,255,.35)) drop-shadow(0 0 60px rgba(108,99,255,.2))' : 'drop-shadow(0 0 20px rgba(79,70,229,.15))';
+  const footerLogo = document.getElementById('footer-logo');
+  if (footerLogo) footerLogo.src = logoSrc;
+  themeToggle.title = isDark ? 'Switch to Light mode' : 'Switch to Dark mode';
+}
+applyTheme(currentTheme);
+localStorage.setItem('og_theme', currentTheme);
+themeToggle.addEventListener('click', () => {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(currentTheme);
+  localStorage.setItem('og_theme', currentTheme);
+});
+
+// ══════════════════════════════════════════════
+// Language Toggle — uses og_locale (same key as i18n-page.js)
+// ══════════════════════════════════════════════
+let currentLang = localStorage.getItem('og_locale') || 'th';
+const langToggle = document.getElementById('lang-toggle');
+updateLangTitle();
+
+langToggle.addEventListener('click', () => {
+  currentLang = currentLang === 'th' ? 'en' : 'th';
+  localStorage.setItem('og_locale', currentLang);
+  updateLangTitle();
+  if (window.OGi18n) window.OGi18n.setLocale(currentLang);
+  langToggle.style.color = '#818cf8';
+  setTimeout(() => langToggle.style.color = '', 300);
+});
+
+function updateLangTitle() {
+  langToggle.title = currentLang === 'th' ? 'เปลี่ยนเป็น English' : 'Switch to ภาษาไทย';
+}
+
+// ══════════════════════════════════════════════
+// Search Modal — ⌘K / Ctrl+K — FULLY FUNCTIONAL
+// ══════════════════════════════════════════════
+const searchModal = document.getElementById('search-modal');
+const searchTrigger = document.getElementById('search-trigger');
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+const searchEmpty = document.getElementById('search-empty');
+const searchFooter = document.getElementById('search-footer');
+let searchIdx = -1;
+
+// Build searchable index from page content
+const siSvg = {
+  bolt: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>',
+  lock: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>',
+  shield: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>',
+  globe: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>',
+  cube: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>',
+  clip: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>',
+  code: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>',
+  chart: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>',
+  cog: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>',
+  rocket: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/></svg>',
+  book: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>',
+  git: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>',
+  num: n => `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">${n}</text></svg>`,
+};
+const searchData = [
+  { title:'Features', desc:'JWT Auth, RBAC, i18n, SDK — ทุกอย่างพร้อมใช้งาน', href:'#features', icon:siSvg.bolt },
+  { title:'Speed < 50ms', desc:'Micro-framework ที่เบาที่สุด PDO Singleton File-based Routing', href:'#features', icon:siSvg.bolt },
+  { title:'JWT Authentication', desc:'ระบบยืนยันตัวตน HS256 Bcrypt firebase/php-jwt', href:'#features', icon:siSvg.lock },
+  { title:'RBAC 3 ระดับ', desc:'Guard ควบคุมสิทธิ์ Admin HR Employee', href:'#features', icon:siSvg.shield },
+  { title:'i18n Engine', desc:'สลับภาษา Thai English X-Locale header', href:'#features', icon:siSvg.globe },
+  { title:'Dual SDK', desc:'React Hook Vanilla JS SDK auth RBAC i18n API calls', href:'#features', icon:siSvg.cube },
+  { title:'Audit Trail', desc:'บันทึก log ทุก action CREATE UPDATE DELETE LOGIN', href:'#features', icon:siSvg.clip },
+  { title:'Code Examples', desc:'Auth API, RBAC Guard, Database operations', href:'#code-examples', icon:siSvg.code },
+  { title:'Comparison', desc:'เปรียบเทียบ OpenGenetics vs Laravel Slim Lumen', href:'#comparison', icon:siSvg.chart },
+  { title:'System Requirements', desc:'PHP 8.1+ MySQL 5.7+ Composer Apache XAMPP', href:'#requirements', icon:siSvg.cog },
+  { title:'Quick Start — Installation', desc:'composer create-project open-genetics/framework', href:'#quickstart', icon:siSvg.rocket },
+  { title:'Step 1: สร้างโปรเจกต์', desc:'composer create-project open-genetics/framework my-api', href:'#quickstart', icon:siSvg.num(1) },
+  { title:'Step 2: Dependencies', desc:'composer install', href:'#quickstart', icon:siSvg.num(2) },
+  { title:'Step 3: Environment', desc:'cp .env.example .env DB_HOST DB_NAME', href:'#quickstart', icon:siSvg.num(3) },
+  { title:'Step 4: Scaffolding', desc:'php bin/genetics mutate — สร้างตาราง Seed RBAC', href:'#quickstart', icon:siSvg.num(4) },
+  { title:'Step 5: Serve', desc:'php bin/genetics serve — dev server 127.0.0.1:8080', href:'#quickstart', icon:siSvg.num(5) },
+  { title:'Documentation', desc:'อ่านคู่มือฉบับเต็ม — API Reference, CLI, Deployment', href:'../docs/index.html', icon:siSvg.book },
+  { title:'GitHub Repository', desc:'open-genetics/framework — MIT License', href:'https://github.com/open-genetics/framework', icon:siSvg.git },
+];
+
+function openSearch() {
+  searchModal.classList.add('open');
+  requestAnimationFrame(() => { searchInput.focus(); searchInput.select(); });
+  renderSearch('');
+}
+function closeSearch() {
+  searchModal.classList.remove('open');
+  searchModal.classList.add('closing');
+  setTimeout(() => {
+    searchModal.classList.remove('closing');
+    searchInput.value = '';
+    searchIdx = -1;
+  }, 180);
+}
+
+function renderSearch(q) {
+  q = q.trim().toLowerCase();
+  if (!q) {
+    searchResults.innerHTML = '';
+    searchEmpty.style.display = '';
+    searchFooter.classList.add('hidden');
+    searchIdx = -1;
+    return;
+  }
+  const matches = searchData.filter(d =>
+    d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q)
+  );
+  searchEmpty.style.display = 'none';
+  searchFooter.classList.remove('hidden');
+  searchFooter.style.display = 'flex';
+  if (!matches.length) {
+    searchResults.innerHTML = '<div class="search-no-result">No results for "<strong>' + q.replace(/</g,'&lt;') + '</strong>"</div>';
+    searchIdx = -1;
+    return;
+  }
+  searchIdx = 0;
+  searchResults.innerHTML = matches.map((m, i) => {
+    const hl = (s) => s.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi'), '<mark>$1</mark>');
+    return '<div class="search-item' + (i===0?' active':'') + '" data-href="' + m.href + '">' +
+      '<div class="si-icon">' + m.icon + '</div>' +
+      '<div class="flex-1 min-w-0"><div class="si-title">' + hl(m.title) + '</div><div class="si-desc">' + hl(m.desc) + '</div></div>' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="text-white/15 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>' +
+    '</div>';
+  }).join('');
+  // Click handler
+  searchResults.querySelectorAll('.search-item').forEach(el => {
+    el.addEventListener('click', () => { navigateTo(el.dataset.href); closeSearch(); });
+  });
+}
+
+function navigateTo(href) {
+  if (href.startsWith('http') || href.startsWith('../')) {
+    window.location.href = href;
+  } else {
+    const target = document.querySelector(href);
+    if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
+
+searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+
+searchTrigger.addEventListener('click', openSearch);
+searchModal.addEventListener('click', e => { if (e.target === searchModal) closeSearch(); });
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); return; }
+  if (!searchModal.classList.contains('open')) return;
+  if (e.key === 'Escape') { closeSearch(); return; }
+  const items = searchResults.querySelectorAll('.search-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); searchIdx = Math.min(searchIdx + 1, items.length - 1); }
+  if (e.key === 'ArrowUp')   { e.preventDefault(); searchIdx = Math.max(searchIdx - 1, 0); }
+  if (e.key === 'Enter' && searchIdx >= 0) { e.preventDefault(); navigateTo(items[searchIdx].dataset.href); closeSearch(); return; }
+  items.forEach((el, i) => el.classList.toggle('active', i === searchIdx));
+  if (items[searchIdx]) items[searchIdx].scrollIntoView({ block:'nearest' });
+});
+
+// ══════════════════════════════════════════════
+// Smooth scroll for anchor links
+// ══════════════════════════════════════════════
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

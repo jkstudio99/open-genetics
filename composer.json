@@ -1,0 +1,64 @@
+{
+    "name": "open-genetics/framework",
+    "description": "Enterprise PHP Micro-Framework — JWT Auth, Genetic RBAC, i18n, Audit Trail, and Dual-Frontend SDK",
+    "type": "project",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "framework",
+        "micro-framework",
+        "rest-api",
+        "jwt",
+        "rbac",
+        "i18n",
+        "audit-trail",
+        "psr-4"
+    ],
+    "homepage": "https://github.com/jkstudio99/open-genetics",
+    "authors": [
+        {
+            "name": "OpenGenetics Team",
+            "homepage": "https://github.com/open-genetics"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/jkstudio99/open-genetics/issues",
+        "source": "https://github.com/jkstudio99/open-genetics",
+        "docs": "https://github.com/jkstudio99/open-genetics/tree/main/docs"
+    },
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "firebase/php-jwt": "^6.10"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenGenetics\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/genetics"
+    ],
+    "scripts": {
+        "post-create-project-cmd": [
+            "php -r \"copy('.env.example', '.env');\"",
+            "php -r \"file_put_contents('.env', str_replace('your-secret-key-change-this', bin2hex(random_bytes(32)), file_get_contents('.env')));\"",
+            "@php bin/genetics help"
+        ],
+        "mutate": "php bin/genetics mutate",
+        "seed": "php bin/genetics seed",
+        "serve": "php bin/genetics serve",
+        "test": "phpunit"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
