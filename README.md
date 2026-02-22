@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/images/logo/open-genetics-logo.svg" alt="OpenGenetics Logo" width="200" />
+  <img src="public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics Logo" width="200" />
   <br/>
   <h1>OpenGenetics Framework</h1>
   <p><strong>Enterprise PHP Micro-Framework</strong> &mdash; <em>JWT Auth, Genetic RBAC, i18n, Audit Trail, and Dual-Frontend SDK.</em></p>
