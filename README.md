@@ -55,6 +55,8 @@ Password: password
 
 ## Project Structure
 
+When you install via Composer, you get a clean framework ready to build:
+
 ```
 my-api/
 ├── api/                    # File-based route endpoints
@@ -64,20 +66,21 @@ my-api/
 │   │   └── profile.php     # GET  /api/auth/profile
 │   ├── dashboard.php       # GET  /api/dashboard
 │   └── users.php           # GET  /api/users
-├── bin/
-│   └── genetics            # CLI tool
-├── src/                    # Framework source (PSR-4)
+├── bin/genetics            # CLI tool (mutate, seed, serve, scaffold)
+├── src/                    # Framework core (PSR-4)
 │   ├── Auth/               # AuthService, Guard, JwtManager
-│   ├── Audit/              # AuditLog
-│   ├── Core/               # Database, Env, Response, Router
-│   └── I18n/               # I18n engine
+│   ├── Audit/              # AuditLog (non-blocking)
+│   ├── Core/               # Database, Env, Router, Response, Validator
+│   └── I18n/               # Multi-language engine (Thai/English)
 ├── public/                 # Web root
 │   └── index.php           # Entry point
-├── sdk/                    # Frontend SDK
-├── locales/                # i18n dictionaries (en/th)
-├── docs/                   # Documentation
+├── sdk/                    # Frontend SDK (Vanilla JS + React Hook)
+├── locales/                # i18n dictionaries (en.json, th.json)
+├── storage/                # Runtime storage (rate-limit, logs)
 └── .env                    # Environment config
 ```
+
+> **For contributors:** Clone the full repo to access `docs/`, `tests/`, and development tools.
 
 ## CLI Commands
 
@@ -138,7 +141,11 @@ php bin/genetics make:endpoint products
 
 ## Documentation
 
-Full documentation is available in the [`docs/`](docs/index.html) directory.
+Full documentation is available in the [`docs/site/`](docs/site/overview.html) directory, including:
+
+- **[Guides](docs/guides/)** — Deployment, upload, and setup guides
+- **[Specs](docs/specs/)** — PRD, database architecture, design system
+- **[Doc Site](docs/site/)** — Browse the full HTML documentation
 
 ## Contributing
 

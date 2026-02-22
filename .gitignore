@@ -4,6 +4,9 @@ node_modules/
 
 # Environment
 .env
+.env.production
+.env.local
+.env.*.local
 
 # IDE
 .idea/
@@ -11,7 +14,16 @@ node_modules/
 .windsurf/
 *.swp
 *.swo
+
+# OS files
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
 
 # Logs
 *.log

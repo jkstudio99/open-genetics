@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
 Generate 15 individual documentation pages from docs/index.html content.
-Run: python3 docs/_gen_pages.py
+Run: python3 docs/_tools/_gen_pages.py
 """
 import os, re
 
-BASE = '/Applications/XAMPP/xamppfiles/htdocs/open-genetics/docs'
+# Resolve paths relative to this script: _tools/ -> docs/ -> docs/site/
+_TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.dirname(_TOOLS_DIR)  # docs/ directory
+SITE_DIR = os.path.join(BASE, 'site')  # docs/site/ output directory
 
 # (slug, thai_title, english_title, i18n_key)
 PAGES = [
@@ -69,7 +72,7 @@ SEARCH_ICONS = {
 # ── Extract content sections from _source.html ──
 def extract_sections():
     """Read docs/_source.html and extract each section's HTML content."""
-    src = os.path.join(BASE, '_source.html')
+    src = os.path.join(_TOOLS_DIR, '_source.html')
     if not os.path.exists(src):
         print("ERROR: _source.html not found. Copy the original index.html to _source.html first.")
         return {}
@@ -848,7 +851,7 @@ def main():
                 '<h2 id="philosophy">Philosophy</h2>\n<div class="info">'
             )
         html = generate_page(slug, th, en, content, css)
-        filepath = os.path.join(BASE, f'{slug}.html')
+        filepath = os.path.join(SITE_DIR, f'{slug}.html')
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(html)
         print(f"  ✓ Generated: {slug}.html ({len(html):,} bytes)")
@@ -1132,12 +1135,12 @@ def main():
     )
     # Remove page-nav from blog listing
     blog_html = _re.sub(r'<div class="page-nav">.*?</div></div>', '', blog_html, flags=_re.DOTALL)
-    with open(os.path.join(BASE, 'blog.html'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(SITE_DIR, 'blog.html'), 'w', encoding='utf-8') as f:
         f.write(blog_html)
     print(f"  ✓ Generated: blog.html ({len(blog_html):,} bytes)")
 
     # ── Individual blog post pages ──
-    blog_dir = os.path.join(BASE, 'blog')
+    blog_dir = os.path.join(SITE_DIR, 'blog')
     os.makedirs(blog_dir, exist_ok=True)
 
     for post in BLOG_POSTS:
@@ -1208,7 +1211,7 @@ def main():
 <p>Redirecting to <a href="overview.html">Overview</a>...</p>
 </body>
 </html>'''
-    with open(os.path.join(BASE, 'index.html'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(SITE_DIR, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(redirect_html)
     print("  ✓ Created index.html (redirect → overview.html)")
 

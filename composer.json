@@ -24,7 +24,7 @@
     "support": {
         "issues": "https://github.com/jkstudio99/open-genetics/issues",
         "source": "https://github.com/jkstudio99/open-genetics",
-        "docs": "https://github.com/jkstudio99/open-genetics/tree/main/docs"
+        "docs": "https://github.com/jkstudio99/open-genetics/tree/main/docs/site"
     },
     "require": {
         "php": ">=8.1",
