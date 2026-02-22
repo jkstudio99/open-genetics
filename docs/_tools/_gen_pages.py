@@ -1198,22 +1198,7 @@ def main():
             f.write(post_html)
         print(f"  ✓ Generated: blog/{post['slug']}.html ({len(post_html):,} bytes)")
 
-    # Create index.html as redirect to overview.html
-    redirect_html = '''<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url=overview.html">
-<title>OpenGenetics — Documentation</title>
-<link rel="canonical" href="overview.html">
-</head>
-<body>
-<p>Redirecting to <a href="overview.html">Overview</a>...</p>
-</body>
-</html>'''
-    with open(os.path.join(SITE_DIR, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(redirect_html)
-    print("  ✓ Created index.html (redirect → overview.html)")
+    # index.html removed to allow Vercel rewrites to serve landing/index.html at root '/'
 
     print(f"\nDone! Generated {len(PAGES)} pages + redirect.")
 
