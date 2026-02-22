@@ -4,17 +4,16 @@
     "trailingSlash": false,
     "redirects": [
         {
-            "source": "/public/?",
+            "source": "/public/?(.*)",
             "destination": "/",
-            "statusCode": 301
-        },
-        {
-            "source": "/public/(.*)",
-            "destination": "/$1",
             "statusCode": 301
         }
     ],
     "rewrites": [
+        {
+            "source": "/",
+            "destination": "/docs/site/landing/index.html"
+        },
         {
             "source": "/docs",
             "destination": "/docs/site/overview.html"
@@ -24,12 +23,24 @@
             "destination": "/docs/site/$1"
         },
         {
-            "source": "/",
-            "destination": "/public/index.html"
+            "source": "/images/(.*)",
+            "destination": "/docs/site/images/$1"
+        },
+        {
+            "source": "/scripts/(.*)",
+            "destination": "/docs/site/scripts/$1"
+        },
+        {
+            "source": "/landing/(.*)",
+            "destination": "/docs/site/landing/$1"
+        },
+        {
+            "source": "/(.*)\\.html",
+            "destination": "/docs/site/$1.html"
         },
         {
             "source": "/(.*)",
-            "destination": "/public/$1"
+            "destination": "/docs/site/$1"
         }
     ]
 }
