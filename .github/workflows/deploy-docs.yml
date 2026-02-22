@@ -1,0 +1,51 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/site/**'
+      - 'docs/vercel.json'
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    if: github.repository == 'jkstudio99/open-genetics'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify docs site exists
+        run: |
+          if [ ! -d "docs/site" ]; then
+            echo "::error::docs/site/ directory not found"
+            exit 1
+          fi
+          FILE_COUNT=$(find docs/site -name '*.html' | wc -l)
+          echo "Found ${FILE_COUNT} HTML files"
+          echo "Docs site ready for deployment"
+
+      # ──────────────────────────────────────────────────
+      # Uncomment below when Vercel is configured:
+      #
+      # 1. Create Vercel account at vercel.com
+      # 2. Import this repo → set Root Directory to "docs"
+      # 3. Add these secrets in GitHub repo settings:
+      #    - VERCEL_TOKEN
+      #    - VERCEL_ORG_ID
+      #    - VERCEL_PROJECT_ID
+      # 4. Uncomment the step below
+      # ──────────────────────────────────────────────────
+
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     working-directory: docs
+      #     vercel-args: '--prod'
