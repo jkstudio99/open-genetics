@@ -1,423 +1,1526 @@
 <!DOCTYPE html>
 <html lang="th" class="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenGenetics — Documentation</title>
-<meta name="description" content="เอกสารประกอบการใช้งาน OpenGenetics Framework — Enterprise PHP Micro-Framework">
-<link rel="icon" type="image/svg+xml" href="../public/favicon/favicon.svg">
-<link rel="manifest" href="../public/favicon/site.webmanifest">
-<meta name="theme-color" content="#06060f">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','Noto Sans Thai','sans-serif'],mono:['JetBrains Mono','monospace']},transitionTimingFunction:{'out-expo':'cubic-bezier(0.16,1,0.3,1)'},transitionDuration:{'600':'600ms','800':'800ms'}}}}</script>
-<style>
-*,*::before,*::after{box-sizing:border-box}
-body{font-family:'Inter','Noto Sans Thai',sans-serif;background:#0e0e1a;color:#cbd5e1;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-/* Orbs */
-.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;will-change:transform}
-.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(30,24,207,.2) 0%,transparent 65%);top:-200px;left:-150px;filter:blur(60px)}
-.orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,207,255,.1) 0%,transparent 65%);top:40%;right:-150px;filter:blur(70px)}
-/* Sidebar */
-.sidebar{position:fixed;top:56px;left:0;bottom:0;width:272px;overflow-y:auto;z-index:40;background:rgba(6,6,15,.95);border-right:1px solid rgba(255,255,255,.055);padding:16px 12px 40px;scrollbar-width:thin;scrollbar-color:rgba(108,99,255,.3) transparent}
-.sidebar::-webkit-scrollbar{width:3px}
-.sidebar::-webkit-scrollbar-thumb{background:rgba(108,99,255,.3);border-radius:3px}
-.sb-group{margin-bottom:2px}
-.sb-header{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-radius:10px;transition:all 150ms;user-select:none}
-.sb-header:hover{background:rgba(255,255,255,.04)}
-.sb-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.sb-header-text{flex:1;font-size:14px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:-.01em}
-.sb-chevron{width:16px;height:16px;color:rgba(255,255,255,.2);transition:transform 250ms ease;flex-shrink:0}
-.sb-group.open .sb-chevron{transform:rotate(180deg)}
-.sb-links{overflow:hidden;max-height:0;transition:max-height 300ms ease;padding-left:12px}
-.sb-group.open .sb-links{max-height:600px}
-.sb-link{display:block;padding:7px 12px 7px 28px;font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;border-left:2px solid transparent;transition:all 120ms;font-weight:500;border-radius:0 6px 6px 0;margin:1px 0}
-.sb-link:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04);border-left-color:rgba(108,99,255,.4)}
-.sb-link.active{color:#a5b4fc;background:rgba(108,99,255,.12);border-left-color:#6c63ff;font-weight:600}
-/* On-page TOC */
-.toc{position:fixed;top:56px;right:0;width:220px;overflow-y:auto;z-index:40;padding:24px 16px 40px;scrollbar-width:thin}
-.toc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:10px;padding-left:8px}
-.toc-link{display:block;padding:4px 8px;font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;border-left:1.5px solid rgba(255,255,255,.08);transition:all 120ms;line-height:1.5}
-.toc-link:hover{color:rgba(255,255,255,.7);border-left-color:rgba(108,99,255,.5)}
-.toc-link.active{color:#a5b4fc;border-left-color:#6c63ff;font-weight:600}
-/* Content */
-.doc-content{margin-left:272px;margin-right:220px;padding:44px 52px 100px;max-width:none;min-height:100vh;position:relative;z-index:10}
-/* Typography */
-.doc-content h1{font-size:32px;font-weight:800;color:#f1f5f9;margin-bottom:8px;letter-spacing:-.02em;line-height:1.4;overflow:visible}
-.doc-content h1 em{font-style:normal;background:linear-gradient(90deg,#818cf8,#00cfff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding-bottom:4px;display:inline-block}
-.doc-content .lead{font-size:16px;color:rgba(255,255,255,.45);margin-bottom:28px;line-height:1.75}
-.doc-content h2{font-size:22px;font-weight:700;color:#f1f5f9;margin-top:52px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07);scroll-margin-top:80px;letter-spacing:-.015em}
-.doc-content h2 a{color:inherit;text-decoration:none}
-.doc-content h2 a:hover{color:#a5b4fc}
-.doc-content h3{font-size:16px;font-weight:600;color:#e2e8f0;margin-top:28px;margin-bottom:10px}
-.doc-content p{margin-bottom:14px;line-height:1.75;color:#94a3b8}
-.doc-content ul,.doc-content ol{margin-bottom:14px;padding-left:22px;color:#94a3b8}
-.doc-content li{margin-bottom:5px;line-height:1.7}
-.doc-content strong{font-weight:600;color:#cbd5e1}
-.doc-content hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:44px 0}
-.doc-content code:not(pre code){background:rgba(108,99,255,.15);color:#a5b4fc;padding:2px 7px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid rgba(108,99,255,.2)}
-pre{background:#080817;border-radius:12px;padding:22px 26px;overflow-x:auto;margin-bottom:18px;border:1px solid rgba(108,99,255,.18);box-shadow:0 0 30px rgba(108,99,255,.08)}
-pre code{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;color:#e2e8f0;background:none;padding:0;border:none}
-pre::-webkit-scrollbar{height:4px}
-pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
-/* Tables */
-.doc-content table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:14px}
-.doc-content th{text-align:left;padding:10px 14px;font-weight:600;font-size:12px;color:rgba(255,255,255,.35);border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025);letter-spacing:.04em;text-transform:uppercase}
-.doc-content td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:#94a3b8}
-.doc-content tr:hover td{background:rgba(108,99,255,.04)}
-/* Callouts */
-.tip,.warn,.info{border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:14px;display:flex;gap:12px;align-items:flex-start}
-.tip{background:rgba(52,211,153,.07);border-left:3px solid #34d399}
-.warn{background:rgba(251,191,36,.07);border-left:3px solid #fbbf24}
-.info{background:rgba(108,99,255,.1);border-left:3px solid #6c63ff}
-.tip>span,.warn>span,.info>span{display:flex;align-items:center;flex-shrink:0;margin-top:1px}
-.tip p,.warn p,.info p{margin:0;color:#94a3b8}
-/* Cards */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px}
-.card{background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.065);border-radius:12px;padding:18px;transition:all 200ms}
-.card:hover{border-color:rgba(108,99,255,.38);background:rgba(108,99,255,.055);transform:translateY(-2px)}
-.card .ic{width:36px;height:36px;border-radius:9px;background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.card h4{font-size:14px;font-weight:700;margin-bottom:4px;color:#f1f5f9}
-.card p{font-size:12px;color:rgba(255,255,255,.38);margin:0;line-height:1.5}
-/* Syntax */
-.kw{color:#c084fc}.fn{color:#60a5fa}.st{color:#fbbf24}.cm{color:#475569}.vr{color:#34d399}.cl{color:#f472b6}.nb{color:#38bdf8}
-/* Lang btn */
-.lang-btn{padding:5px 12px;background:transparent;color:rgba(255,255,255,.42);border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;transition:all 150ms;letter-spacing:.04em}
-.lang-btn.active{background:#1e18cf;color:#fff}
-.lang-btn:hover:not(.active){background:rgba(255,255,255,.07);color:#fff}
-/* Overlay */
-.overlay{display:none;position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.6)}
-.overlay.show{display:block}
-/* Copy button */
-.copy-btn{position:absolute;top:10px;right:10px;padding:6px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);cursor:pointer;transition:all 150ms;opacity:0;line-height:0}
-.copy-wrap:hover .copy-btn{opacity:1}
-.copy-btn:hover{background:rgba(108,99,255,.2);color:#a5b4fc;border-color:rgba(108,99,255,.35)}
-.copy-btn.copied{color:#34d399!important;border-color:rgba(52,211,153,.35)!important;opacity:1}
-/* Search trigger animation */
-@keyframes search-glow{0%,100%{box-shadow:0 0 0 rgba(108,99,255,0),0 0 0 rgba(0,207,255,0)}50%{box-shadow:0 0 12px rgba(108,99,255,.15),0 0 24px rgba(0,207,255,.08)}}
-#search-trigger{animation:search-glow 4s ease-in-out infinite}
-#search-trigger:hover{box-shadow:0 0 16px rgba(108,99,255,.25),0 0 32px rgba(0,207,255,.12)!important;border-color:rgba(108,99,255,.3)!important;background:rgba(108,99,255,.08)!important;transform:scale(1.02)}
-[data-theme="light"] #search-trigger{animation:search-glow-light 4s ease-in-out infinite}
-@keyframes search-glow-light{0%,100%{box-shadow:0 0 0 rgba(79,70,229,0)}50%{box-shadow:0 0 10px rgba(79,70,229,.1),0 0 20px rgba(79,70,229,.05)}}
-/* Search modal */
-.search-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.search-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding-top:18vh}
-.search-box{width:min(560px,90vw);background:#0f0f1e;border:1px solid rgba(108,99,255,.25);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 40px rgba(108,99,255,.12)}
-.search-input{width:100%;padding:16px 20px;background:transparent;border:none;outline:none;color:#e2e8f0;font-size:16px;font-family:inherit}
-.search-input::placeholder{color:rgba(255,255,255,.28)}
-.search-hint{padding:12px 20px;color:rgba(255,255,255,.22);font-size:13px}
-.search-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background 120ms;border-bottom:1px solid rgba(255,255,255,.03)}
-.search-item:hover,.search-item.active{background:rgba(108,99,255,.1)}
-.search-item .si-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(108,99,255,.12);color:#818cf8;flex-shrink:0}
-.search-item .si-title{font-size:14px;font-weight:600;color:#e2e8f0}
-.search-item .si-desc{font-size:12px;color:rgba(255,255,255,.3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px}
-.search-item mark{background:rgba(108,99,255,.3);color:#a5b4fc;border-radius:2px;padding:0 2px}
-.search-no-result{padding:24px 20px;text-align:center;color:rgba(255,255,255,.2);font-size:14px}
-/* Responsive */
-@media(max-width:1280px){.toc{display:none}.doc-content{margin-right:0}}
-@media(max-width:1024px){
-  .sidebar{transform:translateX(-100%);transition:transform 250ms;z-index:50;box-shadow:0 4px 40px rgba(0,0,0,.5)}
-  .sidebar.open{transform:translateX(0)}
-  .doc-content{margin-left:0;padding:32px 24px 80px}
-  .menu-btn{display:flex!important}
-}
 
-/* ═══ LIGHT MODE — CSS Variables + Attribute Selectors ═══ */
-:root{--c-bg:#0e0e1a;--c-text:#e2e8f0;--c-text2:#94a3b8;--c-text3:rgba(255,255,255,.28);--c-border:rgba(255,255,255,.06);--c-code-bg:#080817;--c-code-text:#e2e8f0;--c-card-bg:rgba(255,255,255,.028);--c-card-border:rgba(255,255,255,.065);--c-search-bg:#0f0f1e;--c-sidebar-bg:rgba(6,6,15,.95);--c-kw:#c084fc;--c-fn:#60a5fa;--c-st:#fbbf24;--c-cm:#475569;--c-vr:#34d399;--c-cl:#f472b6;--c-nb:#38bdf8}
-[data-theme="light"]{--c-bg:#f5f5fa;--c-text:#1e293b;--c-text2:#475569;--c-text3:#94a3b8;--c-border:rgba(0,0,0,.08);--c-code-bg:#f8fafc;--c-code-text:#334155;--c-card-bg:rgba(255,255,255,.8);--c-card-border:rgba(0,0,0,.08);--c-search-bg:#ffffff;--c-sidebar-bg:rgba(248,250,252,.97);--c-kw:#7c3aed;--c-fn:#2563eb;--c-st:#d97706;--c-cm:#94a3b8;--c-vr:#059669;--c-cl:#db2777;--c-nb:#0284c7}
-/* Text — attribute selectors */
-[data-theme="light"] [class*="text-white"]{color:var(--c-text)!important}
-[data-theme="light"] [class*="text-white/4"],[data-theme="light"] [class*="text-white/3"],[data-theme="light"] [class*="text-white/5"],[data-theme="light"] [class*="text-white/6"]{color:var(--c-text2)!important}
-[data-theme="light"] [class*="text-white/2"],[data-theme="light"] [class*="text-white/1"]{color:var(--c-text3)!important}
-[data-theme="light"] [class*="text-white/7"],[data-theme="light"] [class*="text-white/8"]{color:var(--c-text)!important}
-[data-theme="light"] [class*="text-indigo"]{color:#4338ca!important}
-/* Navbar — transparent in light */
-[data-theme="light"] #navbar{background:transparent!important;border-bottom-color:rgba(0,0,0,.06)!important;box-shadow:none!important}
-[data-theme="light"] #navbar svg{color:#475569!important}
-[data-theme="light"] #navbar a{color:#334155!important}
-[data-theme="light"] #navbar a:hover{color:#1e293b!important}
-[data-theme="light"] #navbar button{color:#475569!important}
-[data-theme="light"] #navbar button:hover{color:#1e293b!important}
-[data-theme="light"] #search-trigger{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.12)!important;color:#64748b!important}
-[data-theme="light"] #search-trigger kbd{background:rgba(0,0,0,.06)!important;border-color:rgba(0,0,0,.1)!important;color:#94a3b8!important}
-/* Sidebar */
-[data-theme="light"] .sidebar{background:var(--c-sidebar-bg)!important;border-right-color:var(--c-border)!important}
-[data-theme="light"] .sb-header-text{color:#334155!important}
-[data-theme="light"] .sb-header:hover{background:rgba(0,0,0,.03)!important}
-[data-theme="light"] .sb-chevron{color:#94a3b8!important}
-[data-theme="light"] .sb-link{color:#475569!important}
-[data-theme="light"] .sb-link:hover{color:#1e293b!important;background:rgba(79,70,229,.04)!important}
-[data-theme="light"] .sb-link.active{color:#4f46e5!important;background:rgba(79,70,229,.08)!important;border-left-color:#4f46e5!important}
-/* Footer card */
-[data-theme="light"] .footer-card{background:rgba(0,0,0,.03)!important;border-color:rgba(0,0,0,.08)!important}
-[data-theme="light"] .footer-card p{color:#64748b!important}
-[data-theme="light"] .footer-card div[style*="font-weight:600"]{color:#334155!important}
-[data-theme="light"] .footer-card div[style*="text-transform:uppercase"]{color:#94a3b8!important}
-/* TOC */
-[data-theme="light"] .toc-title{color:#64748b!important}
-[data-theme="light"] .toc-link{color:#64748b!important;border-left-color:rgba(0,0,0,.06)!important}
-[data-theme="light"] .toc-link:hover{color:#1e293b!important;border-left-color:#4f46e5!important}
-[data-theme="light"] .toc-link.active{color:#4f46e5!important;border-left-color:#4f46e5!important}
-/* Content */
-[data-theme="light"] .doc-content h1,[data-theme="light"] .doc-content h2{color:#1e293b!important;border-bottom-color:var(--c-border)!important}
-[data-theme="light"] .doc-content h3{color:#334155!important}
-[data-theme="light"] .doc-content h1 em{background:linear-gradient(90deg,#4f46e5,#0891b2)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-[data-theme="light"] .doc-content .lead{color:#64748b!important}
-[data-theme="light"] .doc-content p,[data-theme="light"] .doc-content ul,[data-theme="light"] .doc-content ol,[data-theme="light"] .doc-content li{color:#475569!important}
-[data-theme="light"] .doc-content strong{color:#1e293b!important}
-[data-theme="light"] .doc-content hr{border-top-color:var(--c-border)!important}
-[data-theme="light"] .doc-content code:not(pre code){background:rgba(79,70,229,.08)!important;color:#4f46e5!important;border-color:rgba(79,70,229,.15)!important}
-/* Code blocks */
-[data-theme="light"] pre{background:var(--c-code-bg)!important;border-color:rgba(0,0,0,.1)!important;box-shadow:none!important}
-[data-theme="light"] pre code{color:var(--c-code-text)!important}
-[data-theme="light"] .kw{color:var(--c-kw)!important}[data-theme="light"] .fn{color:var(--c-fn)!important}[data-theme="light"] .st{color:var(--c-st)!important}[data-theme="light"] .cm{color:var(--c-cm)!important}[data-theme="light"] .vr{color:var(--c-vr)!important}[data-theme="light"] .cl{color:var(--c-cl)!important}[data-theme="light"] .nb{color:var(--c-nb)!important}
-/* Cards */
-[data-theme="light"] .card{background:var(--c-card-bg)!important;border-color:var(--c-card-border)!important;box-shadow:0 1px 3px rgba(0,0,0,.04)!important}
-[data-theme="light"] .card:hover{background:rgba(79,70,229,.04)!important;border-color:rgba(79,70,229,.2)!important}
-[data-theme="light"] .card h4{color:#1e293b!important}
-[data-theme="light"] .card p{color:#64748b!important}
-[data-theme="light"] .card .ic{background:rgba(79,70,229,.08)!important;border-color:rgba(79,70,229,.15)!important}
-/* Tables */
-[data-theme="light"] .doc-content th{background:rgba(0,0,0,.03)!important;color:#475569!important;border-bottom-color:rgba(0,0,0,.1)!important}
-[data-theme="light"] .doc-content td{color:#475569!important;border-bottom-color:rgba(0,0,0,.06)!important}
-[data-theme="light"] .doc-content tr:hover td{background:rgba(79,70,229,.03)!important}
-/* Callouts */
-[data-theme="light"] .tip{background:rgba(52,211,153,.05)!important}
-[data-theme="light"] .warn{background:rgba(251,191,36,.05)!important}
-[data-theme="light"] .info{background:rgba(79,70,229,.05)!important}
-[data-theme="light"] .tip p,[data-theme="light"] .warn p,[data-theme="light"] .info p{color:#475569!important}
-/* Search */
-[data-theme="light"] .search-overlay{background:rgba(0,0,0,.3)!important}
-[data-theme="light"] .search-box{background:var(--c-search-bg)!important;border-color:rgba(79,70,229,.18)!important;box-shadow:0 24px 60px rgba(0,0,0,.12)!important}
-[data-theme="light"] .search-input{color:var(--c-text)!important}
-[data-theme="light"] .search-input::placeholder{color:#94a3b8!important}
-[data-theme="light"] .search-item .si-title{color:var(--c-text)!important}
-[data-theme="light"] .search-item .si-desc{color:var(--c-text2)!important}
-[data-theme="light"] .search-item:hover,[data-theme="light"] .search-item.active{background:rgba(79,70,229,.06)!important}
-[data-theme="light"] .search-hint{color:#94a3b8!important}
-/* Copy */
-[data-theme="light"] .copy-btn{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.1)!important;color:#64748b!important}
-[data-theme="light"] .copy-btn:hover{background:rgba(79,70,229,.1)!important;color:#4f46e5!important}
-/* Lang btn */
-[data-theme="light"] .lang-btn{color:#475569!important}
-[data-theme="light"] .lang-btn.active{background:#4f46e5!important;color:#fff!important}
-[data-theme="light"] .lang-btn:hover:not(.active){background:rgba(0,0,0,.04)!important;color:#1e293b!important}
-/* BG overrides */
-[data-theme="light"] [class*="bg-white/"]{background:transparent!important}
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenGenetics — Documentation</title>
+  <meta name="description" content="เอกสารประกอบการใช้งาน OpenGenetics Framework — Enterprise PHP Micro-Framework">
+  <link rel="icon" type="image/svg+xml" href="../public/favicon/favicon.svg">
+  <link rel="manifest" href="../public/favicon/site.webmanifest">
+  <meta name="theme-color" content="#06060f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'Noto Sans Thai', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }, transitionTimingFunction: { 'out-expo': 'cubic-bezier(0.16,1,0.3,1)' }, transitionDuration: { '600': '600ms', '800': '800ms' } } } }</script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+      background: #0e0e1a;
+      color: #cbd5e1;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    /* Orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform
+    }
+
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(30, 24, 207, .2) 0%, transparent 65%);
+      top: -200px;
+      left: -150px;
+      filter: blur(60px)
+    }
+
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 207, 255, .1) 0%, transparent 65%);
+      top: 40%;
+      right: -150px;
+      filter: blur(70px)
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      bottom: 0;
+      width: 272px;
+      overflow-y: auto;
+      z-index: 40;
+      background: rgba(6, 6, 15, .95);
+      border-right: 1px solid rgba(255, 255, 255, .055);
+      padding: 16px 12px 40px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(108, 99, 255, .3) transparent
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(108, 99, 255, .3);
+      border-radius: 3px
+    }
+
+    .sb-group {
+      margin-bottom: 2px
+    }
+
+    .sb-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 150ms;
+      user-select: none
+    }
+
+    .sb-header:hover {
+      background: rgba(255, 255, 255, .04)
+    }
+
+    .sb-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px
+    }
+
+    .sb-header-text {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .75);
+      letter-spacing: -.01em
+    }
+
+    .sb-chevron {
+      width: 16px;
+      height: 16px;
+      color: rgba(255, 255, 255, .2);
+      transition: transform 250ms ease;
+      flex-shrink: 0
+    }
+
+    .sb-group.open .sb-chevron {
+      transform: rotate(180deg)
+    }
+
+    .sb-links {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 300ms ease;
+      padding-left: 12px
+    }
+
+    .sb-group.open .sb-links {
+      max-height: 600px
+    }
+
+    .sb-link {
+      display: block;
+      padding: 7px 12px 7px 28px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .4);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 120ms;
+      font-weight: 500;
+      border-radius: 0 6px 6px 0;
+      margin: 1px 0
+    }
+
+    .sb-link:hover {
+      color: rgba(255, 255, 255, .85);
+      background: rgba(255, 255, 255, .04);
+      border-left-color: rgba(108, 99, 255, .4)
+    }
+
+    .sb-link.active {
+      color: #a5b4fc;
+      background: rgba(108, 99, 255, .12);
+      border-left-color: #6c63ff;
+      font-weight: 600
+    }
+
+    /* On-page TOC */
+    .toc {
+      position: fixed;
+      top: 56px;
+      right: 0;
+      width: 220px;
+      overflow-y: auto;
+      z-index: 40;
+      padding: 24px 16px 40px;
+      scrollbar-width: thin
+    }
+
+    .toc-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgba(255, 255, 255, .28);
+      margin-bottom: 10px;
+      padding-left: 8px
+    }
+
+    .toc-link {
+      display: block;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .35);
+      text-decoration: none;
+      border-left: 1.5px solid rgba(255, 255, 255, .08);
+      transition: all 120ms;
+      line-height: 1.5
+    }
+
+    .toc-link:hover {
+      color: rgba(255, 255, 255, .7);
+      border-left-color: rgba(108, 99, 255, .5)
+    }
+
+    .toc-link.active {
+      color: #a5b4fc;
+      border-left-color: #6c63ff;
+      font-weight: 600
+    }
+
+    /* Content */
+    .doc-content {
+      margin-left: 272px;
+      margin-right: 220px;
+      padding: 44px 52px 100px;
+      max-width: none;
+      min-height: 100vh;
+      position: relative;
+      z-index: 10
+    }
+
+    /* Typography */
+    .doc-content h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #f1f5f9;
+      margin-bottom: 8px;
+      letter-spacing: -.02em;
+      line-height: 1.4;
+      overflow: visible
+    }
+
+    .doc-content h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, #818cf8, #00cfff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      padding-bottom: 4px;
+      display: inline-block
+    }
+
+    .doc-content .lead {
+      font-size: 16px;
+      color: rgba(255, 255, 255, .45);
+      margin-bottom: 28px;
+      line-height: 1.75
+    }
+
+    .doc-content h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-top: 52px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      scroll-margin-top: 80px;
+      letter-spacing: -.015em
+    }
+
+    .doc-content h2 a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .doc-content h2 a:hover {
+      color: #a5b4fc
+    }
+
+    .doc-content h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-top: 28px;
+      margin-bottom: 10px
+    }
+
+    .doc-content p {
+      margin-bottom: 14px;
+      line-height: 1.75;
+      color: #94a3b8
+    }
+
+    .doc-content ul,
+    .doc-content ol {
+      margin-bottom: 14px;
+      padding-left: 22px;
+      color: #94a3b8
+    }
+
+    .doc-content li {
+      margin-bottom: 5px;
+      line-height: 1.7
+    }
+
+    .doc-content strong {
+      font-weight: 600;
+      color: #cbd5e1
+    }
+
+    .doc-content hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      margin: 44px 0
+    }
+
+    .doc-content code:not(pre code) {
+      background: rgba(108, 99, 255, .15);
+      color: #a5b4fc;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      border: 1px solid rgba(108, 99, 255, .2)
+    }
+
+    pre {
+      background: #080817;
+      border-radius: 12px;
+      padding: 22px 26px;
+      overflow-x: auto;
+      margin-bottom: 18px;
+      border: 1px solid rgba(108, 99, 255, .18);
+      box-shadow: 0 0 30px rgba(108, 99, 255, .08)
+    }
+
+    pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.9;
+      color: #e2e8f0;
+      background: none;
+      padding: 0;
+      border: none
+    }
+
+    pre::-webkit-scrollbar {
+      height: 4px
+    }
+
+    pre::-webkit-scrollbar-thumb {
+      background: rgba(108, 99, 255, .4);
+      border-radius: 4px
+    }
+
+    /* Tables */
+    .doc-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 18px;
+      font-size: 14px
+    }
+
+    .doc-content th {
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .35);
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      background: rgba(255, 255, 255, .025);
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .doc-content td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      color: #94a3b8
+    }
+
+    .doc-content tr:hover td {
+      background: rgba(108, 99, 255, .04)
+    }
+
+    /* Callouts */
+    .tip,
+    .warn,
+    .info {
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .tip {
+      background: rgba(52, 211, 153, .07);
+      border-left: 3px solid #34d399
+    }
+
+    .warn {
+      background: rgba(251, 191, 36, .07);
+      border-left: 3px solid #fbbf24
+    }
+
+    .info {
+      background: rgba(108, 99, 255, .1);
+      border-left: 3px solid #6c63ff
+    }
+
+    .tip>span,
+    .warn>span,
+    .info>span {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .tip p,
+    .warn p,
+    .info p {
+      margin: 0;
+      color: #94a3b8
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .028);
+      border: 1px solid rgba(255, 255, 255, .065);
+      border-radius: 12px;
+      padding: 18px;
+      transition: all 200ms
+    }
+
+    .card:hover {
+      border-color: rgba(108, 99, 255, .38);
+      background: rgba(108, 99, 255, .055);
+      transform: translateY(-2px)
+    }
+
+    .card .ic {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: rgba(108, 99, 255, .15);
+      color: #818cf8;
+      border: 1px solid rgba(108, 99, 255, .22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px
+    }
+
+    .card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #f1f5f9
+    }
+
+    .card p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .38);
+      margin: 0;
+      line-height: 1.5
+    }
+
+    /* Syntax */
+    .kw {
+      color: #c084fc
+    }
+
+    .fn {
+      color: #60a5fa
+    }
+
+    .st {
+      color: #fbbf24
+    }
+
+    .cm {
+      color: #475569
+    }
+
+    .vr {
+      color: #34d399
+    }
+
+    .cl {
+      color: #f472b6
+    }
+
+    .nb {
+      color: #38bdf8
+    }
+
+    /* Lang btn */
+    .lang-btn {
+      padding: 5px 12px;
+      background: transparent;
+      color: rgba(255, 255, 255, .42);
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 150ms;
+      letter-spacing: .04em
+    }
+
+    .lang-btn.active {
+      background: #1e18cf;
+      color: #fff
+    }
+
+    .lang-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, .07);
+      color: #fff
+    }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 39;
+      background: rgba(0, 0, 0, .6)
+    }
+
+    .overlay.show {
+      display: block
+    }
+
+    /* Copy button */
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      color: rgba(255, 255, 255, .4);
+      cursor: pointer;
+      transition: all 150ms;
+      opacity: 0;
+      line-height: 0
+    }
+
+    .copy-wrap:hover .copy-btn {
+      opacity: 1
+    }
+
+    .copy-btn:hover {
+      background: rgba(108, 99, 255, .2);
+      color: #a5b4fc;
+      border-color: rgba(108, 99, 255, .35)
+    }
+
+    .copy-btn.copied {
+      color: #34d399 !important;
+      border-color: rgba(52, 211, 153, .35) !important;
+      opacity: 1
+    }
+
+    /* Search trigger animation */
+    @keyframes search-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 rgba(108, 99, 255, 0), 0 0 0 rgba(0, 207, 255, 0)
+      }
+
+      50% {
+        box-shadow: 0 0 12px rgba(108, 99, 255, .15), 0 0 24px rgba(0, 207, 255, .08)
+      }
+    }
+
+    #search-trigger {
+      animation: search-glow 4s ease-in-out infinite
+    }
+
+    #search-trigger:hover {
+      box-shadow: 0 0 16px rgba(108, 99, 255, .25), 0 0 32px rgba(0, 207, 255, .12) !important;
+      border-color: rgba(108, 99, 255, .3) !important;
+      background: rgba(108, 99, 255, .08) !important;
+      transform: scale(1.02)
+    }
+
+    [data-theme="light"] #search-trigger {
+      animation: search-glow-light 4s ease-in-out infinite
+    }
+
+    @keyframes search-glow-light {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 rgba(79, 70, 229, 0)
+      }
+
+      50% {
+        box-shadow: 0 0 10px rgba(79, 70, 229, .1), 0 0 20px rgba(79, 70, 229, .05)
+      }
+    }
+
+    /* Search modal */
+    .search-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px)
+    }
+
+    .search-overlay.open {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 18vh
+    }
+
+    .search-box {
+      width: min(560px, 90vw);
+      background: #0f0f1e;
+      border: 1px solid rgba(108, 99, 255, .25);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .6), 0 0 40px rgba(108, 99, 255, .12)
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 16px 20px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #e2e8f0;
+      font-size: 16px;
+      font-family: inherit
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, .28)
+    }
+
+    .search-hint {
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, .22);
+      font-size: 13px
+    }
+
+    .search-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 120ms;
+      border-bottom: 1px solid rgba(255, 255, 255, .03)
+    }
+
+    .search-item:hover,
+    .search-item.active {
+      background: rgba(108, 99, 255, .1)
+    }
+
+    .search-item .si-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(108, 99, 255, .12);
+      color: #818cf8;
+      flex-shrink: 0
+    }
+
+    .search-item .si-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0
+    }
+
+    .search-item .si-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .3);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 380px
+    }
+
+    .search-item mark {
+      background: rgba(108, 99, 255, .3);
+      color: #a5b4fc;
+      border-radius: 2px;
+      padding: 0 2px
+    }
+
+    .search-no-result {
+      padding: 24px 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, .2);
+      font-size: 14px
+    }
+
+    /* Responsive */
+    @media(max-width:1280px) {
+      .toc {
+        display: none
+      }
+
+      .doc-content {
+        margin-right: 0
+      }
+    }
+
+    @media(max-width:1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 250ms;
+        z-index: 50;
+        box-shadow: 0 4px 40px rgba(0, 0, 0, .5)
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .doc-content {
+        margin-left: 0;
+        padding: 32px 24px 80px
+      }
+
+      .menu-btn {
+        display: flex !important
+      }
+    }
+
+    /* ═══ LIGHT MODE — CSS Variables + Attribute Selectors ═══ */
+    :root {
+      --c-bg: #0e0e1a;
+      --c-text: #e2e8f0;
+      --c-text2: #94a3b8;
+      --c-text3: rgba(255, 255, 255, .28);
+      --c-border: rgba(255, 255, 255, .06);
+      --c-code-bg: #080817;
+      --c-code-text: #e2e8f0;
+      --c-card-bg: rgba(255, 255, 255, .028);
+      --c-card-border: rgba(255, 255, 255, .065);
+      --c-search-bg: #0f0f1e;
+      --c-sidebar-bg: rgba(6, 6, 15, .95);
+      --c-kw: #c084fc;
+      --c-fn: #60a5fa;
+      --c-st: #fbbf24;
+      --c-cm: #475569;
+      --c-vr: #34d399;
+      --c-cl: #f472b6;
+      --c-nb: #38bdf8
+    }
+
+    [data-theme="light"] {
+      --c-bg: #f5f5fa;
+      --c-text: #1e293b;
+      --c-text2: #475569;
+      --c-text3: #94a3b8;
+      --c-border: rgba(0, 0, 0, .08);
+      --c-code-bg: #f8fafc;
+      --c-code-text: #334155;
+      --c-card-bg: rgba(255, 255, 255, .8);
+      --c-card-border: rgba(0, 0, 0, .08);
+      --c-search-bg: #ffffff;
+      --c-sidebar-bg: rgba(248, 250, 252, .97);
+      --c-kw: #7c3aed;
+      --c-fn: #2563eb;
+      --c-st: #d97706;
+      --c-cm: #94a3b8;
+      --c-vr: #059669;
+      --c-cl: #db2777;
+      --c-nb: #0284c7
+    }
+
+    /* Text — attribute selectors */
+    [data-theme="light"] [class*="text-white"] {
+      color: var(--c-text) !important
+    }
+
+    [data-theme="light"] [class*="text-white/4"],
+    [data-theme="light"] [class*="text-white/3"],
+    [data-theme="light"] [class*="text-white/5"],
+    [data-theme="light"] [class*="text-white/6"] {
+      color: var(--c-text2) !important
+    }
+
+    [data-theme="light"] [class*="text-white/2"],
+    [data-theme="light"] [class*="text-white/1"] {
+      color: var(--c-text3) !important
+    }
+
+    [data-theme="light"] [class*="text-white/7"],
+    [data-theme="light"] [class*="text-white/8"] {
+      color: var(--c-text) !important
+    }
+
+    [data-theme="light"] [class*="text-indigo"] {
+      color: #4338ca !important
+    }
+
+    /* Navbar — transparent in light */
+    [data-theme="light"] #navbar {
+      background: transparent !important;
+      border-bottom-color: rgba(0, 0, 0, .06) !important;
+      box-shadow: none !important
+    }
+
+    [data-theme="light"] #navbar svg {
+      color: #475569 !important
+    }
+
+    [data-theme="light"] #navbar a {
+      color: #334155 !important
+    }
+
+    [data-theme="light"] #navbar a:hover {
+      color: #1e293b !important
+    }
+
+    [data-theme="light"] #navbar button {
+      color: #475569 !important
+    }
+
+    [data-theme="light"] #navbar button:hover {
+      color: #1e293b !important
+    }
+
+    [data-theme="light"] #search-trigger {
+      background: rgba(0, 0, 0, .04) !important;
+      border-color: rgba(0, 0, 0, .12) !important;
+      color: #64748b !important
+    }
+
+    [data-theme="light"] #search-trigger kbd {
+      background: rgba(0, 0, 0, .06) !important;
+      border-color: rgba(0, 0, 0, .1) !important;
+      color: #94a3b8 !important
+    }
+
+    /* Sidebar */
+    [data-theme="light"] .sidebar {
+      background: var(--c-sidebar-bg) !important;
+      border-right-color: var(--c-border) !important
+    }
+
+    [data-theme="light"] .sb-header-text {
+      color: #334155 !important
+    }
+
+    [data-theme="light"] .sb-header:hover {
+      background: rgba(0, 0, 0, .03) !important
+    }
+
+    [data-theme="light"] .sb-chevron {
+      color: #94a3b8 !important
+    }
+
+    [data-theme="light"] .sb-link {
+      color: #475569 !important
+    }
+
+    [data-theme="light"] .sb-link:hover {
+      color: #1e293b !important;
+      background: rgba(79, 70, 229, .04) !important
+    }
+
+    [data-theme="light"] .sb-link.active {
+      color: #4f46e5 !important;
+      background: rgba(79, 70, 229, .08) !important;
+      border-left-color: #4f46e5 !important
+    }
+
+    /* Footer card */
+    [data-theme="light"] .footer-card {
+      background: rgba(0, 0, 0, .03) !important;
+      border-color: rgba(0, 0, 0, .08) !important
+    }
+
+    [data-theme="light"] .footer-card p {
+      color: #64748b !important
+    }
+
+    [data-theme="light"] .footer-card div[style*="font-weight:600"] {
+      color: #334155 !important
+    }
+
+    [data-theme="light"] .footer-card div[style*="text-transform:uppercase"] {
+      color: #94a3b8 !important
+    }
+
+    /* TOC */
+    [data-theme="light"] .toc-title {
+      color: #64748b !important
+    }
+
+    [data-theme="light"] .toc-link {
+      color: #64748b !important;
+      border-left-color: rgba(0, 0, 0, .06) !important
+    }
+
+    [data-theme="light"] .toc-link:hover {
+      color: #1e293b !important;
+      border-left-color: #4f46e5 !important
+    }
+
+    [data-theme="light"] .toc-link.active {
+      color: #4f46e5 !important;
+      border-left-color: #4f46e5 !important
+    }
+
+    /* Content */
+    [data-theme="light"] .doc-content h1,
+    [data-theme="light"] .doc-content h2 {
+      color: #1e293b !important;
+      border-bottom-color: var(--c-border) !important
+    }
+
+    [data-theme="light"] .doc-content h3 {
+      color: #334155 !important
+    }
+
+    [data-theme="light"] .doc-content h1 em {
+      background: linear-gradient(90deg, #4f46e5, #0891b2) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      background-clip: text !important
+    }
+
+    [data-theme="light"] .doc-content .lead {
+      color: #64748b !important
+    }
+
+    [data-theme="light"] .doc-content p,
+    [data-theme="light"] .doc-content ul,
+    [data-theme="light"] .doc-content ol,
+    [data-theme="light"] .doc-content li {
+      color: #475569 !important
+    }
+
+    [data-theme="light"] .doc-content strong {
+      color: #1e293b !important
+    }
+
+    [data-theme="light"] .doc-content hr {
+      border-top-color: var(--c-border) !important
+    }
+
+    [data-theme="light"] .doc-content code:not(pre code) {
+      background: rgba(79, 70, 229, .08) !important;
+      color: #4f46e5 !important;
+      border-color: rgba(79, 70, 229, .15) !important
+    }
+
+    /* Code blocks */
+    [data-theme="light"] pre {
+      background: var(--c-code-bg) !important;
+      border-color: rgba(0, 0, 0, .1) !important;
+      box-shadow: none !important
+    }
+
+    [data-theme="light"] pre code {
+      color: var(--c-code-text) !important
+    }
+
+    [data-theme="light"] .kw {
+      color: var(--c-kw) !important
+    }
+
+    [data-theme="light"] .fn {
+      color: var(--c-fn) !important
+    }
+
+    [data-theme="light"] .st {
+      color: var(--c-st) !important
+    }
+
+    [data-theme="light"] .cm {
+      color: var(--c-cm) !important
+    }
+
+    [data-theme="light"] .vr {
+      color: var(--c-vr) !important
+    }
+
+    [data-theme="light"] .cl {
+      color: var(--c-cl) !important
+    }
+
+    [data-theme="light"] .nb {
+      color: var(--c-nb) !important
+    }
+
+    /* Cards */
+    [data-theme="light"] .card {
+      background: var(--c-card-bg) !important;
+      border-color: var(--c-card-border) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04) !important
+    }
+
+    [data-theme="light"] .card:hover {
+      background: rgba(79, 70, 229, .04) !important;
+      border-color: rgba(79, 70, 229, .2) !important
+    }
+
+    [data-theme="light"] .card h4 {
+      color: #1e293b !important
+    }
+
+    [data-theme="light"] .card p {
+      color: #64748b !important
+    }
+
+    [data-theme="light"] .card .ic {
+      background: rgba(79, 70, 229, .08) !important;
+      border-color: rgba(79, 70, 229, .15) !important
+    }
+
+    /* Tables */
+    [data-theme="light"] .doc-content th {
+      background: rgba(0, 0, 0, .03) !important;
+      color: #475569 !important;
+      border-bottom-color: rgba(0, 0, 0, .1) !important
+    }
+
+    [data-theme="light"] .doc-content td {
+      color: #475569 !important;
+      border-bottom-color: rgba(0, 0, 0, .06) !important
+    }
+
+    [data-theme="light"] .doc-content tr:hover td {
+      background: rgba(79, 70, 229, .03) !important
+    }
+
+    /* Callouts */
+    [data-theme="light"] .tip {
+      background: rgba(52, 211, 153, .05) !important
+    }
+
+    [data-theme="light"] .warn {
+      background: rgba(251, 191, 36, .05) !important
+    }
+
+    [data-theme="light"] .info {
+      background: rgba(79, 70, 229, .05) !important
+    }
+
+    [data-theme="light"] .tip p,
+    [data-theme="light"] .warn p,
+    [data-theme="light"] .info p {
+      color: #475569 !important
+    }
+
+    /* Search */
+    [data-theme="light"] .search-overlay {
+      background: rgba(0, 0, 0, .3) !important
+    }
+
+    [data-theme="light"] .search-box {
+      background: var(--c-search-bg) !important;
+      border-color: rgba(79, 70, 229, .18) !important;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .12) !important
+    }
+
+    [data-theme="light"] .search-input {
+      color: var(--c-text) !important
+    }
+
+    [data-theme="light"] .search-input::placeholder {
+      color: #94a3b8 !important
+    }
+
+    [data-theme="light"] .search-item .si-title {
+      color: var(--c-text) !important
+    }
+
+    [data-theme="light"] .search-item .si-desc {
+      color: var(--c-text2) !important
+    }
+
+    [data-theme="light"] .search-item:hover,
+    [data-theme="light"] .search-item.active {
+      background: rgba(79, 70, 229, .06) !important
+    }
+
+    [data-theme="light"] .search-hint {
+      color: #94a3b8 !important
+    }
+
+    /* Copy */
+    [data-theme="light"] .copy-btn {
+      background: rgba(0, 0, 0, .04) !important;
+      border-color: rgba(0, 0, 0, .1) !important;
+      color: #64748b !important
+    }
+
+    [data-theme="light"] .copy-btn:hover {
+      background: rgba(79, 70, 229, .1) !important;
+      color: #4f46e5 !important
+    }
+
+    /* Lang btn */
+    [data-theme="light"] .lang-btn {
+      color: #475569 !important
+    }
+
+    [data-theme="light"] .lang-btn.active {
+      background: #4f46e5 !important;
+      color: #fff !important
+    }
+
+    [data-theme="light"] .lang-btn:hover:not(.active) {
+      background: rgba(0, 0, 0, .04) !important;
+      color: #1e293b !important
+    }
+
+    /* BG overrides */
+    [data-theme="light"] [class*="bg-white/"] {
+      background: transparent !important
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
 
-<!-- ═══ TOPBAR — Elysia-style ═══ -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 h-14 flex items-center" style="background:rgba(14,14,26,.75);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-bottom:1px solid rgba(255,255,255,.055)">
-  <div class="relative max-w-none w-full h-full flex items-center px-5">
-    <!-- Left: hamburger + logo -->
-    <div class="flex items-center gap-3 shrink-0">
-      <button id="menu-btn" class="menu-btn hidden items-center justify-center w-8 h-8 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.07] transition-all" style="display:none" aria-label="Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-      </button>
-      <a href="../public/index.html" class="flex items-center shrink-0">
-        <img id="nav-logo" src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" class="h-[24px] w-auto">
-      </a>
-    </div>
-    <!-- Center: Search (absolutely centered) -->
-    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-      <button id="search-trigger" class="hidden sm:flex items-center gap-2.5 px-4 py-[7px] rounded-full text-[13px] text-white/28 hover:text-white/45 hover:border-white/15 transition-all ease-out-expo duration-300 cursor-text" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);min-width:220px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="shrink-0 opacity-50"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        Search
-        <kbd class="ml-auto text-[11px] font-mono px-1.5 py-0.5 rounded" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3);line-height:1.2">⌘K</kbd>
-      </button>
-    </div>
-    <!-- Right: Nav + Icons -->
-    <div class="flex items-center gap-0.5 shrink-0 ml-auto">
-      <a href="#overview" class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white bg-white/[0.06] transition-all">Docs</a>
-      <a href="#" class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">Blog</a>
-      <a href="#sdk" class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">SDK</a>
-      <div class="w-px h-4 mx-1.5 hidden md:block" style="background:rgba(255,255,255,.1)"></div>
-      <!-- Theme toggle -->
-      <button id="theme-btn" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="Toggle theme">
-        <svg id="doc-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
-        <svg id="doc-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>
-      </button>
-      <!-- Lang toggle -->
-      <button id="lang-toggle" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="Switch language">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802"/></svg>
-      </button>
-      <!-- GitHub -->
-      <a href="https://github.com/open-genetics/framework" target="_blank" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="GitHub">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-      </a>
-      <!-- X / Twitter -->
-      <a href="https://x.com" target="_blank" class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all" title="X / Twitter">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </a>
-    </div>
-  </div>
-</nav>
-
-<!-- SEARCH MODAL -->
-<div id="search-modal" class="search-overlay">
-  <div class="search-box">
-    <div class="flex items-center px-4" style="border-bottom:1px solid rgba(255,255,255,.06)">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="text-white/30 shrink-0 mr-3"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-      <input id="search-input" type="text" class="search-input" placeholder="Search documentation..." autofocus>
-      <kbd class="text-[11px] font-mono px-1.5 py-0.5 rounded shrink-0 cursor-pointer" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3)" onclick="closeSearch()">ESC</kbd>
-    </div>
-    <div id="search-results" class="max-h-[320px] overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:rgba(108,99,255,.3) transparent"></div>
-    <div id="search-empty" class="search-hint"><span class="text-white/15">Type to search across docs, API reference and guides...</span></div>
-    <div id="search-footer" class="hidden px-4 py-2.5 text-[11px] text-white/20 flex items-center gap-3" style="border-top:1px solid rgba(255,255,255,.05)">
-      <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">↑↓</kbd> navigate</span>
-      <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">↵</kbd> select</span>
-      <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">esc</kbd> close</span>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlay"></div>
-
-<!-- ═══ SIDEBAR ═══ -->
-<aside class="sidebar" id="sidebar">
-  <!-- Getting Started -->
-  <div class="sb-group open" data-group="getting-started">
-    <div class="sb-header" onclick="toggleGroup(this)">
-      <div class="sb-icon" style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.2)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+  <!-- ═══ TOPBAR — Elysia-style ═══ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 h-14 flex items-center"
+    style="background:rgba(14,14,26,.75);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-bottom:1px solid rgba(255,255,255,.055)">
+    <div class="relative max-w-none w-full h-full flex items-center px-5">
+      <!-- Left: hamburger + logo -->
+      <div class="flex items-center gap-3 shrink-0">
+        <button id="menu-btn"
+          class="menu-btn hidden items-center justify-center w-8 h-8 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.07] transition-all"
+          style="display:none" aria-label="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <a href="../public/index.html" class="flex items-center shrink-0">
+          <img id="nav-logo" src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics"
+            class="h-[24px] w-auto">
+        </a>
       </div>
-      <span class="sb-header-text" data-i18n="sb.getting_started">Getting Started</span>
-      <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
-    </div>
-    <div class="sb-links">
-      <a href="#overview" class="sb-link active" data-i18n="ds.overview">Overview</a>
-      <a href="#installation" class="sb-link" data-i18n="ds.installation">Installation</a>
-      <a href="#configuration" class="sb-link" data-i18n="ds.configuration">Configuration</a>
-    </div>
-  </div>
-  <!-- Structure -->
-  <div class="sb-group open" data-group="structure">
-    <div class="sb-header" onclick="toggleGroup(this)">
-      <div class="sb-icon" style="background:rgba(108,99,255,.12);color:#818cf8;border:1px solid rgba(108,99,255,.2)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/></svg>
+      <!-- Center: Search (absolutely centered) -->
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <button id="search-trigger"
+          class="hidden sm:flex items-center gap-2.5 px-4 py-[7px] rounded-full text-[13px] text-white/28 hover:text-white/45 hover:border-white/15 transition-all ease-out-expo duration-300 cursor-text"
+          style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);min-width:220px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" class="shrink-0 opacity-50">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+          Search
+          <kbd class="ml-auto text-[11px] font-mono px-1.5 py-0.5 rounded"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3);line-height:1.2">⌘K</kbd>
+        </button>
       </div>
-      <span class="sb-header-text" data-i18n="sb.structure">Structure</span>
-      <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
-    </div>
-    <div class="sb-links">
-      <a href="#directory-structure" class="sb-link" data-i18n="ds.directory">Directory Structure</a>
-      <a href="#architecture" class="sb-link" data-i18n="ds.architecture">Architecture</a>
-      <a href="#request-lifecycle" class="sb-link" data-i18n="ds.lifecycle">Request Lifecycle</a>
-    </div>
-  </div>
-  <!-- API Reference -->
-  <div class="sb-group open" data-group="api-ref">
-    <div class="sb-header" onclick="toggleGroup(this)">
-      <div class="sb-icon" style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+      <!-- Right: Nav + Icons -->
+      <div class="flex items-center gap-0.5 shrink-0 ml-auto">
+        <a href="#overview"
+          class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white bg-white/[0.06] transition-all">Docs</a>
+        <a href="#"
+          class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">Blog</a>
+        <a href="#sdk"
+          class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">SDK</a>
+        <div class="w-px h-4 mx-1.5 hidden md:block" style="background:rgba(255,255,255,.1)"></div>
+        <!-- Theme toggle -->
+        <button id="theme-btn"
+          class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all"
+          title="Toggle theme">
+          <svg id="doc-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+          <svg id="doc-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" class="hidden">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+          </svg>
+        </button>
+        <!-- Lang toggle -->
+        <button id="lang-toggle"
+          class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all"
+          title="Switch language">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+          </svg>
+        </button>
+        <!-- GitHub -->
+        <a href="https://github.com/open-genetics/framework" target="_blank"
+          class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all"
+          title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+          </svg>
+        </a>
+        <!-- X / Twitter -->
+        <a href="https://x.com" target="_blank"
+          class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all"
+          title="X / Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        </a>
       </div>
-      <span class="sb-header-text" data-i18n="sb.api_ref">API Reference</span>
-      <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
     </div>
-    <div class="sb-links">
-      <a href="#api-reference" class="sb-link" data-i18n="ds.api_ref">Endpoints</a>
-      <a href="#database" class="sb-link" data-i18n="ds.database">Database</a>
-      <a href="#response" class="sb-link" data-i18n="ds.response">Response</a>
-      <a href="#guard" class="sb-link" data-i18n="ds.authorization">Guard / RBAC</a>
-      <a href="#i18n" class="sb-link" data-i18n="ds.i18n">i18n</a>
-      <a href="#audit-trail" class="sb-link" data-i18n="ds.audit">Audit Trail</a>
-    </div>
-  </div>
-  <!-- Tools -->
-  <div class="sb-group open" data-group="tools">
-    <div class="sb-header" onclick="toggleGroup(this)">
-      <div class="sb-icon" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z"/></svg>
+  </nav>
+
+  <!-- SEARCH MODAL -->
+  <div id="search-modal" class="search-overlay">
+    <div class="search-box">
+      <div class="flex items-center px-4" style="border-bottom:1px solid rgba(255,255,255,.06)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2"
+          stroke="currentColor" class="text-white/30 shrink-0 mr-3">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input id="search-input" type="text" class="search-input" placeholder="Search documentation..." autofocus>
+        <kbd class="text-[11px] font-mono px-1.5 py-0.5 rounded shrink-0 cursor-pointer"
+          style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3)"
+          onclick="closeSearch()">ESC</kbd>
       </div>
-      <span class="sb-header-text" data-i18n="sb.tools">Tools</span>
-      <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
-    </div>
-    <div class="sb-links">
-      <a href="#sdk" class="sb-link" data-i18n="ds.sdk">Genetic SDK</a>
-      <a href="#cli" class="sb-link" data-i18n="ds.cli">CLI Tool</a>
-      <a href="#deployment" class="sb-link" data-i18n="ds.deployment">Deployment</a>
+      <div id="search-results" class="max-h-[320px] overflow-y-auto"
+        style="scrollbar-width:thin;scrollbar-color:rgba(108,99,255,.3) transparent"></div>
+      <div id="search-empty" class="search-hint"><span class="text-white/15">Type to search across docs, API reference
+          and guides...</span></div>
+      <div id="search-footer" class="hidden px-4 py-2.5 text-[11px] text-white/20 flex items-center gap-3"
+        style="border-top:1px solid rgba(255,255,255,.05)">
+        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">↑↓</kbd> navigate</span>
+        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">↵</kbd> select</span>
+        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 rounded text-[10px]"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">esc</kbd> close</span>
+      </div>
     </div>
   </div>
-</aside>
 
-<!-- ═══ ON-PAGE TOC ═══ -->
-<div class="toc">
-  <div class="toc-title" data-i18n="toc.title">สารบัญ</div>
-  <a href="#overview" class="toc-link" data-i18n="ds.overview">ภาพรวม</a>
-  <a href="#installation" class="toc-link" data-i18n="ds.installation">การติดตั้ง</a>
-  <a href="#configuration" class="toc-link" data-i18n="ds.configuration">การตั้งค่า</a>
-  <a href="#directory-structure" class="toc-link" data-i18n="ds.directory">โครงสร้างโปรเจค</a>
-  <a href="#architecture" class="toc-link" data-i18n="ds.architecture">สถาปัตยกรรม</a>
-  <a href="#request-lifecycle" class="toc-link" data-i18n="ds.lifecycle">Request Lifecycle</a>
-  <a href="#api-reference" class="toc-link" data-i18n="ds.api_ref">API Reference</a>
-  <a href="#database" class="toc-link" data-i18n="ds.database">ฐานข้อมูล</a>
-  <a href="#response" class="toc-link" data-i18n="ds.response">Response</a>
-  <a href="#guard" class="toc-link" data-i18n="ds.authorization">Guard / RBAC</a>
-  <a href="#i18n" class="toc-link" data-i18n="ds.i18n">หลายภาษา (i18n)</a>
-  <a href="#audit-trail" class="toc-link" data-i18n="ds.audit">Audit Trail</a>
-  <a href="#sdk" class="toc-link" data-i18n="ds.sdk">Genetic SDK</a>
-  <a href="#cli" class="toc-link" data-i18n="ds.cli">CLI Tool</a>
-  <a href="#deployment" class="toc-link" data-i18n="ds.deployment">การ Deploy</a>
-</div>
+  <div class="overlay" id="overlay"></div>
 
-<!-- ═══ MAIN CONTENT ═══ -->
-<main class="doc-content" id="doc-main">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Getting Started -->
+    <div class="sb-group open" data-group="getting-started">
+      <div class="sb-header" onclick="toggleGroup(this)">
+        <div class="sb-icon" style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+        </div>
+        <span class="sb-header-text" data-i18n="sb.getting_started">Getting Started</span>
+        <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
+      <div class="sb-links">
+        <a href="#overview" class="sb-link active" data-i18n="ds.overview">Overview</a>
+        <a href="#installation" class="sb-link" data-i18n="ds.installation">Installation</a>
+        <a href="#configuration" class="sb-link" data-i18n="ds.configuration">Configuration</a>
+      </div>
+    </div>
+    <!-- Structure -->
+    <div class="sb-group open" data-group="structure">
+      <div class="sb-header" onclick="toggleGroup(this)">
+        <div class="sb-icon" style="background:rgba(108,99,255,.12);color:#818cf8;border:1px solid rgba(108,99,255,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+          </svg>
+        </div>
+        <span class="sb-header-text" data-i18n="sb.structure">Structure</span>
+        <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
+      <div class="sb-links">
+        <a href="#directory-structure" class="sb-link" data-i18n="ds.directory">Directory Structure</a>
+        <a href="#architecture" class="sb-link" data-i18n="ds.architecture">Architecture</a>
+        <a href="#request-lifecycle" class="sb-link" data-i18n="ds.lifecycle">Request Lifecycle</a>
+      </div>
+    </div>
+    <!-- API Reference -->
+    <div class="sb-group open" data-group="api-ref">
+      <div class="sb-header" onclick="toggleGroup(this)">
+        <div class="sb-icon" style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+          </svg>
+        </div>
+        <span class="sb-header-text" data-i18n="sb.api_ref">API Reference</span>
+        <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
+      <div class="sb-links">
+        <a href="#api-reference" class="sb-link" data-i18n="ds.api_ref">Endpoints</a>
+        <a href="#database" class="sb-link" data-i18n="ds.database">Database</a>
+        <a href="#response" class="sb-link" data-i18n="ds.response">Response</a>
+        <a href="#guard" class="sb-link" data-i18n="ds.authorization">Guard / RBAC</a>
+        <a href="#i18n" class="sb-link" data-i18n="ds.i18n">i18n</a>
+        <a href="#audit-trail" class="sb-link" data-i18n="ds.audit">Audit Trail</a>
+      </div>
+    </div>
+    <!-- Tools -->
+    <div class="sb-group open" data-group="tools">
+      <div class="sb-header" onclick="toggleGroup(this)">
+        <div class="sb-icon" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+          </svg>
+        </div>
+        <span class="sb-header-text" data-i18n="sb.tools">Tools</span>
+        <svg class="sb-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
+      <div class="sb-links">
+        <a href="#sdk" class="sb-link" data-i18n="ds.sdk">Genetic SDK</a>
+        <a href="#cli" class="sb-link" data-i18n="ds.cli">CLI Tool</a>
+        <a href="#deployment" class="sb-link" data-i18n="ds.deployment">Deployment</a>
+      </div>
+    </div>
+  </aside>
 
-<!-- Overview -->
-<section id="overview">
-<h1>OpenGenetics <em data-i18n="doc.h1">Documentation</em></h1>
-<p class="lead" data-i18n="doc.lead">Enterprise PHP Micro-Framework &mdash; JWT Auth, Genetic RBAC, i18n, Audit Trail, Dual-Frontend SDK.<br>
-ออกแบบมาเพื่อความเร็ว (&lt;50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี</p>
+  <!-- ═══ ON-PAGE TOC ═══ -->
+  <div class="toc">
+    <div class="toc-title" data-i18n="toc.title">สารบัญ</div>
+    <a href="#overview" class="toc-link" data-i18n="ds.overview">ภาพรวม</a>
+    <a href="#installation" class="toc-link" data-i18n="ds.installation">การติดตั้ง</a>
+    <a href="#configuration" class="toc-link" data-i18n="ds.configuration">การตั้งค่า</a>
+    <a href="#directory-structure" class="toc-link" data-i18n="ds.directory">โครงสร้างโปรเจค</a>
+    <a href="#architecture" class="toc-link" data-i18n="ds.architecture">สถาปัตยกรรม</a>
+    <a href="#request-lifecycle" class="toc-link" data-i18n="ds.lifecycle">Request Lifecycle</a>
+    <a href="#api-reference" class="toc-link" data-i18n="ds.api_ref">API Reference</a>
+    <a href="#database" class="toc-link" data-i18n="ds.database">ฐานข้อมูล</a>
+    <a href="#response" class="toc-link" data-i18n="ds.response">Response</a>
+    <a href="#guard" class="toc-link" data-i18n="ds.authorization">Guard / RBAC</a>
+    <a href="#i18n" class="toc-link" data-i18n="ds.i18n">หลายภาษา (i18n)</a>
+    <a href="#audit-trail" class="toc-link" data-i18n="ds.audit">Audit Trail</a>
+    <a href="#sdk" class="toc-link" data-i18n="ds.sdk">Genetic SDK</a>
+    <a href="#cli" class="toc-link" data-i18n="ds.cli">CLI Tool</a>
+    <a href="#deployment" class="toc-link" data-i18n="ds.deployment">การ Deploy</a>
+  </div>
 
-<div class="card-grid">
-  <div class="card"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg></div><h4>&lt; 50ms Response</h4><p>No ORM, PDO Singleton, static cache</p></div>
-  <div class="card"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div><h4>JWT + Bcrypt</h4><p>HS256 auth, 12-round hashing</p></div>
-  <div class="card"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg></div><h4>Genetic RBAC</h4><p>Admin / HR / Employee guards</p></div>
-  <div class="card"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg></div><h4>i18n Engine</h4><p>Thai/English instant switching</p></div>
-  <div class="card"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></div><h4>Dual SDK</h4><p>React Hook + Vanilla JS</p></div>
-  <div class="card"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"/></svg></div><h4>Audit Trail</h4><p>Non-blocking auto-logging</p></div>
-</div>
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="doc-content" id="doc-main">
 
-<div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg></span><div><p><strong>Philosophy:</strong> <em>เล็ก เบา ทรงพลัง</em> &mdash; Small, Light, Powerful. ทุก byte และ millisecond มีค่า</p></div></div>
-</section>
+    <!-- Overview -->
+    <section id="overview">
+      <h1>OpenGenetics <em data-i18n="doc.h1">Documentation</em></h1>
+      <p class="lead" data-i18n="doc.lead">Enterprise PHP Micro-Framework &mdash; JWT Auth, Genetic RBAC, i18n, Audit
+        Trail, Dual-Frontend SDK.<br>
+        ออกแบบมาเพื่อความเร็ว (&lt;50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี</p>
 
-<!-- Installation -->
-<h2 id="installation"><a href="#installation" data-i18n="dh.installation"># การติดตั้ง</a></h2>
-<h3 data-i18n="dh.sysreq">ความต้องการของระบบ</h3>
-<table>
-  <thead><tr><th>Requirement</th><th>Version</th><th>Notes</th></tr></thead>
-  <tbody>
-    <tr><td>PHP</td><td><code>&gt;= 8.1</code></td><td>pdo, json, mbstring</td></tr>
-    <tr><td>MySQL</td><td><code>&gt;= 5.7</code></td><td>หรือ MariaDB 10.3+</td></tr>
-    <tr><td>Composer</td><td><code>&gt;= 2.0</code></td><td>Dependency manager</td></tr>
-    <tr><td>Apache</td><td>XAMPP / any</td><td>mod_rewrite enabled</td></tr>
-  </tbody>
-</table>
+      <div class="card-grid">
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            </svg></div>
+          <h4>&lt; 50ms Response</h4>
+          <p>No ORM, PDO Singleton, static cache</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg></div>
+          <h4>JWT + Bcrypt</h4>
+          <p>HS256 auth, 12-round hashing</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+            </svg></div>
+          <h4>Genetic RBAC</h4>
+          <p>Admin / HR / Employee guards</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+            </svg></div>
+          <h4>i18n Engine</h4>
+          <p>Thai/English instant switching</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg></div>
+          <h4>Dual SDK</h4>
+          <p>React Hook + Vanilla JS</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+            </svg></div>
+          <h4>Audit Trail</h4>
+          <p>Non-blocking auto-logging</p>
+        </div>
+      </div>
 
-<h3 data-i18n="dh.steps">ขั้นตอนการติดตั้ง</h3>
-<pre><code><span class="fn">git clone</span> https://github.com/open-genetics/framework.git my-api
+      <div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+          </svg></span>
+        <div>
+          <p><strong>Philosophy:</strong> <em>เล็ก เบา ทรงพลัง</em> &mdash; Small, Light, Powerful. ทุก byte และ
+            millisecond มีค่า</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation -->
+    <h2 id="installation"><a href="#installation" data-i18n="dh.installation"># การติดตั้ง</a></h2>
+    <h3 data-i18n="dh.sysreq">ความต้องการของระบบ</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Requirement</th>
+          <th>Version</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PHP</td>
+          <td><code>&gt;= 8.1</code></td>
+          <td>pdo, json, mbstring</td>
+        </tr>
+        <tr>
+          <td>MySQL</td>
+          <td><code>&gt;= 5.7</code></td>
+          <td>หรือ MariaDB 10.3+</td>
+        </tr>
+        <tr>
+          <td>Composer</td>
+          <td><code>&gt;= 2.0</code></td>
+          <td>Dependency manager</td>
+        </tr>
+        <tr>
+          <td>Apache</td>
+          <td>XAMPP / any</td>
+          <td>mod_rewrite enabled</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 data-i18n="dh.steps">ขั้นตอนการติดตั้ง</h3>
+    <pre><code><span class="fn">git clone</span> https://github.com/open-genetics/framework.git my-api
 <span class="fn">cd</span> my-api
 <span class="fn">composer</span> install
 <span class="fn">cp</span> .env.example .env</code></pre>
 
-<h3 data-i18n="dh.initial_setup">ตั้งค่าเริ่มต้น</h3>
-<pre><code><span class="cm"># แก้ไขค่า database และ JWT_SECRET ใน .env</span>
+    <h3 data-i18n="dh.initial_setup">ตั้งค่าเริ่มต้น</h3>
+    <pre><code><span class="cm"># แก้ไขค่า database และ JWT_SECRET ใน .env</span>
 <span class="fn">php bin/genetics</span> mutate    <span class="cm"># สร้างตาราง + seed RBAC</span>
 <span class="fn">php bin/genetics</span> serve     <span class="cm"># เปิด dev server http://127.0.0.1:8080</span></code></pre>
 
-<div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span><div><p><strong>Default Admin:</strong> <code>admin@opengenetics.io</code> / <code>password</code> &mdash; เปลี่ยนรหัสผ่านทันทีหลัง deploy</p></div></div>
+    <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg></span>
+      <div>
+        <p><strong>Default Admin:</strong> <code>admin@opengenetics.io</code> / <code>password</code> &mdash;
+          เปลี่ยนรหัสผ่านทันทีหลัง deploy</p>
+      </div>
+    </div>
 
-<!-- Configuration -->
-<h2 id="configuration"><a href="#configuration" data-i18n="dh.configuration"># Configuration</a></h2>
-<p data-i18n="dh.configuration.desc">ค่าทั้งหมดจัดการผ่านไฟล์ <code>.env</code> &mdash; class <code>Env</code> จะ load ครั้งเดียวแล้ว cache ใน static array</p>
-<pre><code><span class="cm"># .env</span>
+    <!-- Configuration -->
+    <h2 id="configuration"><a href="#configuration" data-i18n="dh.configuration"># Configuration</a></h2>
+    <p data-i18n="dh.configuration.desc">ค่าทั้งหมดจัดการผ่านไฟล์ <code>.env</code> &mdash; class <code>Env</code> จะ
+      load ครั้งเดียวแล้ว cache ใน static array</p>
+    <pre><code><span class="cm"># .env</span>
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=open-genetics-db
@@ -434,20 +1537,47 @@ APP_URL=http://localhost/open-genetics/public
 CORS_ORIGIN=*
 DEFAULT_LOCALE=th</code></pre>
 
-<table>
-  <thead><tr><th>Key</th><th>Default</th><th>Description</th></tr></thead>
-  <tbody>
-    <tr><td><code>JWT_SECRET</code></td><td>—</td><td>ต้องยาวอย่างน้อย 32 ตัวอักษร</td></tr>
-    <tr><td><code>JWT_EXPIRY</code></td><td><code>86400</code></td><td>Token TTL (วินาที) = 24 ชั่วโมง</td></tr>
-    <tr><td><code>APP_DEBUG</code></td><td><code>true</code></td><td>ตั้งเป็น <code>false</code> ใน production</td></tr>
-    <tr><td><code>CORS_ORIGIN</code></td><td><code>*</code></td><td>ระบุ domain จริงใน production</td></tr>
-    <tr><td><code>DEFAULT_LOCALE</code></td><td><code>th</code></td><td>ภาษาเริ่มต้น: <code>th</code> หรือ <code>en</code></td></tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>JWT_SECRET</code></td>
+          <td>—</td>
+          <td>ต้องยาวอย่างน้อย 32 ตัวอักษร</td>
+        </tr>
+        <tr>
+          <td><code>JWT_EXPIRY</code></td>
+          <td><code>86400</code></td>
+          <td>Token TTL (วินาที) = 24 ชั่วโมง</td>
+        </tr>
+        <tr>
+          <td><code>APP_DEBUG</code></td>
+          <td><code>true</code></td>
+          <td>ตั้งเป็น <code>false</code> ใน production</td>
+        </tr>
+        <tr>
+          <td><code>CORS_ORIGIN</code></td>
+          <td><code>*</code></td>
+          <td>ระบุ domain จริงใน production</td>
+        </tr>
+        <tr>
+          <td><code>DEFAULT_LOCALE</code></td>
+          <td><code>th</code></td>
+          <td>ภาษาเริ่มต้น: <code>th</code> หรือ <code>en</code></td>
+        </tr>
+      </tbody>
+    </table>
 
-<!-- Directory Structure -->
-<h2 id="directory-structure"><a href="#directory-structure" data-i18n="dh.dir_structure"># Directory Structure</a></h2>
-<pre><code>open-genetics/
+    <!-- Directory Structure -->
+    <h2 id="directory-structure"><a href="#directory-structure" data-i18n="dh.dir_structure"># Directory Structure</a>
+    </h2>
+    <pre><code>open-genetics/
 &#9500;&#9472;&#9472; api/                    <span class="cm"># File-based route endpoints</span>
 &#9474;   &#9500;&#9472;&#9472; auth/
 &#9474;   &#9474;   &#9500;&#9472;&#9472; login.php       <span class="cm"># POST /api/auth/login</span>
@@ -470,21 +1600,44 @@ DEFAULT_LOCALE=th</code></pre>
 &#9500;&#9472;&#9472; docs/                   <span class="cm"># Documentation</span>
 &#9492;&#9472;&#9472; .env                    <span class="cm"># Environment config (never commit)</span></code></pre>
 
-<!-- Architecture -->
-<h2 id="architecture"><a href="#architecture" data-i18n="dh.architecture"># Architecture</a></h2>
-<p data-i18n="dh.architecture.desc">OpenGenetics ใช้ <strong>File-based Routing</strong> — URL path ตรงกับ file path ใน <code>api/</code> โดยตรง ไม่มี route registry</p>
-<table>
-  <thead><tr><th>HTTP Method + URL</th><th>File</th><th>Class Method</th></tr></thead>
-  <tbody>
-    <tr><td><code>POST /api/auth/login</code></td><td><code>api/auth/login.php</code></td><td><code>post(array $body)</code></td></tr>
-    <tr><td><code>GET /api/users</code></td><td><code>api/users.php</code></td><td><code>get(array $query)</code></td></tr>
-    <tr><td><code>PUT /api/users</code></td><td><code>api/users.php</code></td><td><code>put(array $body)</code></td></tr>
-    <tr><td><code>DELETE /api/users</code></td><td><code>api/users.php</code></td><td><code>delete(array $body)</code></td></tr>
-  </tbody>
-</table>
+    <!-- Architecture -->
+    <h2 id="architecture"><a href="#architecture" data-i18n="dh.architecture"># Architecture</a></h2>
+    <p data-i18n="dh.architecture.desc">OpenGenetics ใช้ <strong>File-based Routing</strong> — URL path ตรงกับ file path
+      ใน <code>api/</code> โดยตรง ไม่มี route registry</p>
+    <table>
+      <thead>
+        <tr>
+          <th>HTTP Method + URL</th>
+          <th>File</th>
+          <th>Class Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>POST /api/auth/login</code></td>
+          <td><code>api/auth/login.php</code></td>
+          <td><code>post(array $body)</code></td>
+        </tr>
+        <tr>
+          <td><code>GET /api/users</code></td>
+          <td><code>api/users.php</code></td>
+          <td><code>get(array $query)</code></td>
+        </tr>
+        <tr>
+          <td><code>PUT /api/users</code></td>
+          <td><code>api/users.php</code></td>
+          <td><code>put(array $body)</code></td>
+        </tr>
+        <tr>
+          <td><code>DELETE /api/users</code></td>
+          <td><code>api/users.php</code></td>
+          <td><code>delete(array $body)</code></td>
+        </tr>
+      </tbody>
+    </table>
 
-<h3 data-i18n="dh.endpoint_template">Endpoint Template</h3>
-<pre><code><span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
+    <h3 data-i18n="dh.endpoint_template">Endpoint Template</h3>
+    <pre><code><span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
 <span class="kw">use</span> OpenGenetics\Core\{<span class="cl">Database</span>, <span class="cl">Response</span>};
 
 <span class="kw">class</span> <span class="cl">MyEndpoint</span> {
@@ -502,16 +1655,16 @@ DEFAULT_LOCALE=th</code></pre>
     }
 }</code></pre>
 
-<h3 data-i18n="dh.scaffolding">Scaffolding</h3>
-<pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> reports/monthly
+    <h3 data-i18n="dh.scaffolding">Scaffolding</h3>
+    <pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> reports/monthly
 
   ✓ Created endpoint: api/reports/monthly.php
   Class: ReportsMonthly
   Route: GET|POST /api/reports/monthly</code></pre>
 
-<!-- Request Lifecycle -->
-<h2 id="request-lifecycle"><a href="#request-lifecycle" data-i18n="dh.lifecycle"># Request Lifecycle</a></h2>
-<pre><code>HTTP Request
+    <!-- Request Lifecycle -->
+    <h2 id="request-lifecycle"><a href="#request-lifecycle" data-i18n="dh.lifecycle"># Request Lifecycle</a></h2>
+    <pre><code>HTTP Request
     ↓
 Apache .htaccess  →  public/index.php
     ↓
@@ -531,22 +1684,54 @@ Response::success() / error()
     ↓
 JSON Output</code></pre>
 
-<!-- API Reference -->
-<h2 id="api-reference"><a href="#api-reference" data-i18n="dh.api_ref"># API Reference</a></h2>
-<h3 data-i18n="dh.auth_endpoints">Authentication Endpoints</h3>
-<table>
-  <thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
-  <tbody>
-    <tr><td><code>POST</code></td><td><code>/api/auth/register</code></td><td>—</td><td>สมัครสมาชิก</td></tr>
-    <tr><td><code>POST</code></td><td><code>/api/auth/login</code></td><td>—</td><td>เข้าสู่ระบบ → JWT token</td></tr>
-    <tr><td><code>GET</code></td><td><code>/api/auth/profile</code></td><td>JWT</td><td>ดูข้อมูลผู้ใช้ปัจจุบัน</td></tr>
-    <tr><td><code>GET</code></td><td><code>/api/users</code></td><td>Admin</td><td>รายชื่อผู้ใช้ทั้งหมด</td></tr>
-    <tr><td><code>GET</code></td><td><code>/api/dashboard</code></td><td>JWT</td><td>ข้อมูล dashboard</td></tr>
-  </tbody>
-</table>
+    <!-- API Reference -->
+    <h2 id="api-reference"><a href="#api-reference" data-i18n="dh.api_ref"># API Reference</a></h2>
+    <h3 data-i18n="dh.auth_endpoints">Authentication Endpoints</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Endpoint</th>
+          <th>Auth</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>POST</code></td>
+          <td><code>/api/auth/register</code></td>
+          <td>—</td>
+          <td>สมัครสมาชิก</td>
+        </tr>
+        <tr>
+          <td><code>POST</code></td>
+          <td><code>/api/auth/login</code></td>
+          <td>—</td>
+          <td>เข้าสู่ระบบ → JWT token</td>
+        </tr>
+        <tr>
+          <td><code>GET</code></td>
+          <td><code>/api/auth/profile</code></td>
+          <td>JWT</td>
+          <td>ดูข้อมูลผู้ใช้ปัจจุบัน</td>
+        </tr>
+        <tr>
+          <td><code>GET</code></td>
+          <td><code>/api/users</code></td>
+          <td>Admin</td>
+          <td>รายชื่อผู้ใช้ทั้งหมด</td>
+        </tr>
+        <tr>
+          <td><code>GET</code></td>
+          <td><code>/api/dashboard</code></td>
+          <td>JWT</td>
+          <td>ข้อมูล dashboard</td>
+        </tr>
+      </tbody>
+    </table>
 
-<h3 data-i18n="dh.req_res_format">Request / Response Format</h3>
-<pre><code><span class="cm">// Success</span>
+    <h3 data-i18n="dh.req_res_format">Request / Response Format</h3>
+    <pre><code><span class="cm">// Success</span>
 { <span class="st">"success"</span>: <span class="kw">true</span>, <span class="st">"message"</span>: <span class="st">"OK"</span>, <span class="st">"data"</span>: { ... } }
 
 <span class="cm">// Error</span>
@@ -555,43 +1740,53 @@ JSON Output</code></pre>
 <span class="cm">// Paginated</span>
 { <span class="st">"success"</span>: <span class="kw">true</span>, <span class="st">"data"</span>: [...], <span class="st">"meta"</span>: { <span class="st">"total"</span>: <span class="nb">100</span>, <span class="st">"page"</span>: <span class="nb">1</span>, <span class="st">"per_page"</span>: <span class="nb">20</span> } }</code></pre>
 
-<h3 data-i18n="dh.auth_header">Authorization Header</h3>
-<pre><code>Authorization: Bearer &lt;jwt_token&gt;
+    <h3 data-i18n="dh.auth_header">Authorization Header</h3>
+    <pre><code>Authorization: Bearer &lt;jwt_token&gt;
 X-Locale: th</code></pre>
 
-<!-- Database -->
-<h2 id="database"><a href="#database" data-i18n="dh.database"># Database</a></h2>
-<p data-i18n="dh.database.desc">PDO Singleton &mdash; <code>EMULATE_PREPARES=false</code> (real prepared statements) ป้องกัน SQL Injection โดยค่าเริ่มต้น</p>
+    <!-- Database -->
+    <h2 id="database"><a href="#database" data-i18n="dh.database"># Database</a></h2>
+    <p data-i18n="dh.database.desc">PDO Singleton &mdash; <code>EMULATE_PREPARES=false</code> (real prepared statements)
+      ป้องกัน SQL Injection โดยค่าเริ่มต้น</p>
 
-<h3>query() &mdash; Fetch All</h3>
-<pre><code><span class="vr">$users</span> = <span class="cl">Database</span>::<span class="fn">query</span>(
+    <h3>query() &mdash; Fetch All</h3>
+    <pre><code><span class="vr">$users</span> = <span class="cl">Database</span>::<span class="fn">query</span>(
     <span class="st">"SELECT * FROM users WHERE role_id = :role AND is_active = :a"</span>,
     [<span class="st">'role'</span> => <span class="nb">2</span>, <span class="st">'a'</span> => <span class="nb">1</span>]
 );</code></pre>
 
-<h3>queryOne() &mdash; Fetch Single Row</h3>
-<pre><code><span class="vr">$user</span> = <span class="cl">Database</span>::<span class="fn">queryOne</span>(
+    <h3>queryOne() &mdash; Fetch Single Row</h3>
+    <pre><code><span class="vr">$user</span> = <span class="cl">Database</span>::<span class="fn">queryOne</span>(
     <span class="st">"SELECT * FROM users WHERE id = :id"</span>,
     [<span class="st">'id'</span> => <span class="nb">1</span>]
 );</code></pre>
 
-<h3>execute() &mdash; Insert / Update / Delete</h3>
-<pre><code><span class="cl">Database</span>::<span class="fn">execute</span>(
+    <h3>execute() &mdash; Insert / Update / Delete</h3>
+    <pre><code><span class="cl">Database</span>::<span class="fn">execute</span>(
     <span class="st">"UPDATE users SET is_active = :a WHERE id = :id"</span>,
     [<span class="st">'a'</span> => <span class="nb">0</span>, <span class="st">'id'</span> => <span class="nb">5</span>]
 );</code></pre>
 
-<h3>transaction()</h3>
-<pre><code><span class="cl">Database</span>::<span class="fn">transaction</span>(<span class="kw">function</span> (<span class="cl">PDO</span> <span class="vr">$pdo</span>) {
+    <h3>transaction()</h3>
+    <pre><code><span class="cl">Database</span>::<span class="fn">transaction</span>(<span class="kw">function</span> (<span class="cl">PDO</span> <span class="vr">$pdo</span>) {
     <span class="cl">Database</span>::<span class="fn">execute</span>(<span class="st">"UPDATE accounts SET balance = balance - 100 WHERE id = 1"</span>);
     <span class="cl">Database</span>::<span class="fn">execute</span>(<span class="st">"UPDATE accounts SET balance = balance + 100 WHERE id = 2"</span>);
 });</code></pre>
 
-<div class="warn"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg></span><div><p><strong>LIMIT/OFFSET:</strong> ใช้ <code>intval()</code> guard เพราะ MySQL ไม่รองรับ named params ใน LIMIT เมื่อ <code>EMULATE_PREPARES=false</code></p></div></div>
+    <div class="warn"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg></span>
+      <div>
+        <p><strong>LIMIT/OFFSET:</strong> ใช้ <code>intval()</code> guard เพราะ MySQL ไม่รองรับ named params ใน LIMIT
+          เมื่อ <code>EMULATE_PREPARES=false</code></p>
+      </div>
+    </div>
 
-<!-- Response -->
-<h2 id="response"><a href="#response" data-i18n="dh.response"># Response</a></h2>
-<pre><code><span class="cl">Response</span>::<span class="fn">success</span>(<span class="vr">$data</span>, <span class="st">'OK'</span>, <span class="nb">200</span>);
+    <!-- Response -->
+    <h2 id="response"><a href="#response" data-i18n="dh.response"># Response</a></h2>
+    <pre><code><span class="cl">Response</span>::<span class="fn">success</span>(<span class="vr">$data</span>, <span class="st">'OK'</span>, <span class="nb">200</span>);
 <span class="cm">// {"success":true,"message":"OK","data":{...}}</span>
 
 <span class="cl">Response</span>::<span class="fn">error</span>(<span class="st">'Validation failed'</span>, <span class="nb">422</span>, [<span class="st">'email'</span> => <span class="st">'Required'</span>]);
@@ -600,20 +1795,43 @@ X-Locale: th</code></pre>
 <span class="cl">Response</span>::<span class="fn">paginated</span>(<span class="vr">$rows</span>, total: <span class="nb">100</span>, page: <span class="nb">1</span>, perPage: <span class="nb">20</span>);
 <span class="cm">// {"success":true,"data":[...],"meta":{"total":100,"page":1,"per_page":20,"last_page":5}}</span></code></pre>
 
-<table>
-  <thead><tr><th>Method</th><th>Status</th><th>Description</th></tr></thead>
-  <tbody>
-    <tr><td><code>success($data, $msg, $code)</code></td><td>200</td><td>ส่งข้อมูลสำเร็จ</td></tr>
-    <tr><td><code>error($msg, $code, $errors)</code></td><td>400–500</td><td>ส่ง error พร้อม details</td></tr>
-    <tr><td><code>paginated($rows, $total, $page, $perPage)</code></td><td>200</td><td>ส่งข้อมูลแบบ pagination</td></tr>
-    <tr><td><code>noContent()</code></td><td>204</td><td>สำเร็จ ไม่มีข้อมูลส่งกลับ</td></tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Status</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>success($data, $msg, $code)</code></td>
+          <td>200</td>
+          <td>ส่งข้อมูลสำเร็จ</td>
+        </tr>
+        <tr>
+          <td><code>error($msg, $code, $errors)</code></td>
+          <td>400–500</td>
+          <td>ส่ง error พร้อม details</td>
+        </tr>
+        <tr>
+          <td><code>paginated($rows, $total, $page, $perPage)</code></td>
+          <td>200</td>
+          <td>ส่งข้อมูลแบบ pagination</td>
+        </tr>
+        <tr>
+          <td><code>noContent()</code></td>
+          <td>204</td>
+          <td>สำเร็จ ไม่มีข้อมูลส่งกลับ</td>
+        </tr>
+      </tbody>
+    </table>
 
-<!-- Guard / RBAC -->
-<h2 id="guard"><a href="#guard" data-i18n="dh.authorization"># Guard / RBAC</a></h2>
-<p data-i18n="dh.guard.desc">Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — throw <code>RuntimeException</code> พร้อม HTTP status อัตโนมัติ</p>
-<pre><code><span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
+    <!-- Guard / RBAC -->
+    <h2 id="guard"><a href="#guard" data-i18n="dh.authorization"># Guard / RBAC</a></h2>
+    <p data-i18n="dh.guard.desc">Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — throw
+      <code>RuntimeException</code> พร้อม HTTP status อัตโนมัติ</p>
+    <pre><code><span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
 
 <span class="cm">// ต้อง login เท่านั้น (role ใดก็ได้)</span>
 <span class="cl">Guard</span>::<span class="fn">requireAuth</span>();
@@ -633,27 +1851,54 @@ X-Locale: th</code></pre>
     <span class="cm">// admin-only logic</span>
 }</code></pre>
 
-<table>
-  <thead><tr><th>Constant</th><th>role_id</th><th>Description</th></tr></thead>
-  <tbody>
-    <tr><td><code>Guard::ADMIN</code></td><td>1</td><td>ผู้ดูแลระบบ — สิทธิ์สูงสุด</td></tr>
-    <tr><td><code>Guard::HR</code></td><td>2</td><td>HR — จัดการพนักงาน</td></tr>
-    <tr><td><code>Guard::EMPLOYEE</code></td><td>3</td><td>พนักงานทั่วไป</td></tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>Constant</th>
+          <th>role_id</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Guard::ADMIN</code></td>
+          <td>1</td>
+          <td>ผู้ดูแลระบบ — สิทธิ์สูงสุด</td>
+        </tr>
+        <tr>
+          <td><code>Guard::HR</code></td>
+          <td>2</td>
+          <td>HR — จัดการพนักงาน</td>
+        </tr>
+        <tr>
+          <td><code>Guard::EMPLOYEE</code></td>
+          <td>3</td>
+          <td>พนักงานทั่วไป</td>
+        </tr>
+      </tbody>
+    </table>
 
-<!-- i18n -->
-<h2 id="i18n"><a href="#i18n" data-i18n="dh.i18n"># Internationalization (i18n)</a></h2>
-<p data-i18n="dh.i18n.desc">สลับภาษาทันทีผ่าน <code>X-Locale</code> header หรือ <code>?lang=</code> param</p>
-<pre><code><span class="cl">I18n</span>::<span class="fn">t</span>(<span class="st">'auth.login'</span>);                       <span class="cm">// "เข้าสู่ระบบ"</span>
+    <!-- i18n -->
+    <h2 id="i18n"><a href="#i18n" data-i18n="dh.i18n"># Internationalization (i18n)</a></h2>
+    <p data-i18n="dh.i18n.desc">สลับภาษาทันทีผ่าน <code>X-Locale</code> header หรือ <code>?lang=</code> param</p>
+    <pre><code><span class="cl">I18n</span>::<span class="fn">t</span>(<span class="st">'auth.login'</span>);                       <span class="cm">// "เข้าสู่ระบบ"</span>
 <span class="cl">I18n</span>::<span class="fn">t</span>(<span class="st">'welcome'</span>, [<span class="st">'name'</span> => <span class="st">'John'</span>]);      <span class="cm">// "Hello, John"</span>
 <span class="cl">I18n</span>::<span class="fn">getLocale</span>();                            <span class="cm">// "th"</span>
 <span class="cl">I18n</span>::<span class="fn">all</span>();                                   <span class="cm">// Full dictionary array</span></code></pre>
 
-<div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg></span><div><p><strong>Lazy loading:</strong> i18n จะ initialize เฉพาะเมื่อมี <code>X-Locale</code> header หรือ <code>?lang=</code> param เท่านั้น &mdash; ประหยัด ~0.5ms ต่อ request</p></div></div>
+    <div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg></span>
+      <div>
+        <p><strong>Lazy loading:</strong> i18n จะ initialize เฉพาะเมื่อมี <code>X-Locale</code> header หรือ
+          <code>?lang=</code> param เท่านั้น &mdash; ประหยัด ~0.5ms ต่อ request</p>
+      </div>
+    </div>
 
-<h3 data-i18n="dh.locale_files">Locale Files</h3>
-<pre><code><span class="cm">// locales/th.json</span>
+    <h3 data-i18n="dh.locale_files">Locale Files</h3>
+    <pre><code><span class="cm">// locales/th.json</span>
 {
   <span class="st">"auth.login"</span>: <span class="st">"เข้าสู่ระบบ"</span>,
   <span class="st">"auth.logout"</span>: <span class="st">"ออกจากระบบ"</span>,
@@ -661,32 +1906,59 @@ X-Locale: th</code></pre>
   <span class="st">"error.not_found"</span>: <span class="st">"ไม่พบข้อมูล"</span>
 }</code></pre>
 
-<!-- Audit Trail -->
-<h2 id="audit-trail"><a href="#audit-trail" data-i18n="dh.audit"># Audit Trail</a></h2>
-<pre><code><span class="cl">AuditLog</span>::<span class="fn">log</span>(<span class="cl">AuditLog</span>::<span class="vr">CREATE</span>, <span class="st">'users'</span>, [<span class="st">'email'</span> => <span class="st">'new@example.com'</span>]);
+    <!-- Audit Trail -->
+    <h2 id="audit-trail"><a href="#audit-trail" data-i18n="dh.audit"># Audit Trail</a></h2>
+    <pre><code><span class="cl">AuditLog</span>::<span class="fn">log</span>(<span class="cl">AuditLog</span>::<span class="vr">CREATE</span>, <span class="st">'users'</span>, [<span class="st">'email'</span> => <span class="st">'new@example.com'</span>]);
 <span class="cl">AuditLog</span>::<span class="fn">log</span>(<span class="cl">AuditLog</span>::<span class="vr">LOGIN</span>, <span class="st">'auth'</span>);
 <span class="cl">AuditLog</span>::<span class="fn">log</span>(<span class="cl">AuditLog</span>::<span class="vr">DELETE</span>, <span class="st">'users'</span>, [<span class="st">'id'</span> => <span class="nb">5</span>]);
 
 <span class="vr">$logs</span>  = <span class="cl">AuditLog</span>::<span class="fn">query</span>(userId: <span class="nb">1</span>, action: <span class="st">'CREATE'</span>, limit: <span class="nb">50</span>);
 <span class="vr">$total</span> = <span class="cl">AuditLog</span>::<span class="fn">count</span>(userId: <span class="nb">1</span>);</code></pre>
 
-<table>
-  <thead><tr><th>Action Constant</th><th>Value</th><th>Use case</th></tr></thead>
-  <tbody>
-    <tr><td><code>AuditLog::CREATE</code></td><td>'CREATE'</td><td>สร้างข้อมูลใหม่</td></tr>
-    <tr><td><code>AuditLog::UPDATE</code></td><td>'UPDATE'</td><td>แก้ไขข้อมูล</td></tr>
-    <tr><td><code>AuditLog::DELETE</code></td><td>'DELETE'</td><td>ลบข้อมูล</td></tr>
-    <tr><td><code>AuditLog::LOGIN</code></td><td>'LOGIN'</td><td>เข้าสู่ระบบ</td></tr>
-    <tr><td><code>AuditLog::LOGOUT</code></td><td>'LOGOUT'</td><td>ออกจากระบบ</td></tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>Action Constant</th>
+          <th>Value</th>
+          <th>Use case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>AuditLog::CREATE</code></td>
+          <td>'CREATE'</td>
+          <td>สร้างข้อมูลใหม่</td>
+        </tr>
+        <tr>
+          <td><code>AuditLog::UPDATE</code></td>
+          <td>'UPDATE'</td>
+          <td>แก้ไขข้อมูล</td>
+        </tr>
+        <tr>
+          <td><code>AuditLog::DELETE</code></td>
+          <td>'DELETE'</td>
+          <td>ลบข้อมูล</td>
+        </tr>
+        <tr>
+          <td><code>AuditLog::LOGIN</code></td>
+          <td>'LOGIN'</td>
+          <td>เข้าสู่ระบบ</td>
+        </tr>
+        <tr>
+          <td><code>AuditLog::LOGOUT</code></td>
+          <td>'LOGOUT'</td>
+          <td>ออกจากระบบ</td>
+        </tr>
+      </tbody>
+    </table>
 
-<!-- SDK -->
-<h2 id="sdk"><a href="#sdk" data-i18n="dh.sdk"># Genetic SDK</a></h2>
-<p data-i18n="dh.sdk.desc">Frontend SDK พร้อมใช้งานทั้ง React Hook และ Vanilla JS — ครอบคลุม auth, RBAC, i18n และ API calls</p>
+    <!-- SDK -->
+    <h2 id="sdk"><a href="#sdk" data-i18n="dh.sdk"># Genetic SDK</a></h2>
+    <p data-i18n="dh.sdk.desc">Frontend SDK พร้อมใช้งานทั้ง React Hook และ Vanilla JS — ครอบคลุม auth, RBAC, i18n และ
+      API calls</p>
 
-<h3 data-i18n="dh.react_hook">React Hook</h3>
-<pre><code><span class="kw">import</span> { <span class="fn">useGenetics</span> } <span class="kw">from</span> <span class="st">'../sdk/react/useGenetics'</span>;
+    <h3 data-i18n="dh.react_hook">React Hook</h3>
+    <pre><code><span class="kw">import</span> { <span class="fn">useGenetics</span> } <span class="kw">from</span> <span class="st">'../sdk/react/useGenetics'</span>;
 
 <span class="kw">function</span> <span class="fn">App</span>() {
   <span class="kw">const</span> { <span class="vr">user</span>, <span class="fn">login</span>, <span class="fn">logout</span>, <span class="fn">api</span>, <span class="vr">loading</span> } = <span class="fn">useGenetics</span>();
@@ -701,8 +1973,8 @@ X-Locale: th</code></pre>
   };
 }</code></pre>
 
-<h3 data-i18n="dh.vanilla_js">Vanilla JS</h3>
-<pre><code><span class="kw">import</span> <span class="cl">GeneticsSDK</span> <span class="kw">from</span> <span class="st">'../sdk/vanilla/genetics.js'</span>;
+    <h3 data-i18n="dh.vanilla_js">Vanilla JS</h3>
+    <pre><code><span class="kw">import</span> <span class="cl">GeneticsSDK</span> <span class="kw">from</span> <span class="st">'../sdk/vanilla/genetics.js'</span>;
 
 <span class="kw">const</span> <span class="vr">sdk</span> = <span class="kw">new</span> <span class="cl">GeneticsSDK</span>({ baseUrl: <span class="st">'http://localhost/open-genetics/public'</span> });
 
@@ -719,346 +1991,452 @@ X-Locale: th</code></pre>
 <span class="vr">sdk</span>.<span class="fn">setLocale</span>(<span class="st">'en'</span>);
 <span class="vr">sdk</span>.<span class="fn">t</span>(<span class="st">'auth.login'</span>); <span class="cm">// "Login"</span></code></pre>
 
-<!-- CLI -->
-<h2 id="cli"><a href="#cli" data-i18n="dh.cli"># CLI — Genetics Tool</a></h2>
-<p data-i18n="dh.cli.desc">เครื่องมือ command-line สำหรับ scaffold, migrate และ manage โปรเจกต์</p>
-<pre><code><span class="fn">php bin/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
+    <!-- CLI -->
+    <h2 id="cli"><a href="#cli" data-i18n="dh.cli"># CLI — Genetics Tool</a></h2>
+    <p data-i18n="dh.cli.desc">เครื่องมือ command-line สำหรับ scaffold, migrate และ manage โปรเจกต์</p>
+    <pre><code><span class="fn">php bin/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
 <span class="fn">php bin/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
 <span class="fn">php bin/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
 <span class="fn">php bin/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
 <span class="fn">php bin/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
 <span class="fn">php bin/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
 
-<h3 data-i18n="dh.make_endpoint">make:endpoint</h3>
-<pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> products/list
+    <h3 data-i18n="dh.make_endpoint">make:endpoint</h3>
+    <pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> products/list
 
   ✓ Created: api/products/list.php
   Class: ProductsList
   Route: GET|POST /api/products/list</code></pre>
 
-<table>
-  <thead><tr><th>Command</th><th>Description</th></tr></thead>
-  <tbody>
-    <tr><td><code>mutate</code></td><td>Run migrations + seed default RBAC data</td></tr>
-    <tr><td><code>serve</code></td><td>PHP built-in dev server on port 8080</td></tr>
-    <tr><td><code>make:endpoint &lt;path&gt;</code></td><td>Scaffold new API endpoint with class template</td></tr>
-    <tr><td><code>make:middleware &lt;name&gt;</code></td><td>Scaffold middleware class</td></tr>
-    <tr><td><code>new &lt;name&gt;</code></td><td>Create new OpenGenetics project</td></tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>mutate</code></td>
+          <td>Run migrations + seed default RBAC data</td>
+        </tr>
+        <tr>
+          <td><code>serve</code></td>
+          <td>PHP built-in dev server on port 8080</td>
+        </tr>
+        <tr>
+          <td><code>make:endpoint &lt;path&gt;</code></td>
+          <td>Scaffold new API endpoint with class template</td>
+        </tr>
+        <tr>
+          <td><code>make:middleware &lt;name&gt;</code></td>
+          <td>Scaffold middleware class</td>
+        </tr>
+        <tr>
+          <td><code>new &lt;name&gt;</code></td>
+          <td>Create new OpenGenetics project</td>
+        </tr>
+      </tbody>
+    </table>
 
-<!-- Deployment -->
-<h2 id="deployment"><a href="#deployment" data-i18n="dh.deployment"># Deployment</a></h2>
-<h3 data-i18n="dh.apache_htaccess">Apache .htaccess</h3>
-<pre><code>RewriteEngine On
+    <!-- Deployment -->
+    <h2 id="deployment"><a href="#deployment" data-i18n="dh.deployment"># Deployment</a></h2>
+    <h3 data-i18n="dh.apache_htaccess">Apache .htaccess</h3>
+    <pre><code>RewriteEngine On
 RewriteBase /open-genetics/public/
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
 
-<h3 data-i18n="dh.prod_checklist">Production Checklist</h3>
-<table>
-  <thead><tr><th>#</th><th>Item</th><th>Action</th></tr></thead>
-  <tbody>
-    <tr><td>1</td><td><code>APP_DEBUG=false</code></td><td>ซ่อน error details จาก client</td></tr>
-    <tr><td>2</td><td>Strong <code>JWT_SECRET</code></td><td><code>openssl rand -hex 32</code></td></tr>
-    <tr><td>3</td><td><code>CORS_ORIGIN</code></td><td>ระบุ domain จริงเท่านั้น</td></tr>
-    <tr><td>4</td><td><code>mod_rewrite</code></td><td>Enable ใน Apache config</td></tr>
-    <tr><td>5</td><td><code>php bin/genetics mutate</code></td><td>Verify tables ก่อน go-live</td></tr>
-    <tr><td>6</td><td><code>.env</code> ใน <code>.gitignore</code></td><td>ห้าม commit secrets เด็ดขาด</td></tr>
-  </tbody>
-</table>
+    <h3 data-i18n="dh.prod_checklist">Production Checklist</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Item</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><code>APP_DEBUG=false</code></td>
+          <td>ซ่อน error details จาก client</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Strong <code>JWT_SECRET</code></td>
+          <td><code>openssl rand -hex 32</code></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><code>CORS_ORIGIN</code></td>
+          <td>ระบุ domain จริงเท่านั้น</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><code>mod_rewrite</code></td>
+          <td>Enable ใน Apache config</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><code>php bin/genetics mutate</code></td>
+          <td>Verify tables ก่อน go-live</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><code>.env</code> ใน <code>.gitignore</code></td>
+          <td>ห้าม commit secrets เด็ดขาด</td>
+        </tr>
+      </tbody>
+    </table>
 
-<div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span><div><p><strong>XAMPP Production:</strong> ตั้งค่า <code>APP_URL</code> ให้ตรงกับ domain จริง และเปิด <code>mod_headers</code> สำหรับ CORS headers</p></div></div>
-
-<hr>
-
-<!-- ═══ FOOTER — Elysia-style ═══ -->
-<div style="margin-top:60px;padding:0 0 20px">
-  <div class="footer-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:36px 40px;display:flex;align-items:center;gap:40px;flex-wrap:wrap">
-    <div style="flex:1;min-width:200px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-        <img src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" style="height:32px;width:auto;opacity:.85" id="footer-logo">
+    <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg></span>
+      <div>
+        <p><strong>XAMPP Production:</strong> ตั้งค่า <code>APP_URL</code> ให้ตรงกับ domain จริง และเปิด
+          <code>mod_headers</code> สำหรับ CORS headers</p>
       </div>
-      <p style="font-size:13px;color:rgba(255,255,255,.3);margin:0;line-height:1.6">Enterprise PHP Micro-Framework</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 32px;flex-shrink:0">
-      <div style="display:flex;align-items:center;gap:8px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
-        <div><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">Speed</div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">&lt; 50ms</div></div>
+
+    <hr>
+
+    <!-- ═══ FOOTER — Elysia-style ═══ -->
+    <div style="margin-top:60px;padding:0 0 20px">
+      <div class="footer-card"
+        style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:36px 40px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:space-between">
+        <div style="flex:1;min-width:260px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <img src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics"
+              style="height:32px;width:auto;opacity:.85" id="footer-logo">
+          </div>
+          <p style="font-size:13px;color:rgba(255,255,255,.3);margin:0 0 20px;line-height:1.6">Enterprise PHP
+            Micro-Framework</p>
+          <a href="https://github.com/open-genetics/framework" target="_blank"
+            style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#e2e8f0;font-size:13px;font-weight:600;text-decoration:none;transition:all 200ms"
+            onmouseover="this.style.background='rgba(255,255,255,.1)';this.style.borderColor='rgba(255,255,255,.2)'"
+            onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.1)'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+            </svg>
+            GitHub
+          </a>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            </svg>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">
+                Speed</div>
+              <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">&lt; 50ms</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+            </svg>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">
+                Security</div>
+              <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">OWASP Ready</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+            </svg>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">
+                Experience</div>
+              <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">Exceptional</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">
+                Frontend SDK</div>
+              <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">Dual SDK</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
-        <div><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">Security</div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">OWASP Ready</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
-        <div><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">Developer Experience</div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">Exceptional</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="color:#818cf8;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
-        <div><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.05em">Frontend SDK</div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7)">Dual SDK</div></div>
-      </div>
+      <p style="text-align:center;font-size:13px;color:rgba(255,255,255,.22);margin-top:20px">Built with <span
+          style="color:#f472b6">&#10084;</span> by <a href="https://github.com/jkstudio99" target="_blank"
+          style="color:#818cf8;text-decoration:none;font-weight:500">jkstudio99</a></p>
     </div>
+
+  </main>
   </div>
-  <p style="text-align:center;font-size:13px;color:rgba(255,255,255,.22);margin-top:20px">Built with <span style="color:#f472b6">&#10084;</span> by <a href="https://github.com/jkstudio99" target="_blank" style="color:#818cf8;text-decoration:none;font-weight:500">jkstudio99</a></p>
-</div>
 
-</main>
-</div>
+  <script src="../public/scripts/i18n-page.js"></script>
+  <script>
+    // ══════════════════════════════════════════════
+    // Theme Toggle — ALWAYS start dark, then respect localStorage
+    // ══════════════════════════════════════════════
+    const themeBtn = document.getElementById('theme-btn');
+    const docMoon = document.getElementById('doc-moon');
+    const docSun = document.getElementById('doc-sun');
+    let theme = localStorage.getItem('og_theme') || 'dark';
 
-<script src="../public/scripts/i18n-page.js"></script>
-<script>
-// ══════════════════════════════════════════════
-// Theme Toggle — ALWAYS start dark, then respect localStorage
-// ══════════════════════════════════════════════
-const themeBtn = document.getElementById('theme-btn');
-const docMoon = document.getElementById('doc-moon');
-const docSun = document.getElementById('doc-sun');
-let theme = localStorage.getItem('og_theme') || 'dark';
-
-function applyTheme(t) {
-  const isDark = (t === 'dark');
-  document.documentElement.classList.toggle('dark', isDark);
-  document.documentElement.setAttribute('data-theme', t);
-  docMoon.classList.toggle('hidden', !isDark);
-  docSun.classList.toggle('hidden', isDark);
-  document.body.style.background = isDark ? '#0e0e1a' : '#f5f5fa';
-  document.body.style.color = isDark ? '#cbd5e1' : '#1e293b';
-  document.querySelectorAll('.orb').forEach(el => el.style.opacity = isDark ? '1' : '0');
-  // Navbar — transparent in light mode
-  document.getElementById('navbar').style.background = isDark ? 'rgba(14,14,26,.75)' : 'transparent';
-  document.getElementById('navbar').style.borderBottomColor = isDark ? 'rgba(255,255,255,.055)' : 'rgba(0,0,0,.06)';
-  document.getElementById('navbar').style.backdropFilter = isDark ? 'saturate(180%) blur(24px)' : 'saturate(180%) blur(20px)';
-  // Logo swap
-  const logoSrc = isDark ? '../public/images/logo/open-genetics-logo-white.svg' : '../public/images/logo/open-genetics-logo.svg';
-  document.getElementById('nav-logo').src = logoSrc;
-  const footerLogo = document.getElementById('footer-logo');
-  if (footerLogo) footerLogo.src = logoSrc;
-  themeBtn.title = isDark ? 'Switch to Light mode' : 'Switch to Dark mode';
-}
-
-// ══════════════════════════════════════════════
-// Sidebar Dropdown Toggle
-// ══════════════════════════════════════════════
-function toggleGroup(header) {
-  header.closest('.sb-group').classList.toggle('open');
-}
-applyTheme(theme);
-localStorage.setItem('og_theme', theme);
-themeBtn.addEventListener('click', () => {
-  theme = theme === 'dark' ? 'light' : 'dark';
-  applyTheme(theme);
-  localStorage.setItem('og_theme', theme);
-});
-
-// ══════════════════════════════════════════════
-// Language Toggle — uses og_locale (same key as i18n-page.js)
-// ══════════════════════════════════════════════
-let currentLang = localStorage.getItem('og_locale') || 'th';
-const langToggle = document.getElementById('lang-toggle');
-updateLangTitle();
-
-langToggle.addEventListener('click', () => {
-  currentLang = currentLang === 'th' ? 'en' : 'th';
-  localStorage.setItem('og_locale', currentLang);
-  updateLangTitle();
-  if (window.OGi18n) window.OGi18n.setLocale(currentLang);
-  langToggle.style.color = '#818cf8';
-  setTimeout(() => langToggle.style.color = '', 300);
-});
-
-function updateLangTitle() {
-  langToggle.title = currentLang === 'th' ? 'เปลี่ยนเป็น English' : 'Switch to ภาษาไทย';
-}
-
-// ══════════════════════════════════════════════
-// Mobile Sidebar
-// ══════════════════════════════════════════════
-const menuBtn  = document.getElementById('menu-btn');
-const sidebar  = document.getElementById('sidebar');
-const overlay  = document.getElementById('overlay');
-menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('show'); });
-overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); });
-
-// ══════════════════════════════════════════════
-// Scroll Spy — sidebar + TOC
-// ══════════════════════════════════════════════
-const headings = Array.from(document.querySelectorAll('h2[id], section[id]'));
-const sbLinks  = document.querySelectorAll('.sb-link');
-const tocLinks = document.querySelectorAll('.toc-link');
-
-function updateActive() {
-  let cur = '';
-  const y = window.scrollY + 80;
-  headings.forEach(h => { if (h.offsetTop <= y) cur = h.getAttribute('id'); });
-  sbLinks.forEach(l  => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
-  tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
-}
-window.addEventListener('scroll', updateActive, { passive: true });
-updateActive();
-
-// ── Close sidebar on link click (mobile) ──
-[...sbLinks, ...tocLinks].forEach(l => l.addEventListener('click', () => {
-  if (window.innerWidth <= 1024) { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
-}));
-
-// ── Show menu-btn on mobile ──
-function checkMobile() { menuBtn.style.display = window.innerWidth <= 1024 ? 'flex' : 'none'; }
-checkMobile();
-window.addEventListener('resize', checkMobile);
-
-// ══════════════════════════════════════════════
-// Search Modal — ⌘K / Ctrl+K — FULLY FUNCTIONAL
-// ══════════════════════════════════════════════
-const searchModal = document.getElementById('search-modal');
-const searchTrigger = document.getElementById('search-trigger');
-const searchInput = document.getElementById('search-input');
-const searchResults = document.getElementById('search-results');
-const searchEmpty = document.getElementById('search-empty');
-const searchFooter = document.getElementById('search-footer');
-let searchIdx = -1;
-
-// Heroicon SVG map for search icons
-const siSvg = {
-  book: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>',
-  cube: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>',
-  cog: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>',
-  folder: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/></svg>',
-  build: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z"/></svg>',
-  code: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>',
-  db: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>',
-  out: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>',
-  shield: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>',
-  globe: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>',
-  clip: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>',
-  dna: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>',
-  term: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>',
-  rocket: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/></svg>',
-  lock: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>',
-  home: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>',
-  git: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>',
-  bolt: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>',
-};
-
-// Build searchable index from docs sections
-const searchData = [
-  { title:'Overview', desc:'OpenGenetics PHP Micro-Framework สำหรับ XAMPP', href:'#overview', icon:'book' },
-  { title:'Installation', desc:'composer create-project open-genetics/framework', href:'#installation', icon:'cube' },
-  { title:'Configuration', desc:'.env DB_HOST DB_NAME JWT_SECRET APP_URL', href:'#configuration', icon:'cog' },
-  { title:'Directory Structure', desc:'api/ config/ core/ lang/ public/ storage/', href:'#directory', icon:'folder' },
-  { title:'Architecture', desc:'Request Lifecycle Middleware Guard RBAC', href:'#architecture', icon:'build' },
-  { title:'API Reference', desc:'Response::json Response::error Response::paginate', href:'#api-reference', icon:'code' },
-  { title:'Database', desc:'DB::query DB::fetch DB::insert PDO MySQL', href:'#database', icon:'db' },
-  { title:'Response', desc:'Response helper json error paginate', href:'#response', icon:'out' },
-  { title:'Guard / RBAC', desc:'Guard::requireRole Admin HR Employee authorization', href:'#guard', icon:'shield' },
-  { title:'i18n', desc:'Internationalization Thai English X-Locale lang', href:'#i18n', icon:'globe' },
-  { title:'Audit Trail', desc:'AuditLogger log CREATE UPDATE DELETE LOGIN', href:'#audit', icon:'clip' },
-  { title:'Genetic SDK', desc:'React Hook Vanilla JS useGenetics GeneticSDK', href:'#sdk', icon:'dna' },
-  { title:'CLI', desc:'php bin/genetics mutate serve make:api', href:'#cli', icon:'term' },
-  { title:'Deployment', desc:'Production Apache XAMPP CORS APP_DEBUG', href:'#deployment', icon:'rocket' },
-  { title:'JWT Authentication', desc:'HS256 Bcrypt firebase/php-jwt token auth', href:'#api-reference', icon:'lock' },
-  { title:'Landing Page', desc:'กลับไปหน้าหลัก OpenGenetics', href:'../public/index.html', icon:'home' },
-  { title:'GitHub Repository', desc:'open-genetics/framework — MIT License', href:'https://github.com/open-genetics/framework', icon:'git' },
-];
-
-function openSearch() {
-  searchModal.classList.add('open');
-  requestAnimationFrame(() => { searchInput.focus(); searchInput.select(); });
-  renderSearch('');
-}
-function closeSearch() {
-  searchModal.classList.remove('open');
-  searchInput.value = '';
-  searchIdx = -1;
-}
-
-function renderSearch(q) {
-  q = q.trim().toLowerCase();
-  if (!q) {
-    searchResults.innerHTML = '';
-    searchEmpty.style.display = '';
-    searchFooter.classList.add('hidden');
-    searchIdx = -1;
-    return;
-  }
-  const matches = searchData.filter(d =>
-    d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q)
-  );
-  searchEmpty.style.display = 'none';
-  searchFooter.classList.remove('hidden');
-  searchFooter.style.display = 'flex';
-  if (!matches.length) {
-    searchResults.innerHTML = '<div class="search-no-result">No results for "<strong>' + q.replace(/</g,'&lt;') + '</strong>"</div>';
-    searchIdx = -1;
-    return;
-  }
-  searchIdx = 0;
-  searchResults.innerHTML = matches.map((m, i) => {
-    const hl = (s) => s.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi'), '<mark>$1</mark>');
-    return '<div class="search-item' + (i===0?' active':'') + '" data-href="' + m.href + '">' +
-      '<div class="si-icon">' + (siSvg[m.icon] || siSvg.book) + '</div>' +
-      '<div class="flex-1 min-w-0"><div class="si-title">' + hl(m.title) + '</div><div class="si-desc">' + hl(m.desc) + '</div></div>' +
-      '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="text-white/15 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>' +
-    '</div>';
-  }).join('');
-  searchResults.querySelectorAll('.search-item').forEach(el => {
-    el.addEventListener('click', () => { navigateTo(el.dataset.href); closeSearch(); });
-  });
-}
-
-function navigateTo(href) {
-  if (href.startsWith('http') || href.startsWith('../')) {
-    window.location.href = href;
-  } else {
-    const target = document.querySelector(href);
-    if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-}
-
-searchInput.addEventListener('input', () => renderSearch(searchInput.value));
-searchTrigger.addEventListener('click', openSearch);
-searchModal.addEventListener('click', e => { if (e.target === searchModal) closeSearch(); });
-
-document.addEventListener('keydown', e => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); return; }
-  if (!searchModal.classList.contains('open')) return;
-  if (e.key === 'Escape') { closeSearch(); return; }
-  const items = searchResults.querySelectorAll('.search-item');
-  if (!items.length) return;
-  if (e.key === 'ArrowDown') { e.preventDefault(); searchIdx = Math.min(searchIdx + 1, items.length - 1); }
-  if (e.key === 'ArrowUp')   { e.preventDefault(); searchIdx = Math.max(searchIdx - 1, 0); }
-  if (e.key === 'Enter' && searchIdx >= 0) { e.preventDefault(); navigateTo(items[searchIdx].dataset.href); closeSearch(); return; }
-  items.forEach((el, i) => el.classList.toggle('active', i === searchIdx));
-  if (items[searchIdx]) items[searchIdx].scrollIntoView({ block:'nearest' });
-});
-
-// ══════════════════════════════════════════════
-// Copy to Clipboard — with checkmark feedback
-// ══════════════════════════════════════════════
-function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.classList.add('copied');
-    const svg = btn.querySelector('svg');
-    const orig = svg.innerHTML;
-    svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>';
-    setTimeout(() => { btn.classList.remove('copied'); svg.innerHTML = orig; }, 1800);
-  });
-}
-
-// ══════════════════════════════════════════════
-// Smooth scroll for anchor links
-// ══════════════════════════════════════════════
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior:'smooth', block:'start' });
+    function applyTheme(t) {
+      const isDark = (t === 'dark');
+      document.documentElement.classList.toggle('dark', isDark);
+      document.documentElement.setAttribute('data-theme', t);
+      docMoon.classList.toggle('hidden', !isDark);
+      docSun.classList.toggle('hidden', isDark);
+      document.body.style.background = isDark ? '#0e0e1a' : '#f5f5fa';
+      document.body.style.color = isDark ? '#cbd5e1' : '#1e293b';
+      document.querySelectorAll('.orb').forEach(el => el.style.opacity = isDark ? '1' : '0');
+      // Navbar — transparent in light mode
+      document.getElementById('navbar').style.background = isDark ? 'rgba(14,14,26,.75)' : 'transparent';
+      document.getElementById('navbar').style.borderBottomColor = isDark ? 'rgba(255,255,255,.055)' : 'rgba(0,0,0,.06)';
+      document.getElementById('navbar').style.backdropFilter = isDark ? 'saturate(180%) blur(24px)' : 'saturate(180%) blur(20px)';
+      // Logo swap
+      const logoSrc = isDark ? '../public/images/logo/open-genetics-logo-white.svg' : '../public/images/logo/open-genetics-logo.svg';
+      document.getElementById('nav-logo').src = logoSrc;
+      const footerLogo = document.getElementById('footer-logo');
+      if (footerLogo) footerLogo.src = logoSrc;
+      themeBtn.title = isDark ? 'Switch to Light mode' : 'Switch to Dark mode';
     }
-  });
-});
-</script>
+
+    // ══════════════════════════════════════════════
+    // Sidebar Dropdown Toggle
+    // ══════════════════════════════════════════════
+    function toggleGroup(header) {
+      header.closest('.sb-group').classList.toggle('open');
+    }
+    applyTheme(theme);
+    localStorage.setItem('og_theme', theme);
+    themeBtn.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      applyTheme(theme);
+      localStorage.setItem('og_theme', theme);
+    });
+
+    // ══════════════════════════════════════════════
+    // Language Toggle — uses og_locale (same key as i18n-page.js)
+    // ══════════════════════════════════════════════
+    let currentLang = localStorage.getItem('og_locale') || 'th';
+    const langToggle = document.getElementById('lang-toggle');
+    updateLangTitle();
+
+    langToggle.addEventListener('click', () => {
+      currentLang = currentLang === 'th' ? 'en' : 'th';
+      localStorage.setItem('og_locale', currentLang);
+      updateLangTitle();
+      if (window.OGi18n) window.OGi18n.setLocale(currentLang);
+      langToggle.style.color = '#818cf8';
+      setTimeout(() => langToggle.style.color = '', 300);
+    });
+
+    function updateLangTitle() {
+      langToggle.title = currentLang === 'th' ? 'เปลี่ยนเป็น English' : 'Switch to ภาษาไทย';
+    }
+
+    // ══════════════════════════════════════════════
+    // Mobile Sidebar
+    // ══════════════════════════════════════════════
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('show'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); });
+
+    // ══════════════════════════════════════════════
+    // Scroll Spy — sidebar + TOC
+    // ══════════════════════════════════════════════
+    const headings = Array.from(document.querySelectorAll('h2[id], section[id]'));
+    const sbLinks = document.querySelectorAll('.sb-link');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    function updateActive() {
+      let cur = '';
+      const y = window.scrollY + 80;
+      headings.forEach(h => { if (h.offsetTop <= y) cur = h.getAttribute('id'); });
+      sbLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
+      tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
+    }
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+
+    // ── Close sidebar on link click (mobile) ──
+    [...sbLinks, ...tocLinks].forEach(l => l.addEventListener('click', () => {
+      if (window.innerWidth <= 1024) { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+    }));
+
+    // ── Show menu-btn on mobile ──
+    function checkMobile() { menuBtn.style.display = window.innerWidth <= 1024 ? 'flex' : 'none'; }
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    // ══════════════════════════════════════════════
+    // Search Modal — ⌘K / Ctrl+K — FULLY FUNCTIONAL
+    // ══════════════════════════════════════════════
+    const searchModal = document.getElementById('search-modal');
+    const searchTrigger = document.getElementById('search-trigger');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const searchEmpty = document.getElementById('search-empty');
+    const searchFooter = document.getElementById('search-footer');
+    let searchIdx = -1;
+
+    // Heroicon SVG map for search icons
+    const siSvg = {
+      book: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>',
+      cube: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>',
+      cog: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>',
+      folder: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/></svg>',
+      build: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z"/></svg>',
+      code: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>',
+      db: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>',
+      out: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>',
+      shield: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>',
+      globe: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>',
+      clip: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>',
+      dna: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>',
+      term: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>',
+      rocket: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/></svg>',
+      lock: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>',
+      home: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>',
+      git: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>',
+      bolt: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>',
+    };
+
+    // Build searchable index from docs sections
+    const searchData = [
+      { title: 'Overview', desc: 'OpenGenetics PHP Micro-Framework สำหรับ XAMPP', href: '#overview', icon: 'book' },
+      { title: 'Installation', desc: 'composer create-project open-genetics/framework', href: '#installation', icon: 'cube' },
+      { title: 'Configuration', desc: '.env DB_HOST DB_NAME JWT_SECRET APP_URL', href: '#configuration', icon: 'cog' },
+      { title: 'Directory Structure', desc: 'api/ config/ core/ lang/ public/ storage/', href: '#directory', icon: 'folder' },
+      { title: 'Architecture', desc: 'Request Lifecycle Middleware Guard RBAC', href: '#architecture', icon: 'build' },
+      { title: 'API Reference', desc: 'Response::json Response::error Response::paginate', href: '#api-reference', icon: 'code' },
+      { title: 'Database', desc: 'DB::query DB::fetch DB::insert PDO MySQL', href: '#database', icon: 'db' },
+      { title: 'Response', desc: 'Response helper json error paginate', href: '#response', icon: 'out' },
+      { title: 'Guard / RBAC', desc: 'Guard::requireRole Admin HR Employee authorization', href: '#guard', icon: 'shield' },
+      { title: 'i18n', desc: 'Internationalization Thai English X-Locale lang', href: '#i18n', icon: 'globe' },
+      { title: 'Audit Trail', desc: 'AuditLogger log CREATE UPDATE DELETE LOGIN', href: '#audit', icon: 'clip' },
+      { title: 'Genetic SDK', desc: 'React Hook Vanilla JS useGenetics GeneticSDK', href: '#sdk', icon: 'dna' },
+      { title: 'CLI', desc: 'php bin/genetics mutate serve make:api', href: '#cli', icon: 'term' },
+      { title: 'Deployment', desc: 'Production Apache XAMPP CORS APP_DEBUG', href: '#deployment', icon: 'rocket' },
+      { title: 'JWT Authentication', desc: 'HS256 Bcrypt firebase/php-jwt token auth', href: '#api-reference', icon: 'lock' },
+      { title: 'Landing Page', desc: 'กลับไปหน้าหลัก OpenGenetics', href: '../public/index.html', icon: 'home' },
+      { title: 'GitHub Repository', desc: 'open-genetics/framework — MIT License', href: 'https://github.com/open-genetics/framework', icon: 'git' },
+    ];
+
+    function openSearch() {
+      searchModal.classList.add('open');
+      requestAnimationFrame(() => { searchInput.focus(); searchInput.select(); });
+      renderSearch('');
+    }
+    function closeSearch() {
+      searchModal.classList.remove('open');
+      searchInput.value = '';
+      searchIdx = -1;
+    }
+
+    function renderSearch(q) {
+      q = q.trim().toLowerCase();
+      if (!q) {
+        searchResults.innerHTML = '';
+        searchEmpty.style.display = '';
+        searchFooter.classList.add('hidden');
+        searchIdx = -1;
+        return;
+      }
+      const matches = searchData.filter(d =>
+        d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q)
+      );
+      searchEmpty.style.display = 'none';
+      searchFooter.classList.remove('hidden');
+      searchFooter.style.display = 'flex';
+      if (!matches.length) {
+        searchResults.innerHTML = '<div class="search-no-result">No results for "<strong>' + q.replace(/</g, '&lt;') + '</strong>"</div>';
+        searchIdx = -1;
+        return;
+      }
+      searchIdx = 0;
+      searchResults.innerHTML = matches.map((m, i) => {
+        const hl = (s) => s.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        return '<div class="search-item' + (i === 0 ? ' active' : '') + '" data-href="' + m.href + '">' +
+          '<div class="si-icon">' + (siSvg[m.icon] || siSvg.book) + '</div>' +
+          '<div class="flex-1 min-w-0"><div class="si-title">' + hl(m.title) + '</div><div class="si-desc">' + hl(m.desc) + '</div></div>' +
+          '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="text-white/15 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>' +
+          '</div>';
+      }).join('');
+      searchResults.querySelectorAll('.search-item').forEach(el => {
+        el.addEventListener('click', () => { navigateTo(el.dataset.href); closeSearch(); });
+      });
+    }
+
+    function navigateTo(href) {
+      if (href.startsWith('http') || href.startsWith('../')) {
+        window.location.href = href;
+      } else {
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+    searchTrigger.addEventListener('click', openSearch);
+    searchModal.addEventListener('click', e => { if (e.target === searchModal) closeSearch(); });
+
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); return; }
+      if (!searchModal.classList.contains('open')) return;
+      if (e.key === 'Escape') { closeSearch(); return; }
+      const items = searchResults.querySelectorAll('.search-item');
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); searchIdx = Math.min(searchIdx + 1, items.length - 1); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); searchIdx = Math.max(searchIdx - 1, 0); }
+      if (e.key === 'Enter' && searchIdx >= 0) { e.preventDefault(); navigateTo(items[searchIdx].dataset.href); closeSearch(); return; }
+      items.forEach((el, i) => el.classList.toggle('active', i === searchIdx));
+      if (items[searchIdx]) items[searchIdx].scrollIntoView({ block: 'nearest' });
+    });
+
+    // ══════════════════════════════════════════════
+    // Copy to Clipboard — with checkmark feedback
+    // ══════════════════════════════════════════════
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        const svg = btn.querySelector('svg');
+        const orig = svg.innerHTML;
+        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>';
+        setTimeout(() => { btn.classList.remove('copied'); svg.innerHTML = orig; }, 1800);
+      });
+    }
+
+    // ══════════════════════════════════════════════
+    // Smooth scroll for anchor links
+    // ══════════════════════════════════════════════
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
 </body>
+
 </html>

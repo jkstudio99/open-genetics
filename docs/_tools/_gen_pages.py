@@ -571,30 +571,34 @@ def generate_page(slug, th_title, en_title, content, css):
 {nav_html}
 
 <!-- FOOTER -->
-<div style="margin-top:80px;padding:0 0 32px;max-width:760px;margin-left:auto;margin-right:auto">
-  <div class="footer-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:48px 52px;display:flex;align-items:center;gap:48px;flex-wrap:wrap">
-    <div style="flex:1;min-width:200px">
+<div style="margin-top:80px;padding:0 0 32px;max-width:820px;margin-left:auto;margin-right:auto">
+  <div class="footer-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:44px 48px;display:flex;align-items:center;gap:40px;flex-wrap:wrap;justify-content:space-between">
+    <div style="flex:1;min-width:260px">
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
-        <img src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" style="height:64px;width:auto;opacity:.9" id="footer-logo">
+        <img src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" style="height:60px;width:auto;opacity:.9" id="footer-logo">
       </div>
-      <p class="ft-desc" style="font-size:16px;margin:0;line-height:1.6;font-style:italic">Enterprise PHP Micro-Framework</p>
+      <p class="ft-desc" style="font-size:15px;margin:0 0 24px;line-height:1.6;font-style:italic">Enterprise PHP Micro-Framework</p>
+      <a href="https://github.com/open-genetics/framework" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#e2e8f0;font-size:14px;font-weight:600;text-decoration:none;transition:all 200ms" onmouseover="this.style.background='rgba(255,255,255,.1)';this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.1)'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px 44px;flex-shrink:0">
-      <div style="display:flex;align-items:center;gap:14px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
-        <div><div class="ft-label">Speed</div><div class="ft-value">&lt; 50ms</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
+        <div><div class="ft-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.05em">Speed</div><div class="ft-value" style="font-weight:600;font-size:16px">&lt; 50ms</div></div>
       </div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
-        <div><div class="ft-label">Security</div><div class="ft-value">OWASP</div></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+        <div><div class="ft-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.05em">Security</div><div class="ft-value" style="font-weight:600;font-size:16px">OWASP</div></div>
       </div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
-        <div><div class="ft-label">Developer Experience</div><div class="ft-value">Exceptional</div></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+        <div><div class="ft-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.05em">Experience</div><div class="ft-value" style="font-weight:600;font-size:16px">Exceptional</div></div>
       </div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
-        <div><div class="ft-label">Frontend SDK</div><div class="ft-value">Dual SDK</div></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="ft-icon"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+        <div><div class="ft-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.05em">Frontend SDK</div><div class="ft-value" style="font-weight:600;font-size:16px">Dual SDK</div></div>
       </div>
     </div>
   </div>

@@ -14,7 +14,7 @@
         "audit-trail",
         "psr-4"
     ],
-    "homepage": "https://github.com/jkstudio99/open-genetics",
+    "homepage": "https://github.com/open-genetics/framework",
     "authors": [
         {
             "name": "OpenGenetics Team",
@@ -22,9 +22,9 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/jkstudio99/open-genetics/issues",
-        "source": "https://github.com/jkstudio99/open-genetics",
-        "docs": "https://github.com/jkstudio99/open-genetics/tree/main/docs/site"
+        "issues": "https://github.com/open-genetics/framework/issues",
+        "source": "https://github.com/open-genetics/framework",
+        "docs": "https://github.com/open-genetics/framework/tree/main/docs/site"
     },
     "require": {
         "php": ">=8.1",
