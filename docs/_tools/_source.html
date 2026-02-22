@@ -1181,12 +1181,12 @@
       <!-- Right: Nav + Icons -->
       <div class="flex items-center gap-0.5 shrink-0 ml-auto">
         <a href="#overview"
-          class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white bg-white/[0.06] transition-all">Docs</a>
+          class="hidden min-[930px]:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white bg-white/[0.06] transition-all">Docs</a>
         <a href="#"
-          class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">Blog</a>
+          class="hidden min-[930px]:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">Blog</a>
         <a href="#sdk"
-          class="hidden md:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">SDK</a>
-        <div class="w-px h-4 mx-1.5 hidden md:block" style="background:rgba(255,255,255,.1)"></div>
+          class="hidden min-[930px]:inline-flex text-[13px] font-medium px-3 py-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all">SDK</a>
+        <div class="w-px h-4 mx-1.5 hidden min-[930px]:block" style="background:rgba(255,255,255,.1)"></div>
         <!-- Theme toggle -->
         <button id="theme-btn"
           class="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all"
@@ -1230,9 +1230,30 @@
               d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
         </a>
+        <!-- Hamburger Menu -->
+        <button id="mobile-menu-btn"
+          class="min-[930px]:hidden flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.06] transition-all ml-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
       </div>
     </div>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu"
+    class="hidden fixed inset-0 z-40 bg-[#0e0e1a]/95 backdrop-blur-xl flex-col items-center justify-center opacity-0 transition-opacity duration-300">
+    <div class="flex flex-col gap-8 text-center">
+      <a href="overview.html" class="text-white/70 hover:text-white text-2xl font-medium transition-colors"
+        data-i18n="nav.docs">เอกสาร</a>
+      <a href="blog.html" class="text-white/70 hover:text-white text-2xl font-medium transition-colors"
+        data-i18n="nav.blog">บล็อก</a>
+      <a href="sdk.html" class="text-white/70 hover:text-white text-2xl font-medium transition-colors"
+        data-i18n="nav.sdk">SDK</a>
+    </div>
+  </div>
 
   <!-- SEARCH MODAL -->
   <div id="search-modal" class="search-overlay">
@@ -2449,6 +2470,45 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
         }
       });
     });
+    // ══════════════════════════════════════════════
+    // Mobile Menu
+    // ══════════════════════════════════════════════
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let isMenuOpen = false;
+
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', () => {
+        isMenuOpen = !isMenuOpen;
+        if (isMenuOpen) {
+          mobileMenu.classList.remove('hidden');
+          // small delay for transition
+          requestAnimationFrame(() => {
+            mobileMenu.classList.remove('opacity-0');
+            mobileMenu.classList.add('opacity-100', 'flex');
+          });
+          mobileBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+          document.body.style.overflow = 'hidden';
+        } else {
+          mobileMenu.classList.remove('opacity-100');
+          mobileMenu.classList.add('opacity-0');
+          setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+          }, 300);
+          mobileBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>`;
+          document.body.style.overflow = '';
+        }
+      });
+
+      // Close menu on link click
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (isMenuOpen) mobileBtn.click();
+        });
+      });
+    }
+
   </script>
 </body>
 

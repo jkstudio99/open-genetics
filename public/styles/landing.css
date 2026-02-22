@@ -693,3 +693,28 @@ body {
     .code-block { font-size: 12px; padding: 18px; }
     .download-buttons { flex-direction: column; align-items: center; }
 }
+
+/* ── Extra Small Screens (< 460px) ── */
+@media (max-width: 460px) {
+    .hero h1 {
+        font-size: 28px !important;
+        line-height: 1.2;
+    }
+    .hero > .hero-inner > p {
+        font-size: 14px !important;
+        line-height: 1.6;
+        padding: 0 8px;
+    }
+    .logo-img-lg {
+        height: 48px !important;
+        margin-bottom: 20px;
+    }
+    .hero-badge {
+        font-size: 11px;
+        padding: 5px 14px;
+    }
+    .btn-primary, .btn-outline {
+        font-size: 14px;
+        padding: 11px 24px;
+    }
+}
