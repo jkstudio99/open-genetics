@@ -6,10 +6,10 @@ namespace OpenGenetics\Core;
 
 /**
  * 🧬 OpenGenetics — File-based API Router
- * 
+ *
  * Maps HTTP requests to PHP files in the api/ directory.
  * Each .php file = one endpoint. Supports REST methods via static class pattern.
- * 
+ *
  * Example: api/auth/login.php → POST /api/auth/login
  */
 final class Router
@@ -77,13 +77,11 @@ final class Router
         // Parse request body
         $body = $this->parseBody();
 
-        // Execute handler
+        // Execute handler — delegate all uncaught exceptions to ErrorHandler
         try {
             $className::$handler($body);
         } catch (\Throwable $e) {
-            $code = $e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 500;
-            $message = Env::isDebug() ? $e->getMessage() : 'Internal server error';
-            Response::json(['error' => $message], (int) $code);
+            ErrorHandler::handleException($e);
         }
     }
 
