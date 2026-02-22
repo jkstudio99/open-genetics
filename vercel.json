@@ -4,8 +4,13 @@
     "trailingSlash": false,
     "redirects": [
         {
-            "source": "/public/?(.*)",
+            "source": "/public",
             "destination": "/",
+            "statusCode": 301
+        },
+        {
+            "source": "/public/:path*",
+            "destination": "/:path*",
             "statusCode": 301
         }
     ],
@@ -19,28 +24,28 @@
             "destination": "/docs/site/overview.html"
         },
         {
-            "source": "/docs/(.*)",
-            "destination": "/docs/site/$1"
+            "source": "/docs/:path*",
+            "destination": "/docs/site/:path*"
         },
         {
-            "source": "/images/(.*)",
-            "destination": "/docs/site/images/$1"
+            "source": "/images/:path*",
+            "destination": "/docs/site/images/:path*"
         },
         {
-            "source": "/scripts/(.*)",
-            "destination": "/docs/site/scripts/$1"
+            "source": "/scripts/:path*",
+            "destination": "/docs/site/scripts/:path*"
         },
         {
-            "source": "/landing/(.*)",
-            "destination": "/docs/site/landing/$1"
+            "source": "/styles/:path*",
+            "destination": "/docs/site/styles/:path*"
         },
         {
-            "source": "/(.*)\\.html",
-            "destination": "/docs/site/$1.html"
+            "source": "/landing/:path*",
+            "destination": "/docs/site/landing/:path*"
         },
         {
-            "source": "/(.*)",
-            "destination": "/docs/site/$1"
+            "source": "/:path*",
+            "destination": "/docs/site/:path*"
         }
     ]
 }
