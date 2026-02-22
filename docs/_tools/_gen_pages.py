@@ -181,7 +181,7 @@ def build_search_js():
         entries.append(f"  {{ title:'{en}', desc:'{desc_th}', href:'{slug}.html', icon:'{icon_key}' }}")
     # Add extra entries
     entries.append(f"  {{ title:'JWT Authentication', desc:'HS256 Bcrypt firebase/php-jwt token auth', href:'api-reference.html', icon:'lock' }}")
-    entries.append(f"  {{ title:'Landing Page', desc:'กลับไปหน้าหลัก OpenGenetics', href:'../public/index.html', icon:'home' }}")
+    entries.append(f"  {{ title:'Landing Page', desc:'กลับไปหน้าหลัก OpenGenetics', href:'../../public/index.html', icon:'home' }}")
     entries.append(f"  {{ title:'GitHub Repository', desc:'open-genetics/framework — MIT License', href:'https://github.com/open-genetics/framework', icon:'git' }}")
 
     # Build the icon map JS
@@ -481,8 +481,8 @@ def generate_page(slug, th_title, en_title, content, css):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{en_title} — OpenGenetics Docs</title>
 <meta name="description" content="{th_title} — OpenGenetics Framework Documentation">
-<link rel="icon" type="image/svg+xml" href="../public/favicon/favicon.svg">
-<link rel="manifest" href="../public/favicon/site.webmanifest">
+<link rel="icon" type="image/svg+xml" href="images/favicon/favicon.svg">
+<link rel="manifest" href="images/favicon/site.webmanifest">
 <meta name="theme-color" content="#06060f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -505,8 +505,8 @@ def generate_page(slug, th_title, en_title, content, css):
       <button id="menu-btn" class="menu-btn hidden items-center justify-center w-8 h-8 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.07] transition-all" style="display:none" aria-label="Menu">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
       </button>
-      <a href="../public/index.html" class="flex items-center shrink-0">
-        <img id="nav-logo" src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" class="h-[24px] w-auto">
+      <a href="../../public/index.html" class="flex items-center shrink-0">
+        <img id="nav-logo" src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" class="h-[24px] w-auto">
       </a>
     </div>
     <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -575,7 +575,7 @@ def generate_page(slug, th_title, en_title, content, css):
   <div class="footer-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:44px 48px;display:flex;align-items:center;gap:40px;flex-wrap:wrap;justify-content:space-between">
     <div style="flex:1;min-width:260px">
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
-        <img src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" style="height:60px;width:auto;opacity:.9" id="footer-logo">
+        <img src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" style="height:60px;width:auto;opacity:.9" id="footer-logo">
       </div>
       <p class="ft-desc" style="font-size:15px;margin:0 0 24px;line-height:1.6;font-style:italic">Enterprise PHP Micro-Framework</p>
       <a href="https://github.com/open-genetics/framework" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#e2e8f0;font-size:14px;font-weight:600;text-decoration:none;transition:all 200ms" onmouseover="this.style.background='rgba(255,255,255,.1)';this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.1)'">
@@ -614,7 +614,7 @@ def generate_page(slug, th_title, en_title, content, css):
   <div id="toc-links"></div>
 </div>
 
-<script src="../public/scripts/i18n-page.js"></script>
+<script src="scripts/i18n-page.js"></script>
 <script>
 // Theme Toggle
 const themeBtn = document.getElementById('theme-btn');
@@ -634,7 +634,7 @@ function applyTheme(t) {{
   document.getElementById('navbar').style.background = isDark ? 'rgba(14,14,26,.75)' : 'transparent';
   document.getElementById('navbar').style.borderBottomColor = isDark ? 'rgba(255,255,255,.055)' : 'rgba(0,0,0,.06)';
   document.getElementById('navbar').style.backdropFilter = isDark ? 'saturate(180%) blur(24px)' : 'saturate(180%) blur(20px)';
-  const logoSrc = isDark ? '../public/images/logo/open-genetics-logo-white.svg' : '../public/images/logo/open-genetics-logo.svg';
+  const logoSrc = isDark ? 'images/logo/open-genetics-logo-white.svg' : 'images/logo/open-genetics-logo.svg';
   document.getElementById('nav-logo').src = logoSrc;
   const fl = document.getElementById('footer-logo');
   if (fl) fl.src = logoSrc;
@@ -1194,7 +1194,10 @@ def main():
             'text-white bg-white/[0.06] transition-all" data-i18n="nav.blog">'
         )
         # Fix asset paths for blog/ subdirectory (one level deeper)
-        post_html = post_html.replace('../public/', '../../public/')
+        post_html = post_html.replace('href="images/', 'href="../images/')
+        post_html = post_html.replace('src="images/', 'src="../images/')
+        post_html = post_html.replace('src="scripts/', 'src="../scripts/')
+        post_html = post_html.replace('../../public/index.html', '../../../public/index.html')
         # Remove page-nav
         post_html = _re.sub(r'<div class="page-nav">.*?</div></div>', '', post_html, flags=_re.DOTALL)
         filepath = os.path.join(blog_dir, f'{post["slug"]}.html')

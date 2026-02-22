@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OpenGenetics — Documentation</title>
   <meta name="description" content="เอกสารประกอบการใช้งาน OpenGenetics Framework — Enterprise PHP Micro-Framework">
-  <link rel="icon" type="image/svg+xml" href="../public/favicon/favicon.svg">
-  <link rel="manifest" href="../public/favicon/site.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="images/favicon/favicon.svg">
+  <link rel="manifest" href="images/favicon/site.webmanifest">
   <meta name="theme-color" content="#06060f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1159,9 +1159,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </button>
-        <a href="../public/index.html" class="flex items-center shrink-0">
-          <img id="nav-logo" src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics"
-            class="h-[24px] w-auto">
+        <a href="../../public/index.html" class="flex items-center shrink-0">
+          <img id="nav-logo" src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics" class="h-[24px] w-auto">
         </a>
       </div>
       <!-- Center: Search (absolutely centered) -->
@@ -2124,7 +2123,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
         style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:36px 40px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:space-between">
         <div style="flex:1;min-width:260px">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-            <img src="../public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics"
+            <img src="images/logo/open-genetics-logo-white.svg" alt="OpenGenetics"
               style="height:32px;width:auto;opacity:.85" id="footer-logo">
           </div>
           <p style="font-size:13px;color:rgba(255,255,255,.3);margin:0 0 20px;line-height:1.6">Enterprise PHP
@@ -2199,7 +2198,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
   </main>
   </div>
 
-  <script src="../public/scripts/i18n-page.js"></script>
+  <script src="scripts/i18n-page.js"></script>
   <script>
     // ══════════════════════════════════════════════
     // Theme Toggle — ALWAYS start dark, then respect localStorage
@@ -2223,7 +2222,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
       document.getElementById('navbar').style.borderBottomColor = isDark ? 'rgba(255,255,255,.055)' : 'rgba(0,0,0,.06)';
       document.getElementById('navbar').style.backdropFilter = isDark ? 'saturate(180%) blur(24px)' : 'saturate(180%) blur(20px)';
       // Logo swap
-      const logoSrc = isDark ? '../public/images/logo/open-genetics-logo-white.svg' : '../public/images/logo/open-genetics-logo.svg';
+      const logoSrc = isDark ? 'images/logo/open-genetics-logo-white.svg' : 'images/logo/open-genetics-logo.svg';
       document.getElementById('nav-logo').src = logoSrc;
       const footerLogo = document.getElementById('footer-logo');
       if (footerLogo) footerLogo.src = logoSrc;
@@ -2350,7 +2349,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
       { title: 'CLI', desc: 'php bin/genetics mutate serve make:api', href: '#cli', icon: 'term' },
       { title: 'Deployment', desc: 'Production Apache XAMPP CORS APP_DEBUG', href: '#deployment', icon: 'rocket' },
       { title: 'JWT Authentication', desc: 'HS256 Bcrypt firebase/php-jwt token auth', href: '#api-reference', icon: 'lock' },
-      { title: 'Landing Page', desc: 'กลับไปหน้าหลัก OpenGenetics', href: '../public/index.html', icon: 'home' },
+      { title: 'Landing Page', desc: 'กลับไปหน้าหลัก OpenGenetics', href: '../../public/index.html', icon: 'home' },
       { title: 'GitHub Repository', desc: 'open-genetics/framework — MIT License', href: 'https://github.com/open-genetics/framework', icon: 'git' },
     ];
 
