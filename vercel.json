@@ -1,0 +1,35 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
+        {
+            "source": "/public/?",
+            "destination": "/",
+            "statusCode": 301
+        },
+        {
+            "source": "/public/(.*)",
+            "destination": "/$1",
+            "statusCode": 301
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/docs",
+            "destination": "/docs/site/overview.html"
+        },
+        {
+            "source": "/docs/(.*)",
+            "destination": "/docs/site/$1"
+        },
+        {
+            "source": "/",
+            "destination": "/public/index.html"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/public/$1"
+        }
+    ]
+}
