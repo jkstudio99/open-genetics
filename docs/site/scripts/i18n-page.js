@@ -224,6 +224,7 @@
     'dh.locale_files': { th: 'ไฟล์ภาษา (Locale Files)', en: 'Locale Files' },
     'dh.react_hook': { th: 'React Hook', en: 'React Hook' },
     'dh.vanilla_js': { th: 'Vanilla JS', en: 'Vanilla JS' },
+    'dh.docs_generate': { th: 'docs:generate', en: 'docs:generate' },
     'dh.make_endpoint': { th: 'make:endpoint', en: 'make:endpoint' },
     'dh.apache_htaccess': { th: 'Apache .htaccess', en: 'Apache .htaccess' },
     'dh.prod_checklist': { th: 'Production Checklist', en: 'Production Checklist' },

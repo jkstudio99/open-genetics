@@ -618,13 +618,13 @@ function generateDocs(string $root): void
     echo "  📚 Scanning `api/` directory for endpoints...\n\n";
 
     $apiDir = $root . '/api';
-    $outputPath = $root . '/docs/openapi.json';
+    $outputPath = $root . '/public/openapi.json';
 
     $generator = new \OpenGenetics\Core\OpenApiGenerator($apiDir);
     
     if ($generator->generate($outputPath)) {
         echo "  ✅ OpenAPI specification generated successfully!\n";
-        echo "  📄 Saved to: docs/openapi.json\n\n";
+        echo "  📄 Saved to: public/openapi.json\n\n";
     } else {
         echo "  ❌ Failed to generate OpenAPI specification.\n\n";
     }

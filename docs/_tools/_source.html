@@ -1554,7 +1554,8 @@
       <div>
         <p data-i18n-html="install.default_admin"><strong>Default Admin:</strong> <code>admin@opengenetics.io</code> /
           <code>password</code> &mdash;
-          เปลี่ยนรหัสผ่านทันทีหลัง deploy</p>
+          เปลี่ยนรหัสผ่านทันทีหลัง deploy
+        </p>
       </div>
     </div>
 
@@ -2042,8 +2043,14 @@ X-Locale: th</code></pre>
 <span class="fn">php bin/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
 <span class="fn">php bin/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
 <span class="fn">php bin/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
+<span class="fn">php bin/genetics</span> docs:generate     <span class="cm"># Generate OpenAPI JSON from source code</span>
 <span class="fn">php bin/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
 <span class="fn">php bin/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
+
+    <h3 data-i18n="dh.docs_generate">docs:generate</h3>
+    <pre><code>$ <span class="fn">php bin/genetics docs:generate</span>
+
+  ✓ OpenAPI spec generated successfully: public/openapi.json</code></pre>
 
     <h3 data-i18n="dh.make_endpoint">make:endpoint</h3>
     <pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> products/list
@@ -2075,6 +2082,10 @@ X-Locale: th</code></pre>
         <tr>
           <td><code>make:middleware &lt;name&gt;</code></td>
           <td>Scaffold middleware class</td>
+        </tr>
+        <tr>
+          <td><code>docs:generate</code></td>
+          <td>Automatically generate OpenAPI definitions (<code>openapi.json</code>)</td>
         </tr>
         <tr>
           <td><code>new &lt;name&gt;</code></td>
