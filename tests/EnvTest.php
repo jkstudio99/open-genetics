@@ -22,16 +22,7 @@ class EnvTest extends TestCase
     {
         @unlink($this->tmpDir . '/.env');
         @rmdir($this->tmpDir);
-
-        // Reset Env state via reflection
-        $ref = new ReflectionClass(Env::class);
-        $loaded = $ref->getProperty('loaded');
-        $loaded->setAccessible(true);
-        $loaded->setValue(null, false);
-
-        $cache = $ref->getProperty('cache');
-        $cache->setAccessible(true);
-        $cache->setValue(null, []);
+        Env::reset();
     }
 
     public function testLoadAndGet(): void
@@ -77,9 +68,61 @@ class EnvTest extends TestCase
         $this->assertSame('', Env::get('# comment'));
     }
 
-    public function testMissingFileThrows(): void
+    public function testMissingFileIsGraceful(): void
     {
-        $this->expectException(RuntimeException::class);
-        Env::load('/nonexistent/path');
+        // Should NOT throw — graceful return when .env missing
+        Env::load('/nonexistent/path/that/does/not/exist');
+        $this->assertSame('default', Env::get('MISSING_KEY', 'default'));
+    }
+
+    public function testInlineCommentStripped(): void
+    {
+        file_put_contents($this->tmpDir . '/.env', "KEY=value # this is a comment\n");
+        Env::load($this->tmpDir);
+        $this->assertSame('value', Env::get('KEY'));
+    }
+
+    public function testHashInsideDoubleQuotesKept(): void
+    {
+        file_put_contents($this->tmpDir . '/.env', 'DB_URL="mysql://user:p#ss@host/db"' . "\n");
+        Env::load($this->tmpDir);
+        $this->assertSame('mysql://user:p#ss@host/db', Env::get('DB_URL'));
+    }
+
+    public function testHashInsideSingleQuotesKept(): void
+    {
+        file_put_contents($this->tmpDir . '/.env', "SECRET='abc#123'\n");
+        Env::load($this->tmpDir);
+        $this->assertSame('abc#123', Env::get('SECRET'));
+    }
+
+    public function testBoolHelper(): void
+    {
+        file_put_contents($this->tmpDir . '/.env', "FLAG_TRUE=true\nFLAG_ONE=1\nFLAG_YES=yes\nFLAG_FALSE=false\n");
+        Env::load($this->tmpDir);
+        $this->assertTrue(Env::bool('FLAG_TRUE'));
+        $this->assertTrue(Env::bool('FLAG_ONE'));
+        $this->assertTrue(Env::bool('FLAG_YES'));
+        $this->assertFalse(Env::bool('FLAG_FALSE'));
+        $this->assertFalse(Env::bool('NONEXISTENT'));
+        $this->assertTrue(Env::bool('NONEXISTENT', true));
+    }
+
+    public function testIntHelper(): void
+    {
+        file_put_contents($this->tmpDir . '/.env', "PORT=8080\n");
+        Env::load($this->tmpDir);
+        $this->assertSame(8080, Env::int('PORT'));
+        $this->assertSame(3306, Env::int('NONEXISTENT', 3306));
+    }
+
+    public function testLoadIsIdempotent(): void
+    {
+        file_put_contents($this->tmpDir . '/.env', "KEY=first\n");
+        Env::load($this->tmpDir);
+        // Second load should be no-op (already loaded)
+        file_put_contents($this->tmpDir . '/.env', "KEY=second\n");
+        Env::load($this->tmpDir);
+        $this->assertSame('first', Env::get('KEY'));
     }
 }

@@ -9,23 +9,31 @@ use OpenGenetics\Middleware\AuthMiddleware;
 use OpenGenetics\Middleware\RateLimitMiddleware;
 
 /**
- * 🧬 OpenGenetics — File-based API Router (v2.0 with Middleware Pipeline)
+ * 🧬 OpenGenetics — File-based API Router (v2.1 with Path Parameters)
  *
  * Maps HTTP requests to PHP files in the api/ directory.
  * Each .php file = one endpoint. Supports REST methods via static class pattern.
- * Now supports Middleware Pipeline via #[Middleware] PHP 8.1+ attributes.
+ * Supports Middleware Pipeline via #[Middleware] PHP 8.1+ attributes.
+ * Supports path parameters via {param} syntax in directory/file names.
  *
- * Example:
- *   api/auth/login.php → POST /api/auth/login
+ * Examples:
+ *   api/auth/login.php        → POST /api/auth/login
+ *   api/users/{id}.php        → GET  /api/users/123  ($params['id'] = '123')
+ *   api/users/{id}/posts.php  → GET  /api/users/123/posts
  *
  *   #[Middleware('auth', 'rate:10,60')]
- *   class Products { ... }
+ *   class UsersId {
+ *       public static function get(array $body, array $params): void { ... }
+ *   }
  */
 final class Router
 {
     private string $basePath;
     private string $apiDir;
     private ?string $cachedUri = null;
+
+    /** @var array<string, string> Extracted path parameters from current request */
+    private array $pathParams = [];
 
     public function __construct(string $basePath, string $apiDir = 'api')
     {
@@ -49,7 +57,7 @@ final class Router
 
         $uri = $this->parseUri();
 
-        // Resolve file path
+        // Resolve file path (also extracts path params into $this->pathParams)
         $filePath = $this->resolveFile($uri);
 
         if ($filePath === null) {
@@ -60,8 +68,8 @@ final class Router
         // Include the endpoint file
         require_once $filePath;
 
-        // Determine the handler class name from the file
-        $className = $this->resolveClassName($uri);
+        // Determine the handler class name from the resolved (non-param) URI
+        $className = $this->resolveClassName($this->resolvedUri ?? $uri);
 
         if (!class_exists($className)) {
             Response::json(['error' => 'Handler class not found'], 500);
@@ -79,19 +87,37 @@ final class Router
         // Parse request body
         $body = $this->parseBody();
 
+        // Expose path params via $_ROUTE superglobal-style + merge into body
+        $params = $this->pathParams;
+
         // Collect middleware stack: global + endpoint-level
         $middleware = $this->collectMiddleware($className);
 
         // Execute through Pipeline
         Pipeline::send($body)
             ->through($middleware)
-            ->then(function (array $body) use ($className, $handler) {
+            ->then(function (array $body) use ($className, $handler, $params) {
                 try {
-                    $className::$handler($body);
+                    // Pass $params as second argument if method accepts it
+                    $ref = new \ReflectionMethod($className, $handler);
+                    if (count($ref->getParameters()) >= 2) {
+                        $className::$handler($body, $params);
+                    } else {
+                        $className::$handler($body);
+                    }
                 } catch (\Throwable $e) {
                     ErrorHandler::handleException($e);
                 }
             });
+    }
+
+    /**
+     * Get extracted path parameters from the current request.
+     * e.g., for /api/users/{id} matched against /api/users/42 → ['id' => '42']
+     */
+    public function params(): array
+    {
+        return $this->pathParams;
     }
 
     /**
@@ -146,25 +172,129 @@ final class Router
         return $this->cachedUri;
     }
 
+    /** Resolved URI after stripping path param segments (used for class name resolution) */
+    private ?string $resolvedUri = null;
+
     /**
      * Resolve URI to a PHP file in the api/ directory.
+     * Supports {param} wildcards: api/users/{id}.php matches /api/users/42
      */
     private function resolveFile(string $uri): ?string
     {
+        $this->pathParams  = [];
+        $this->resolvedUri = null;
+
         if (empty($uri)) {
             $uri = 'index';
         }
 
+        // 1. Exact match
         $file = "{$this->basePath}/{$this->apiDir}/{$uri}.php";
-
         if (file_exists($file)) {
+            $this->resolvedUri = $uri;
             return $file;
         }
 
-        // Try index.php in directory
+        // 2. index.php in directory
         $indexFile = "{$this->basePath}/{$this->apiDir}/{$uri}/index.php";
         if (file_exists($indexFile)) {
+            $this->resolvedUri = $uri . '/index';
             return $indexFile;
+        }
+
+        // 3. Path parameter matching — scan api/ for {param} patterns
+        $result = $this->matchParamRoute($uri);
+        if ($result !== null) {
+            return $result;
+        }
+
+        return null;
+    }
+
+    /**
+     * Recursively scan api/ directory for {param} route patterns.
+     * e.g., api/users/{id}.php matches URI "users/42"
+     */
+    private function matchParamRoute(string $uri): ?string
+    {
+        $uriParts  = explode('/', trim($uri, '/'));
+        $apiBase   = "{$this->basePath}/{$this->apiDir}";
+
+        return $this->scanForParamMatch($apiBase, $uriParts, [], '');
+    }
+
+    /**
+     * Recursive directory scan for {param} file/folder matches.
+     *
+     * @param string   $dir       Current directory being scanned
+     * @param string[] $remaining Remaining URI segments to match
+     * @param array    $params    Accumulated path params so far
+     * @param string   $uriSoFar URI segments matched so far (for class name)
+     */
+    private function scanForParamMatch(
+        string $dir,
+        array  $remaining,
+        array  $params,
+        string $uriSoFar
+    ): ?string {
+        if (empty($remaining)) {
+            // Try index.php at this level
+            $index = $dir . '/index.php';
+            if (file_exists($index)) {
+                $this->pathParams  = $params;
+                $this->resolvedUri = trim($uriSoFar . '/index', '/');
+                return $index;
+            }
+            return null;
+        }
+
+        $segment = array_shift($remaining);
+        $items   = is_dir($dir) ? (scandir($dir) ?: []) : [];
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') continue;
+            $itemPath = $dir . '/' . $item;
+
+            // Match {param} file: e.g., {id}.php
+            if (empty($remaining) && is_file($itemPath) && preg_match('/^\{(\w+)\}\.php$/', $item, $m)) {
+                $newParams            = array_merge($params, [$m[1] => $segment]);
+                $this->pathParams     = $newParams;
+                $this->resolvedUri    = trim($uriSoFar . '/' . $item, '/.');
+                // Use placeholder name for class resolution
+                $this->resolvedUri    = trim($uriSoFar . '/' . preg_replace('/\{\w+\}/', '_param_', $item), '/');
+                $this->resolvedUri    = rtrim($this->resolvedUri, '.php');
+                return $itemPath;
+            }
+
+            // Match {param} directory: e.g., {id}/
+            if (is_dir($itemPath) && preg_match('/^\{(\w+)\}$/', $item, $m)) {
+                $newParams = array_merge($params, [$m[1] => $segment]);
+                $result    = $this->scanForParamMatch(
+                    $itemPath,
+                    $remaining,
+                    $newParams,
+                    trim($uriSoFar . '/' . $item, '/')
+                );
+                if ($result !== null) return $result;
+            }
+
+            // Match exact segment as directory
+            if (is_dir($itemPath) && $item === $segment) {
+                $result = $this->scanForParamMatch(
+                    $itemPath,
+                    $remaining,
+                    $params,
+                    trim($uriSoFar . '/' . $item, '/')
+                );
+                if ($result !== null) return $result;
+            }
+
+            // Match exact segment as file (last segment)
+            if (empty($remaining) && is_file($itemPath) && $item === $segment . '.php') {
+                $this->pathParams  = $params;
+                $this->resolvedUri = trim($uriSoFar . '/' . $segment, '/');
+                return $itemPath;
+            }
         }
 
         return null;
@@ -173,6 +303,7 @@ final class Router
     /**
      * Convert URI path to a PascalCase class name.
      * e.g., "auth/login" → "AuthLogin", "audit-logs" → "AuditLogs"
+     * Path param placeholders {id} → "Id" (e.g., "users/{id}" → "UsersId")
      */
     private function resolveClassName(string $uri): string
     {
@@ -180,6 +311,9 @@ final class Router
             $uri = 'index';
         }
 
+        // Normalize {param} → param for class name
+        $uri   = preg_replace('/\{(\w+)\}/', '$1', $uri);
+        $uri   = str_replace('_param_', 'Id', $uri ?? '');
         $parts = explode('/', $uri);
         $name  = '';
 

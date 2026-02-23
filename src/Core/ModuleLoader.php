@@ -119,18 +119,27 @@ final class ModuleLoader
             return;
         }
 
-        foreach (glob($modulesDir . '/*/*.php') as $file) {
+        foreach (glob($modulesDir . '/*/*.php') ?: [] as $file) {
+            $classesBefore = get_declared_classes();
             require_once $file;
-        }
+            $newClasses = array_diff(get_declared_classes(), $classesBefore);
 
-        foreach (get_declared_classes() as $class) {
-            if (
-                in_array(GeneticModule::class, class_implements($class) ?: [], true) &&
-                !str_contains($class, 'GeneticModuleBase')
-            ) {
-                $module = new $class();
-                self::$modules[$module->name()] = $module;
-                self::$config = array_merge($module->config(), self::$config);
+            foreach ($newClasses as $class) {
+                try {
+                    $ref = new \ReflectionClass($class);
+                    if (
+                        $ref->implementsInterface(GeneticModule::class) &&
+                        !$ref->isAbstract() &&
+                        !$ref->isInterface() &&
+                        $class !== GeneticModuleBase::class
+                    ) {
+                        $module = new $class();
+                        self::$modules[$module->name()] = $module;
+                        self::$config = array_merge($module->config(), self::$config);
+                    }
+                } catch (\ReflectionException) {
+                    // Skip uninstantiable classes
+                }
             }
         }
     }

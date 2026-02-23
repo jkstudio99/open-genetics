@@ -105,4 +105,105 @@ class ValidatorTest extends TestCase
         );
         $this->assertTrue($v->fails());
     }
+
+    public function testUrlPasses(): void
+    {
+        $v = Validator::make(['site' => 'https://example.com'], ['site' => 'url']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testUrlFails(): void
+    {
+        $v = Validator::make(['site' => 'not-a-url'], ['site' => 'url']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testDatePasses(): void
+    {
+        $v = Validator::make(['dob' => '2000-01-15'], ['dob' => 'date']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testDateFails(): void
+    {
+        $v = Validator::make(['dob' => '15-01-2000'], ['dob' => 'date']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testDateCustomFormat(): void
+    {
+        $v = Validator::make(['dob' => '15/01/2000'], ['dob' => 'date:d/m/Y']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testBooleanPasses(): void
+    {
+        foreach (['1', '0', 'true', 'false', true, false, 1, 0] as $val) {
+            $v = Validator::make(['flag' => $val], ['flag' => 'boolean']);
+            $this->assertTrue($v->passes(), "Expected boolean pass for: " . var_export($val, true));
+        }
+    }
+
+    public function testBooleanFails(): void
+    {
+        $v = Validator::make(['flag' => 'yes'], ['flag' => 'boolean']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testArrayPasses(): void
+    {
+        $v = Validator::make(['tags' => ['a', 'b']], ['tags' => 'array']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testArrayFails(): void
+    {
+        $v = Validator::make(['tags' => 'not-array'], ['tags' => 'array']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testNullableSkipsOtherRules(): void
+    {
+        // nullable|email should pass when value is empty
+        $v = Validator::make(['email' => ''], ['email' => 'nullable|email']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testNullableWithValueStillValidates(): void
+    {
+        // nullable|email should fail when value is present but invalid
+        $v = Validator::make(['email' => 'bad-email'], ['email' => 'nullable|email']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testIntegerPasses(): void
+    {
+        $v = Validator::make(['count' => '42'], ['count' => 'integer']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testIntegerFails(): void
+    {
+        $v = Validator::make(['count' => '3.14'], ['count' => 'integer']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testStringPasses(): void
+    {
+        $v = Validator::make(['name' => 'Alice'], ['name' => 'string']);
+        $this->assertTrue($v->passes());
+    }
+
+    public function testStringFails(): void
+    {
+        $v = Validator::make(['name' => 123], ['name' => 'string']);
+        $this->assertTrue($v->fails());
+    }
+
+    public function testArrayRulesFormat(): void
+    {
+        // Rules can be passed as array instead of pipe-string
+        $v = Validator::make(['email' => 'x'], ['email' => ['required', 'email']]);
+        $this->assertTrue($v->fails());
+    }
 }

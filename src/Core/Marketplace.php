@@ -139,7 +139,12 @@ final class Marketplace
 
         // Simple single-file module
         if (($meta['install_type'] ?? '') === 'single-file' && isset($meta['file_url'])) {
-            $content  = @file_get_contents($meta['file_url']);
+            if (!self::isSafeUrl($meta['file_url'])) {
+                return ['success' => false, 'message' => "Package URL is not from a trusted source."];
+            }
+
+            $ctx     = stream_context_create(['http' => ['timeout' => 10]]);
+            $content = @file_get_contents($meta['file_url'], false, $ctx);
             if ($content === false) {
                 return ['success' => false, 'message' => "Failed to download package."];
             }
@@ -248,6 +253,36 @@ final class Marketplace
                 'install_type' => 'github',
             ],
         ];
+    }
+
+    // ── Security ──────────────────────────────────────────
+
+    /** Trusted domains for package downloads */
+    private const TRUSTED_DOMAINS = [
+        'raw.githubusercontent.com',
+        'github.com',
+        'packagist.org',
+    ];
+
+    /**
+     * Validate that a URL points to a trusted domain (SSRF protection).
+     */
+    private static function isSafeUrl(string $url): bool
+    {
+        $parsed = parse_url($url);
+        if (!$parsed || !isset($parsed['scheme'], $parsed['host'])) {
+            return false;
+        }
+        if (!in_array($parsed['scheme'], ['https', 'http'], true)) {
+            return false;
+        }
+        $host = strtolower($parsed['host']);
+        foreach (self::TRUSTED_DOMAINS as $trusted) {
+            if ($host === $trusted || str_ends_with($host, '.' . $trusted)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ── Cache helpers ─────────────────────────────────────
