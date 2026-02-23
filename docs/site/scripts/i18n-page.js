@@ -238,6 +238,10 @@
     'install.step4_desc': { th: 'สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ', en: 'Auto-create tables + Seed RBAC + Admin user' },
     'install.step5': { th: '5. เริ่มสร้าง API', en: '5. Start Building API' },
     'install.step5_desc': { th: 'เขียน API ได้ทันที — ไม่ต้องประกาศ route', en: 'Write APIs instantly — no route declaration needed' },
+    'install.default_admin': {
+      th: '<strong>Default Admin:</strong> <code>admin@opengenetics.io</code> / <code>password</code> &mdash; เปลี่ยนรหัสผ่านทันทีหลัง deploy',
+      en: '<strong>Default Admin:</strong> <code>admin@opengenetics.io</code> / <code>password</code> &mdash; ปลี่ยนรหัสผ่านทันทีหลัง deploy'
+    },
 
     // Doc description paragraphs
     'dh.configuration.desc': {
