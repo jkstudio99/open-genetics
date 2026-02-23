@@ -415,7 +415,7 @@ function seed(): void
     // Seed roles
     $roles = [
         [1, 'ADMIN', 'Full system administrator'],
-        [2, 'HR', 'Human Resources manager'],
+        [2, 'MANAGER', 'Manager'],
         [3, 'EMPLOYEE', 'Regular employee'],
     ];
 

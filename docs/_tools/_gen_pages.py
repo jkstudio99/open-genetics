@@ -887,7 +887,7 @@ def main():
 <p>เวอร์ชัน 1.0 มาพร้อมกับฟีเจอร์ครบครัน:</p>
 <ul>
 <li><strong>JWT Authentication</strong> — HS256 auth พร้อม 12-round bcrypt hashing</li>
-<li><strong>Genetic RBAC</strong> — Role-Based Access Control รองรับ Admin, HR, Employee guards</li>
+<li><strong>Genetic RBAC</strong> — Role-Based Access Control รองรับ Admin, Manager, Employee guards</li>
 <li><strong>i18n Engine</strong> — Thai/English instant switching</li>
 <li><strong>Audit Trail</strong> — Non-blocking auto-logging ทุก action</li>
 <li><strong>Dual-Frontend SDK</strong> — React Hook + Vanilla JS</li>
@@ -921,7 +921,7 @@ def main():
         {
             'slug': 'genetic-rbac',
             'title': 'Getting Started with Genetic RBAC',
-            'desc': 'เรียนรู้วิธีใช้ระบบ Role-Based Access Control แบบ Genetic ที่รองรับ Admin, HR และ Employee guards',
+            'desc': 'เรียนรู้วิธีใช้ระบบ Role-Based Access Control แบบ Genetic ที่รองรับ Admin, Manager และ Employee guards',
             'date': '20 Feb 2026',
             'author': 'jkstudio99',
             'gradient': 'linear-gradient(135deg, #818cf8 0%, #f472b6 100%)',
@@ -929,13 +929,13 @@ def main():
             'hero_sub': 'Role-Based Access Control',
             'content': """
 <h2 id="what-is-rbac">What is Genetic RBAC?</h2>
-<p>Genetic RBAC เป็นระบบจัดการสิทธิ์แบบ Role-Based ที่ออกแบบมาให้ใช้งานง่ายแต่ทรงพลัง รองรับ guard หลายระดับ ตั้งแต่ Admin, HR ไปจนถึง Employee</p>
+<p>Genetic RBAC เป็นระบบจัดการสิทธิ์แบบ Role-Based ที่ออกแบบมาให้ใช้งานง่ายแต่ทรงพลัง รองรับ guard หลายระดับ ตั้งแต่ Admin, Manager ไปจนถึง Employee</p>
 
 <h2 id="setup">Setup</h2>
 <p>เปิดใช้งาน RBAC ในไฟล์ config:</p>
 <pre><code><span class="st">'guards'</span> => [
     <span class="st">'admin'</span>  => App\\Guards\\AdminGuard::<span class="kw">class</span>,
-    <span class="st">'hr'</span>     => App\\Guards\\HRGuard::<span class="kw">class</span>,
+    <span class="st">'manager'</span>  => App\\Guards\\ManagerGuard::<span class="kw">class</span>,
     <span class="st">'employee'</span> => App\\Guards\\EmployeeGuard::<span class="kw">class</span>,
 ]</code></pre>
 
@@ -948,7 +948,7 @@ def main():
 
 <h2 id="custom-guards">Custom Guards</h2>
 <p>สร้าง guard ของตัวเองได้ง่ายๆ:</p>
-<pre><code><span class="kw">class</span> <span class="cl">HRGuard</span> <span class="kw">implements</span> Guard {
+<pre><code><span class="kw">class</span> <span class="cl">ManagerGuard</span> <span class="kw">implements</span> Guard {
     <span class="kw">public function</span> <span class="fn">check</span>(<span class="vr">$user</span>): <span class="nb">bool</span> {
         <span class="kw">return</span> <span class="vr">$user</span>->role === <span class="st">'hr'</span>
             || <span class="vr">$user</span>->role === <span class="st">'admin'</span>;

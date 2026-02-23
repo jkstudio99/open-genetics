@@ -10,18 +10,18 @@ use OpenGenetics\Core\Response;
  * 🧬 OpenGenetics — Genetic RBAC Guard
  * 
  * Role-Based Access Control at the DNA level of the framework.
- * Supports 3 roles: ADMIN (1), HR (2), EMPLOYEE (3).
+ * Supports 3 roles: ADMIN (1), MANAGER (2), EMPLOYEE (3).
  * 
  * Usage:
  *   Guard::requireAuth();              // Any authenticated user
  *   Guard::requireRole('ADMIN');       // Admin only
- *   Guard::requireRole('ADMIN', 'HR'); // Admin or HR
+ *   Guard::requireRole('ADMIN', 'MANAGER'); // Admin or Manager
  */
 final class Guard
 {
     /** Role constants */
     public const ADMIN    = 'ADMIN';
-    public const HR       = 'HR';
+    public const MANAGER  = 'MANAGER';
     public const EMPLOYEE = 'EMPLOYEE';
 
     /** Current authenticated user (cached per request) */
@@ -45,7 +45,7 @@ final class Guard
     /**
      * Require specific role(s). Sends 403 if role doesn't match.
      *
-     * @param string ...$allowedRoles One or more role names (ADMIN, HR, EMPLOYEE)
+     * @param string ...$allowedRoles One or more role names (ADMIN, MANAGER, EMPLOYEE)
      */
     public static function requireRole(string ...$allowedRoles): array
     {

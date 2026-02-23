@@ -1883,8 +1883,8 @@ X-Locale: th</code></pre>
 <span class="cm">// ต้องเป็น Admin เท่านั้น</span>
 <span class="cl">Guard</span>::<span class="fn">requireRole</span>(<span class="cl">Guard</span>::<span class="vr">ADMIN</span>);   <span class="cm">// role_id = 1</span>
 
-<span class="cm">// ต้องเป็น HR หรือสูงกว่า</span>
-<span class="cl">Guard</span>::<span class="fn">requireRole</span>(<span class="cl">Guard</span>::<span class="vr">HR</span>);      <span class="cm">// role_id = 2</span>
+<span class="cm">// ต้องเป็น Manager หรือสูงกว่า</span>
+<span class="cl">Guard</span>::<span class="fn">requireRole</span>(<span class="cl">Guard</span>::<span class="vr">MANAGER</span>);      <span class="cm">// role_id = 2</span>
 
 <span class="cm">// ดึงข้อมูล user ปัจจุบัน</span>
 <span class="vr">$user</span> = <span class="cl">Guard</span>::<span class="fn">user</span>();
@@ -1910,9 +1910,9 @@ X-Locale: th</code></pre>
           <td>ผู้ดูแลระบบ — สิทธิ์สูงสุด</td>
         </tr>
         <tr>
-          <td><code>Guard::HR</code></td>
+          <td><code>Guard::MANAGER</code></td>
           <td>2</td>
-          <td>HR — จัดการพนักงาน</td>
+          <td>Manager — ผู้จัดการแผนก</td>
         </tr>
         <tr>
           <td><code>Guard::EMPLOYEE</code></td>
@@ -2103,7 +2103,8 @@ X-Locale: th</code></pre>
     <p data-i18n="dh.openapi.setup.desc">ใช้คำสั่งสคริปต์ CLI เพื่อสร้างไฟล์ JSON สำหรับ OpenAPI:</p>
     <pre><code>$ <span class="fn">php add/genetics</span> docs:generate</code></pre>
     <p data-i18n="dh.openapi.output">คำสั่งนี้จะทำการ scan โฟลเดอร์ <code>api/</code> ทั้งหมดเพื่อสร้างไฟล์
-      <code>public/openapi.json</code></p>
+      <code>public/openapi.json</code>
+    </p>
 
     <h3 data-i18n="dh.openapi.phpdoc">การเขียน PHPDoc</h3>
     <p data-i18n="dh.openapi.phpdoc.desc">คุณสามารถใช้ PHPDoc บน class ของ endpoint เพื่อเพิ่มคำอธิบายใน API Spec:</p>
@@ -2408,7 +2409,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
       { title: 'API Reference', desc: 'Response::json Response::error Response::paginate', href: '#api-reference', icon: 'code' },
       { title: 'Database', desc: 'DB::query DB::fetch DB::insert PDO MySQL', href: '#database', icon: 'db' },
       { title: 'Response', desc: 'Response helper json error paginate', href: '#response', icon: 'out' },
-      { title: 'Guard / RBAC', desc: 'Guard::requireRole Admin HR Employee authorization', href: '#guard', icon: 'shield' },
+      { title: 'Guard / RBAC', desc: 'Guard::requireRole Admin Manager Employee authorization', href: '#guard', icon: 'shield' },
       { title: 'i18n', desc: 'Internationalization Thai English X-Locale lang', href: '#i18n', icon: 'globe' },
       { title: 'Audit Trail', desc: 'AuditLogger log CREATE UPDATE DELETE LOGIN', href: '#audit', icon: 'clip' },
       { title: 'Genetic SDK', desc: 'React Hook Vanilla JS useGenetics GeneticSDK', href: '#sdk', icon: 'dna' },
