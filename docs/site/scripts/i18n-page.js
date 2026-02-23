@@ -188,6 +188,7 @@
     'ds.sdk': { th: 'Genetic SDK', en: 'Genetic SDK' },
     'ds.api_ref': { th: 'API Reference', en: 'API Reference' },
     'ds.cli': { th: 'CLI Tool', en: 'CLI Tool' },
+    'ds.openapi': { th: 'OpenAPI Generator', en: 'OpenAPI Generator' },
     'ds.deployment': { th: 'การ Deploy', en: 'Deployment' },
 
     // Docs section headings
@@ -212,6 +213,13 @@
     'dh.sdk': { th: '# Genetic SDK', en: '# Genetic SDK' },
     'dh.api_ref': { th: '# API Reference', en: '# API Reference' },
     'dh.cli': { th: '# CLI Tool', en: '# CLI Tool' },
+    'dh.openapi': { th: '# OpenAPI Generator', en: '# OpenAPI Generator' },
+    'dh.openapi.desc': { th: 'ระบบสร้าง OpenAPI 3.0 (Swagger) อัตโนมัติจากไฟล์ในโฟลเดอร์ api/ และ PHPDoc comments', en: 'Automatically generates OpenAPI 3.0 (Swagger) from api/ files and PHPDoc comments.' },
+    'dh.openapi.setup': { th: 'การสร้าง Specification', en: 'Generating Specification' },
+    'dh.openapi.setup.desc': { th: 'ใช้คำสั่งสคริปต์ CLI เพื่อสร้างไฟล์ JSON สำหรับ OpenAPI:', en: 'Use the CLI script to generate the OpenAPI JSON file:' },
+    'dh.openapi.output': { th: 'คำสั่งนี้จะทำการ scan โฟลเดอร์ <code>api/</code> ทั้งหมดเพื่อสร้างไฟล์ <code>public/openapi.json</code>', en: 'This command scans all <code>api/</code> endpoints to generate <code>public/openapi.json</code>' },
+    'dh.openapi.phpdoc': { th: 'การเขียน PHPDoc', en: 'Writing PHPDoc' },
+    'dh.openapi.phpdoc.desc': { th: 'คุณสามารถใช้ PHPDoc บน class ของ endpoint เพื่อเพิ่มคำอธิบายใน API Spec:', en: 'You can use PHPDoc on the endpoint class to add a description to the API Spec:' },
     'dh.deployment': { th: '# Deployment', en: '# Deployment' },
 
     // Doc sub-headings

@@ -26,6 +26,7 @@ PAGES = [
     ('audit-trail',        'Audit Trail',          'Audit Trail',         'ds.audit'),
     ('sdk',                'Genetic SDK',          'Genetic SDK',         'ds.sdk'),
     ('cli',                'CLI Tool',             'CLI Tool',            'ds.cli'),
+    ('openapi',            'OpenAPI Generator',    'OpenAPI Generator',   'ds.openapi'),
     ('deployment',         'การ Deploy',            'Deployment',          'ds.deployment'),
 ]
 
@@ -34,7 +35,7 @@ GROUPS = {
     'directory-structure': 'structure', 'architecture': 'structure', 'request-lifecycle': 'structure',
     'api-reference': 'api-ref', 'database': 'api-ref', 'response': 'api-ref',
     'guard': 'api-ref', 'i18n': 'api-ref', 'audit-trail': 'api-ref',
-    'sdk': 'tools', 'cli': 'tools', 'deployment': 'tools',
+    'sdk': 'tools', 'cli': 'tools', 'openapi': 'tools', 'deployment': 'tools',
 }
 
 # ── Heroicon SVG strings for search icons ──
@@ -66,7 +67,7 @@ SEARCH_ICONS = {
     'request-lifecycle': 'bolt', 'api-reference': 'code',
     'database': 'db', 'response': 'out', 'guard': 'shield',
     'i18n': 'globe', 'audit-trail': 'clip', 'sdk': 'dna',
-    'cli': 'term', 'deployment': 'rocket',
+    'cli': 'term', 'openapi': 'code', 'deployment': 'rocket',
 }
 
 # ── Extract content sections from _source.html ──

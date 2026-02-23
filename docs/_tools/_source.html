@@ -2094,6 +2094,29 @@ X-Locale: th</code></pre>
       </tbody>
     </table>
 
+    <!-- OpenAPI Generator -->
+    <h2 id="openapi"><a href="#openapi" data-i18n="dh.openapi"># OpenAPI Generator</a></h2>
+    <p data-i18n="dh.openapi.desc">ระบบสร้าง OpenAPI 3.0 (Swagger) อัตโนมัติจากไฟล์ในโฟลเดอร์ api/ และ PHPDoc comments
+    </p>
+
+    <h3 data-i18n="dh.openapi.setup">การสร้าง Specification</h3>
+    <p data-i18n="dh.openapi.setup.desc">ใช้คำสั่งสคริปต์ CLI เพื่อสร้างไฟล์ JSON สำหรับ OpenAPI:</p>
+    <pre><code>$ <span class="fn">php bin/genetics</span> docs:generate</code></pre>
+    <p data-i18n="dh.openapi.output">คำสั่งนี้จะทำการ scan โฟลเดอร์ <code>api/</code> ทั้งหมดเพื่อสร้างไฟล์
+      <code>public/openapi.json</code></p>
+
+    <h3 data-i18n="dh.openapi.phpdoc">การเขียน PHPDoc</h3>
+    <p data-i18n="dh.openapi.phpdoc.desc">คุณสามารถใช้ PHPDoc บน class ของ endpoint เพื่อเพิ่มคำอธิบายใน API Spec:</p>
+    <pre><code><span class="cm">/**
+ * User Profile
+ * 
+ * Retrieves the profile of the currently logged-in user.
+ */</span>
+<span class="kw">class</span> <span class="cl">ProfileEndpoint</span>
+{
+    <span class="kw">public function</span> <span class="fn">get</span>() { ... }
+}</code></pre>
+
     <!-- Deployment -->
     <h2 id="deployment"><a href="#deployment" data-i18n="dh.deployment"># Deployment</a></h2>
     <h3 data-i18n="dh.apache_htaccess">Apache .htaccess</h3>
