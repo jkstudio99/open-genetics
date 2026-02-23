@@ -8,7 +8,7 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP 8.1+"></a>
     <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL">
-    <img src="https://img.shields.io/badge/version-2.0.3-6c63ff.svg" alt="v2.0.3">
+    <img src="https://img.shields.io/badge/version-2.1.0-6c63ff.svg" alt="v2.1.0">
   </p>
 </div>
 

@@ -239,7 +239,7 @@ final class Marketplace
             ],
             [
                 'name'         => 'og/graphql-lite',
-                'version'      => '2.0.3',
+                'version'      => '2.1.0',
                 'description'  => 'Full GraphQL-lite query engine built on FieldSelector',
                 'author'       => 'jkstudio99',
                 'type'         => 'module',
