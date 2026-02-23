@@ -50,7 +50,7 @@ if ($command === 'help' || $command === '--help' || $command === '-h') {
 }
 
 if ($command === '--version' || $command === '-v') {
-    echo "  OpenGenetics Framework v1.0.0\n\n";
+    echo "  OpenGenetics Framework v2.0.3\n\n";
     exit(0);
 }
 
@@ -246,15 +246,15 @@ function createProjectFromScratch(string $dir, string $name): void
         'license' => 'MIT',
         'require' => [
             'php' => '>=8.1',
-            'open-genetics/framework' => '^1.0',
+            'open-genetics/framework' => '^2.0',
         ],
         'autoload' => [
             'psr-4' => ['App\\' => 'src/'],
         ],
         'scripts' => [
-            'mutate' => 'php add/genetics mutate',
-            'seed'   => 'php add/genetics seed',
-            'serve'  => 'php add/genetics serve',
+            'mutate' => 'php genetics mutate',
+            'seed'   => 'php genetics seed',
+            'serve'  => 'php genetics serve',
         ],
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
@@ -298,6 +298,22 @@ GIT;
 
     file_put_contents($dir . '/.gitignore', $gitignore . "\n");
     echo "  ✅ .gitignore\n";
+
+    // Create genetics proxy script
+    $geneticsProxy = <<<'PHP'
+#!/usr/bin/env php
+<?php
+$vendorGenetics = __DIR__ . '/vendor/open-genetics/framework/genetics';
+if (!file_exists($vendorGenetics)) {
+    echo "  ❌ Run 'composer install' first.\n";
+    exit(1);
+}
+require $vendorGenetics;
+PHP;
+
+    file_put_contents($dir . '/genetics', $geneticsProxy . "\n");
+    chmod($dir . '/genetics', 0755);
+    echo "  ✅ genetics\n";
 
     echo "  ✅ Directory structure created\n";
 }

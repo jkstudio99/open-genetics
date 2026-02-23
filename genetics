@@ -299,6 +299,22 @@ GIT;
     file_put_contents($dir . '/.gitignore', $gitignore . "\n");
     echo "  ✅ .gitignore\n";
 
+    // Create genetics proxy script
+    $geneticsProxy = <<<'PHP'
+#!/usr/bin/env php
+<?php
+$vendorGenetics = __DIR__ . '/vendor/open-genetics/framework/genetics';
+if (!file_exists($vendorGenetics)) {
+    echo "  ❌ Run 'composer install' first.\n";
+    exit(1);
+}
+require $vendorGenetics;
+PHP;
+
+    file_put_contents($dir . '/genetics', $geneticsProxy . "\n");
+    chmod($dir . '/genetics', 0755);
+    echo "  ✅ genetics\n";
+
     echo "  ✅ Directory structure created\n";
 }
 
