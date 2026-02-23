@@ -192,18 +192,27 @@ final class Router
     }
 
     /**
-     * Parse JSON request body.
+     * Parse request body — supports JSON, form-data, and multipart.
      */
     private function parseBody(): array
     {
-        $raw = file_get_contents('php://input');
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-        if (empty($raw)) {
+        // multipart/form-data or application/x-www-form-urlencoded
+        if (!empty($_POST) || str_contains($contentType, 'multipart/form-data') || str_contains($contentType, 'application/x-www-form-urlencoded')) {
             return array_merge($_GET, $_POST);
         }
 
-        $decoded = json_decode($raw, true);
+        // JSON body
+        $raw = file_get_contents('php://input');
+        if (!empty($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
 
-        return is_array($decoded) ? $decoded : [];
+        // Fallback: query string only
+        return $_GET;
     }
 }

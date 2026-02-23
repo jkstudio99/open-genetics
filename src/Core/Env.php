@@ -27,7 +27,7 @@ final class Env
         $file = rtrim($path, '/') . '/.env';
 
         if (!file_exists($file)) {
-            throw new \RuntimeException("Environment file not found: {$file}");
+            return;
         }
 
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -83,10 +83,37 @@ final class Env
     }
 
     /**
+     * Get an environment variable as boolean.
+     * Treats '1', 'true', 'yes', 'on' as true.
+     */
+    public static function bool(string $key, bool $default = false): bool
+    {
+        $val = strtolower(self::get($key, $default ? 'true' : 'false'));
+        return in_array($val, ['1', 'true', 'yes', 'on'], true);
+    }
+
+    /**
+     * Get an environment variable as integer.
+     */
+    public static function int(string $key, int $default = 0): int
+    {
+        return (int) self::get($key, (string) $default);
+    }
+
+    /**
      * Check if running in debug mode.
      */
     public static function isDebug(): bool
     {
-        return self::get('APP_DEBUG', 'false') === 'true';
+        return self::bool('APP_DEBUG', false);
+    }
+
+    /**
+     * Reset loaded state (useful for testing).
+     */
+    public static function reset(): void
+    {
+        self::$loaded = false;
+        self::$cache  = [];
     }
 }

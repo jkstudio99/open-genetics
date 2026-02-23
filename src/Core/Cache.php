@@ -31,7 +31,9 @@ namespace OpenGenetics\Core;
 final class Cache
 {
     private static string $storageDir = '';
-    private static ?string $currentTag = null;
+
+    /** @var string|null Per-instance tag (not static — avoids cross-call pollution) */
+    private ?string $instanceTag = null;
 
     // ── Bootstrap ────────────────────────────────────────
 
@@ -66,13 +68,13 @@ final class Cache
     public static function tag(string $tag): static
     {
         $instance = new static();
-        $instance::$currentTag = $tag;
+        $instance->instanceTag = $tag;
         return $instance;
     }
 
-    private static function taggedKey(string $key): string
+    private function taggedKey(string $key): string
     {
-        return self::$currentTag !== null ? self::$currentTag . ':' . $key : $key;
+        return $this->instanceTag !== null ? $this->instanceTag . ':' . $key : $key;
     }
 
     // ── Core Operations ───────────────────────────────────
@@ -80,28 +82,26 @@ final class Cache
     /**
      * Store a value with optional TTL (seconds). 0 = forever.
      */
-    public static function put(string $key, mixed $value, int $ttl = 0): void
+    public function put(string $key, mixed $value, int $ttl = 0): void
     {
-        $key = self::taggedKey($key);
+        $key = $this->taggedKey($key);
         $payload = [
             'expires' => $ttl > 0 ? time() + $ttl : 0,
-            'tag'     => self::$currentTag,
+            'tag'     => $this->instanceTag,
             'data'    => $value,
         ];
         file_put_contents(self::filePath($key), serialize($payload), LOCK_EX);
-        self::$currentTag = null;
     }
 
     /**
      * Retrieve a cached value, or null if missing/expired.
      */
-    public static function get(string $key, mixed $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
-        $key  = self::taggedKey($key);
+        $key  = $this->taggedKey($key);
         $file = self::filePath($key);
 
         if (!file_exists($file)) {
-            self::$currentTag = null;
             return $default;
         }
 
@@ -109,40 +109,36 @@ final class Cache
 
         if ($payload === false) {
             @unlink($file);
-            self::$currentTag = null;
             return $default;
         }
 
         // TTL check
         if ($payload['expires'] > 0 && time() > $payload['expires']) {
             @unlink($file);
-            self::$currentTag = null;
             return $default;
         }
 
-        self::$currentTag = null;
         return $payload['data'];
     }
 
     /**
      * Check if a key exists and is not expired.
      */
-    public static function has(string $key): bool
+    public function has(string $key): bool
     {
-        return self::get($key) !== null;
+        return $this->get($key) !== null;
     }
 
     /**
      * Delete a specific cache entry.
      */
-    public static function forget(string $key): void
+    public function forget(string $key): void
     {
-        $key  = self::taggedKey($key);
+        $key  = $this->taggedKey($key);
         $file = self::filePath($key);
         if (file_exists($file)) {
             @unlink($file);
         }
-        self::$currentTag = null;
     }
 
     /**
@@ -152,13 +148,14 @@ final class Cache
      */
     public static function remember(string $key, int $ttl, callable $callback): mixed
     {
-        $cached = self::get($key);
+        $instance = new static();
+        $cached = $instance->get($key);
         if ($cached !== null) {
             return $cached;
         }
 
         $value = $callback();
-        self::put($key, $value, $ttl);
+        $instance->put($key, $value, $ttl);
         return $value;
     }
 
@@ -167,19 +164,39 @@ final class Cache
      */
     public static function forever(string $key, mixed $value): void
     {
-        self::put($key, $value, 0);
+        (new static())->put($key, $value, 0);
+    }
+
+    /**
+     * Atomically increment a numeric cache value.
+     */
+    public static function increment(string $key, int $by = 1): int
+    {
+        $instance = new static();
+        $current  = (int) ($instance->get($key) ?? 0);
+        $new      = $current + $by;
+        $instance->put($key, $new, 0);
+        return $new;
+    }
+
+    /**
+     * Atomically decrement a numeric cache value.
+     */
+    public static function decrement(string $key, int $by = 1): int
+    {
+        return self::increment($key, -$by);
     }
 
     /**
      * Flush all entries matching a tag prefix.
      * Cache::tag('products')->flush()  or  Cache::flush('products')
      */
-    public static function flush(?string $tag = null): void
+    public function flush(?string $tag = null): void
     {
-        $tag ??= self::$currentTag;
+        $tag ??= $this->instanceTag;
         $dir  = self::dir();
 
-        foreach (glob($dir . '/*.cache') as $file) {
+        foreach (glob($dir . '/*.cache') ?: [] as $file) {
             $payload = @unserialize(file_get_contents($file));
             if ($payload === false) {
                 @unlink($file);
@@ -189,8 +206,6 @@ final class Cache
                 @unlink($file);
             }
         }
-
-        self::$currentTag = null;
     }
 
     /**

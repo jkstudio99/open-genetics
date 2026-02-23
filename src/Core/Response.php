@@ -6,7 +6,7 @@ namespace OpenGenetics\Core;
 
 /**
  * 🧬 OpenGenetics — JSON Response Helper
- * 
+ *
  * Standardized JSON responses for the entire framework.
  */
 final class Response
@@ -18,6 +18,27 @@ final class Response
     {
         http_response_code($status);
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        exit;
+    }
+
+    /**
+     * Send a 201 Created response.
+     */
+    public static function created(mixed $data = null, string $message = 'Created'): never
+    {
+        self::json([
+            'success' => true,
+            'message' => $message,
+            'data'    => $data,
+        ], 201);
+    }
+
+    /**
+     * Send a 204 No Content response.
+     */
+    public static function noContent(): never
+    {
+        http_response_code(204);
         exit;
     }
 
@@ -55,6 +76,7 @@ final class Response
      */
     public static function paginated(array $data, int $total, int $page, int $perPage): void
     {
+        $totalPages = (int) ceil($total / max($perPage, 1));
         self::json([
             'success' => true,
             'data'    => $data,
@@ -62,7 +84,9 @@ final class Response
                 'total'       => $total,
                 'page'        => $page,
                 'per_page'    => $perPage,
-                'total_pages' => (int) ceil($total / max($perPage, 1)),
+                'total_pages' => $totalPages,
+                'last_page'   => $totalPages,
+                'has_more'    => $page < $totalPages,
             ],
         ]);
     }

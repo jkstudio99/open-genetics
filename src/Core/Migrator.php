@@ -63,17 +63,17 @@ final class Migrator
         $batch = $this->getNextBatch();
 
         foreach ($pending as $file) {
-            $name = pathinfo($file, PATHINFO_FILENAME);
+            $name      = pathinfo($file, PATHINFO_FILENAME);
             $migration = require $file;
 
             if (is_object($migration) && method_exists($migration, 'up')) {
-                $pdo = Database::connect();
-                $migration->up($pdo);
-
-                Database::execute(
-                    "INSERT INTO `{$this->table}` (migration, batch) VALUES (:name, :batch)",
-                    ['name' => $name, 'batch' => $batch]
-                );
+                Database::transaction(function (\PDO $pdo) use ($migration, $name, $batch) {
+                    $migration->up($pdo);
+                    Database::execute(
+                        "INSERT INTO `{$this->table}` (migration, batch) VALUES (:name, :batch)",
+                        ['name' => $name, 'batch' => $batch]
+                    );
+                });
 
                 $executed[] = $name;
             }
@@ -106,19 +106,18 @@ final class Migrator
             $name = $row['migration'];
             $file = $this->migrationsDir . "/{$name}.php";
 
-            if (file_exists($file)) {
-                $migration = require $file;
-
-                if (is_object($migration) && method_exists($migration, 'down')) {
-                    $pdo = Database::connect();
-                    $migration->down($pdo);
+            Database::transaction(function (\PDO $pdo) use ($file, $name) {
+                if (file_exists($file)) {
+                    $migration = require $file;
+                    if (is_object($migration) && method_exists($migration, 'down')) {
+                        $migration->down($pdo);
+                    }
                 }
-            }
-
-            Database::execute(
-                "DELETE FROM `{$this->table}` WHERE migration = :name",
-                ['name' => $name]
-            );
+                Database::execute(
+                    "DELETE FROM `{$this->table}` WHERE migration = :name",
+                    ['name' => $name]
+                );
+            });
 
             $rolledBack[] = $name;
         }

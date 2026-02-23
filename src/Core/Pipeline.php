@@ -54,23 +54,27 @@ final class Pipeline
         $pipeline = array_reduce(
             array_reverse($this->pipes),
             fn(callable $next, string|callable $pipe) => function (array $passable) use ($next, $pipe) {
-                if (is_string($pipe) && class_exists($pipe)) {
-                    // Parse middleware:param1,param2 syntax
-                    $params = [];
-                    if (str_contains($pipe, ':')) {
-                        [$pipe, $paramStr] = explode(':', $pipe, 2);
-                        $params = explode(',', $paramStr);
-                    }
-                    $middleware = new $pipe();
-                    if (method_exists($middleware, 'handle')) {
-                        $middleware->handle($passable, $next, ...$params);
-                        return;
-                    }
-                }
-
-                if (is_callable($pipe)) {
+                if (is_callable($pipe) && !is_string($pipe)) {
                     $pipe($passable, $next);
                     return;
+                }
+
+                if (is_string($pipe)) {
+                    // Parse "ClassName:param1,param2" syntax
+                    $params    = [];
+                    $className = $pipe;
+                    if (str_contains($pipe, ':')) {
+                        [$className, $paramStr] = explode(':', $pipe, 2);
+                        $params = explode(',', $paramStr);
+                    }
+
+                    if (class_exists($className)) {
+                        $middleware = new $className();
+                        if (method_exists($middleware, 'handle')) {
+                            $middleware->handle($passable, $next, ...$params);
+                            return;
+                        }
+                    }
                 }
 
                 $next($passable);

@@ -6,11 +6,11 @@ namespace OpenGenetics\Core;
 
 /**
  * 🧬 OpenGenetics — Auto OpenAPI Generator
- * 
+ *
  * Scans the api/ directory, parses endpoint classes and PHPDoc comments,
  * and generates an OpenAPI 3.0 compliant JSON specification file.
  */
-class OpenApiGenerator
+final class OpenApiGenerator
 {
     private string $apiDir;
     private array $spec;
@@ -18,7 +18,7 @@ class OpenApiGenerator
     public function __construct(string $apiDir)
     {
         $this->apiDir = rtrim($apiDir, '/');
-        
+
         $this->spec = [
             'openapi' => '3.0.0',
             'info' => [
@@ -48,7 +48,7 @@ class OpenApiGenerator
 
     /**
      * Generate the OpenAPI specification file.
-     * 
+     *
      * @param string $outputPath Path to save the generated JSON.
      * @return bool True on success.
      */
@@ -62,7 +62,7 @@ class OpenApiGenerator
         $this->scanDirectory($this->apiDir);
 
         $json = json_encode($this->spec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        
+
         $dir = dirname($outputPath);
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
@@ -78,7 +78,7 @@ class OpenApiGenerator
     private function scanDirectory(string $dir): void
     {
         $items = scandir($dir);
-        
+
         foreach ($items as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
@@ -104,8 +104,7 @@ class OpenApiGenerator
         // Calculate URI from file path
         $relativePath = substr($filePath, strlen($this->apiDir));
         $uri = preg_replace('/\.php$/', '', ltrim($relativePath, '/'));
-        
-        // Handle index.php files mapping to directory paths
+
         if (str_ends_with($uri, '/index')) {
             $uri = substr($uri, 0, -6);
         } elseif ($uri === 'index') {
@@ -113,47 +112,164 @@ class OpenApiGenerator
         }
 
         $endpointUri = '/api' . ($uri !== '' ? '/' . $uri : '');
-        $className = $this->resolveClassName($uri);
+        $className   = $this->resolveClassName($uri);
 
         if (!class_exists($className)) {
             return;
         }
 
         try {
-            $reflection = new \ReflectionClass($className);
-            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC);
-            
-            $docComment = $reflection->getDocComment();
-            $summary = $this->extractSummary($docComment);
-            
+            $reflection      = new \ReflectionClass($className);
+            $methods         = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC);
+            $classDoc        = $reflection->getDocComment();
+            $classSummary    = $this->extractSummary($classDoc);
             $supportedMethods = ['get', 'post', 'put', 'patch', 'delete'];
-            
+
             foreach ($methods as $method) {
                 $methodName = strtolower($method->getName());
-                
-                if (in_array($methodName, $supportedMethods)) {
-                    if (!isset($this->spec['paths'][$endpointUri])) {
-                        $this->spec['paths'][$endpointUri] = [];
-                    }
-
-                    // Extract method-level docblock if class-level is empty or generic
-                    $methodDoc = $method->getDocComment();
-                    $methodSummary = $this->extractSummary($methodDoc) ?: $summary;
-
-                    $this->spec['paths'][$endpointUri][$methodName] = [
-                        'summary' => $methodSummary ?: "{$methodName} {$endpointUri}",
-                        'tags' => [$this->extractTag($uri)],
-                        'responses' => [
-                            '200' => [
-                                'description' => 'Successful operation'
-                            ]
-                        ]
-                    ];
+                if (!in_array($methodName, $supportedMethods)) {
+                    continue;
                 }
+
+                if (!isset($this->spec['paths'][$endpointUri])) {
+                    $this->spec['paths'][$endpointUri] = [];
+                }
+
+                $methodDoc     = $method->getDocComment();
+                $methodSummary = $this->extractSummary($methodDoc) ?: $classSummary;
+                $tag           = $this->extractTag($uri);
+
+                $operation = [
+                    'summary'     => $methodSummary ?: strtoupper($methodName) . ' ' . $endpointUri,
+                    'tags'        => [$tag],
+                    'security'    => [['bearerAuth' => []]],
+                    'parameters'  => $this->extractQueryParams($methodDoc ?: $classDoc),
+                    'responses'   => $this->buildResponses($methodDoc ?: $classDoc, $methodName),
+                ];
+
+                // Add requestBody for mutating methods
+                if (in_array($methodName, ['post', 'put', 'patch', 'delete'])) {
+                    $bodySchema = $this->extractBodySchema($methodDoc ?: $classDoc);
+                    if (!empty($bodySchema['properties'])) {
+                        $operation['requestBody'] = [
+                            'required' => true,
+                            'content'  => [
+                                'application/json' => [
+                                    'schema' => $bodySchema,
+                                ],
+                            ],
+                        ];
+                    }
+                }
+
+                // Remove empty parameters array
+                if (empty($operation['parameters'])) {
+                    unset($operation['parameters']);
+                }
+
+                $this->spec['paths'][$endpointUri][$methodName] = $operation;
             }
         } catch (\ReflectionException $e) {
             // Ignore classes that cannot be reflected
         }
+    }
+
+    /**
+     * Parse @query tags from PHPDoc: @query name type required description
+     */
+    private function extractQueryParams(string|false $doc): array
+    {
+        if (!$doc) return [];
+        $params = [];
+        preg_match_all('/@query\s+(\S+)\s+(\S+)\s+(required|optional)\s*(.*)/i', $doc, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+            $params[] = [
+                'name'        => $m[1],
+                'in'          => 'query',
+                'required'    => strtolower($m[3]) === 'required',
+                'description' => trim($m[4]),
+                'schema'      => ['type' => $this->normalizeType($m[2])],
+            ];
+        }
+        return $params;
+    }
+
+    /**
+     * Parse @body tags from PHPDoc: @body name type required description
+     */
+    private function extractBodySchema(string|false $doc): array
+    {
+        if (!$doc) return ['type' => 'object', 'properties' => []];
+        $properties = [];
+        $required   = [];
+        preg_match_all('/@body\s+(\S+)\s+(\S+)\s+(required|optional)\s*(.*)/i', $doc, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+            $name = $m[1];
+            $properties[$name] = [
+                'type'        => $this->normalizeType($m[2]),
+                'description' => trim($m[4]),
+            ];
+            if (strtolower($m[3]) === 'required') {
+                $required[] = $name;
+            }
+        }
+        $schema = ['type' => 'object', 'properties' => $properties];
+        if (!empty($required)) {
+            $schema['required'] = $required;
+        }
+        return $schema;
+    }
+
+    /**
+     * Build responses map from @response tags or defaults.
+     */
+    private function buildResponses(string|false $doc, string $method): array
+    {
+        $responses = [];
+        if ($doc) {
+            preg_match_all('/@response\s+(\d+)\s*(.*)/i', $doc, $matches, PREG_SET_ORDER);
+            foreach ($matches as $m) {
+                $responses[$m[1]] = ['description' => trim($m[2]) ?: $this->httpMessage((int) $m[1])];
+            }
+        }
+
+        if (empty($responses)) {
+            $default = $method === 'post' ? '201' : '200';
+            $responses[$default] = ['description' => 'Successful operation'];
+        }
+
+        // Always add 401 and 422 for documented endpoints
+        $responses['401'] = ['description' => 'Unauthorized'];
+        $responses['422'] = ['description' => 'Validation error'];
+
+        return $responses;
+    }
+
+    /**
+     * Normalize PHP type hints to OpenAPI types.
+     */
+    private function normalizeType(string $type): string
+    {
+        return match (strtolower($type)) {
+            'int', 'integer' => 'integer',
+            'bool', 'boolean' => 'boolean',
+            'float', 'double', 'number' => 'number',
+            'array' => 'array',
+            default => 'string',
+        };
+    }
+
+    /**
+     * Map HTTP status code to message.
+     */
+    private function httpMessage(int $code): string
+    {
+        return match ($code) {
+            200 => 'OK', 201 => 'Created', 400 => 'Bad Request',
+            401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not Found',
+            409 => 'Conflict', 422 => 'Unprocessable Entity',
+            429 => 'Too Many Requests', default => 'Internal Server Error',
+        };
     }
 
     /**
@@ -165,15 +281,12 @@ class OpenApiGenerator
             return '';
         }
 
-        // Remove /**, *, and */
         $clean = preg_replace('/^\s*\/?\**\/?/m', '', $docComment);
         $lines = explode("\n", $clean);
-        
+
         foreach ($lines as $line) {
             $line = trim($line);
-            // Ignore HTTP method definitions, tags, or empty lines
             if (!empty($line) && !str_starts_with($line, '@') && !preg_match('/^(GET|POST|PUT|PATCH|DELETE)\s+/i', $line)) {
-                // Remove some artifacts like emoji if they start the line
                 $line = preg_replace('/^[-•🧬🚀🛡️⚙️]+\s*/u', '', $line);
                 return $line;
             }
@@ -190,7 +303,7 @@ class OpenApiGenerator
         if (empty($uri)) {
             return 'Core';
         }
-        
+
         $parts = explode('/', $uri);
         return ucfirst(explode('-', $parts[0])[0]);
     }

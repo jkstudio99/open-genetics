@@ -34,12 +34,15 @@ final class Pulse
     private int $lastHeartbeat;
     private ?string $lastEventId;
     private int $eventCounter = 0;
+    private int $maxRuntime   = 0;
+    private int $startedAt    = 0;
 
     public function __construct(int $heartbeatInterval = 15)
     {
         $this->heartbeatInterval = $heartbeatInterval;
         $this->lastHeartbeat     = time();
         $this->lastEventId       = $_SERVER['HTTP_LAST_EVENT_ID'] ?? null;
+        $this->startedAt         = time();
     }
 
     // ── Stream bootstrap ──────────────────────────────────
@@ -69,6 +72,12 @@ final class Pulse
 
         set_time_limit(0);
         ignore_user_abort(true);
+
+        // Wrap callback to enforce maxRuntime
+        if ($maxRuntime > 0) {
+            $pulse->maxRuntime  = $maxRuntime;
+            $pulse->startedAt   = $startTime;
+        }
 
         $callback($pulse);
 
@@ -137,13 +146,27 @@ final class Pulse
 
     /**
      * Check if heartbeat is due and send it if needed.
+     * Also closes stream if maxRuntime exceeded.
      * Call this inside your loop.
      */
     public function checkHeartbeat(): void
     {
+        if ($this->maxRuntime > 0 && (time() - $this->startedAt) >= $this->maxRuntime) {
+            $this->close();
+            exit;
+        }
+
         if (time() - $this->lastHeartbeat >= $this->heartbeatInterval) {
             $this->heartbeat();
         }
+    }
+
+    /**
+     * Check if the stream has exceeded its maxRuntime.
+     */
+    public function isExpired(): bool
+    {
+        return $this->maxRuntime > 0 && (time() - $this->startedAt) >= $this->maxRuntime;
     }
 
     /**

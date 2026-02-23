@@ -9,7 +9,7 @@ use PDOException;
 
 /**
  * 🧬 OpenGenetics — Database Connection (Singleton)
- * 
+ *
  * Thread-safe PDO wrapper using Prepared Statements only.
  * Prevents SQL Injection at the DNA level of the framework.
  */
@@ -104,5 +104,23 @@ final class Database
             $pdo->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Check if any row matches the query.
+     */
+    public static function exists(string $sql, array $params = []): bool
+    {
+        $stmt = self::connect()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn() !== false;
+    }
+
+    /**
+     * Reset the singleton connection (useful for testing).
+     */
+    public static function reset(): void
+    {
+        self::$instance = null;
     }
 }

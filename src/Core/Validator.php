@@ -8,7 +8,7 @@ namespace OpenGenetics\Core;
  * 🧬 OpenGenetics — Input Validator
  *
  * Fluent validation for request data.
- * Supports: required, email, min, max, numeric, in, regex, confirmed.
+ * Supports: required, email, min, max, numeric, in, regex, confirmed, url, date, boolean, array, nullable, integer, string.
  *
  * Usage:
  *   $v = Validator::make($body, [
@@ -74,35 +74,6 @@ final class Validator
     public function errors(): array
     {
         return $this->errors;
-    }
-
-    /**
-     * Run all rules against data.
-     */
-    private function runValidation(): void
-    {
-        foreach ($this->rules as $field => $ruleString) {
-            $rules = is_array($ruleString) ? $ruleString : explode('|', $ruleString);
-            $value = $this->data[$field] ?? null;
-
-            foreach ($rules as $rule) {
-                $params = [];
-                if (str_contains($rule, ':')) {
-                    [$rule, $paramStr] = explode(':', $rule, 2);
-                    $params = explode(',', $paramStr);
-                }
-
-                $method = 'rule' . ucfirst($rule);
-                if (method_exists($this, $method)) {
-                    $error = $this->$method($field, $value, $params);
-                    if ($error !== null) {
-                        $this->errors[$field][] = $error;
-                        // Stop on first error for this field if 'required' fails
-                        if ($rule === 'required') break;
-                    }
-                }
-            }
-        }
     }
 
     // ─── Rule Methods ─────────────────────────────────
@@ -196,5 +167,85 @@ final class Validator
             return "{$field} must be an integer.";
         }
         return null;
+    }
+
+    private function ruleUrl(string $field, mixed $value, array $params): ?string
+    {
+        if ($value !== null && $value !== '' && !filter_var($value, FILTER_VALIDATE_URL)) {
+            return "{$field} must be a valid URL.";
+        }
+        return null;
+    }
+
+    private function ruleDate(string $field, mixed $value, array $params): ?string
+    {
+        if ($value !== null && $value !== '') {
+            $format = $params[0] ?? 'Y-m-d';
+            $d = \DateTime::createFromFormat($format, (string) $value);
+            if (!$d || $d->format($format) !== (string) $value) {
+                return "{$field} must be a valid date (format: {$format}).";
+            }
+        }
+        return null;
+    }
+
+    private function ruleBoolean(string $field, mixed $value, array $params): ?string
+    {
+        $valid = [true, false, 1, 0, '1', '0', 'true', 'false'];
+        if ($value !== null && $value !== '' && !in_array($value, $valid, true)) {
+            return "{$field} must be true or false.";
+        }
+        return null;
+    }
+
+    private function ruleArray(string $field, mixed $value, array $params): ?string
+    {
+        if ($value !== null && !is_array($value)) {
+            return "{$field} must be an array.";
+        }
+        return null;
+    }
+
+    /**
+     * nullable — allows null/empty values to pass all subsequent rules.
+     * Place first: 'nullable|email'
+     */
+    private function ruleNullable(string $field, mixed $value, array $params): ?string
+    {
+        if ($value === null || $value === '') {
+            // Signal to skip remaining rules for this field
+            $this->errors[$field . '__nullable_skip'] = true;
+        }
+        return null;
+    }
+
+    private function runValidation(): void
+    {
+        foreach ($this->rules as $field => $ruleString) {
+            $rules = is_array($ruleString) ? $ruleString : explode('|', $ruleString);
+            $value = $this->data[$field] ?? null;
+
+            foreach ($rules as $rule) {
+                $params = [];
+                if (str_contains($rule, ':')) {
+                    [$rule, $paramStr] = explode(':', $rule, 2);
+                    $params = explode(',', $paramStr);
+                }
+
+                $method = 'rule' . ucfirst($rule);
+                if (method_exists($this, $method)) {
+                    $error = $this->$method($field, $value, $params);
+                    if ($error !== null) {
+                        $this->errors[$field][] = $error;
+                        if ($rule === 'required') break;
+                    }
+                    // Skip remaining rules if nullable and value is empty
+                    if (isset($this->errors[$field . '__nullable_skip'])) {
+                        unset($this->errors[$field . '__nullable_skip']);
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
