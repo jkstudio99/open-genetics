@@ -332,7 +332,7 @@
                 "sebastian/code-unit-reverse-lookup": "^3.0.0",
                 "sebastian/complexity": "^3.2.0",
                 "sebastian/environment": "^6.1.0",
-                "sebastian/lines-of-code": "^2.0.2",
+                "sebastian/lines-of-code": "^2.0.3",
                 "sebastian/version": "^4.0.1",
                 "theseer/tokenizer": "^1.2.3"
             },
@@ -658,8 +658,8 @@
                 "phpunit/php-invoker": "^4.0.0",
                 "phpunit/php-text-template": "^3.0.1",
                 "phpunit/php-timer": "^6.0.0",
-                "sebastian/cli-parser": "^2.0.2",
-                "sebastian/code-unit": "^2.0.2",
+                "sebastian/cli-parser": "^2.0.3",
+                "sebastian/code-unit": "^2.0.3",
                 "sebastian/comparator": "^5.0.5",
                 "sebastian/diff": "^5.1.1",
                 "sebastian/environment": "^6.1.0",
@@ -739,7 +739,7 @@
         },
         {
             "name": "sebastian/cli-parser",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/cli-parser.git",
@@ -784,7 +784,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/cli-parser/issues",
                 "security": "https://github.com/sebastianbergmann/cli-parser/security/policy",
-                "source": "https://github.com/sebastianbergmann/cli-parser/tree/2.0.2"
+                "source": "https://github.com/sebastianbergmann/cli-parser/tree/2.0.3"
             },
             "funding": [
                 {
@@ -796,7 +796,7 @@
         },
         {
             "name": "sebastian/code-unit",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/code-unit.git",
@@ -840,7 +840,7 @@
             "homepage": "https://github.com/sebastianbergmann/code-unit",
             "support": {
                 "issues": "https://github.com/sebastianbergmann/code-unit/issues",
-                "source": "https://github.com/sebastianbergmann/code-unit/tree/2.0.2"
+                "source": "https://github.com/sebastianbergmann/code-unit/tree/2.0.3"
             },
             "funding": [
                 {
@@ -1337,7 +1337,7 @@
         },
         {
             "name": "sebastian/lines-of-code",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/lines-of-code.git",
@@ -1383,7 +1383,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/lines-of-code/issues",
                 "security": "https://github.com/sebastianbergmann/lines-of-code/security/policy",
-                "source": "https://github.com/sebastianbergmann/lines-of-code/tree/2.0.2"
+                "source": "https://github.com/sebastianbergmann/lines-of-code/tree/2.0.3"
             },
             "funding": [
                 {

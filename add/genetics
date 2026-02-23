@@ -3,11 +3,11 @@
 
 /**
  * 🧬 OpenGenetics — Genetic CLI
- * 
+ *
  * Install globally:
  *   composer global require open-genetics/framework
  *   genetics new my-project
- * 
+ *
  * Project commands:
  *   php genetics mutate            — Create tables & seed RBAC
  *   php genetics seed              — Seed RBAC roles & admin user
@@ -30,7 +30,7 @@ $projectRoot = findProjectRoot();
 // Banner
 echo "\n";
 echo "  ╔═══════════════════════════════════════════╗\n";
-echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.0.2    ║\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.0.3    ║\n";
 echo "  ║  Enterprise PHP Micro-Framework            ║\n";
 echo "  ╚═══════════════════════════════════════════╝\n";
 echo "\n";
@@ -538,7 +538,7 @@ function makeEndpoint(string $root, ?string $name): void
 
 /**
  * GET|POST /api/{$name}
- * 
+ *
  * Auto-generated endpoint via `php add/genetics make:endpoint`.
  */
 
@@ -650,7 +650,7 @@ function generateDocs(string $root): void
     $outputPath = $root . '/public/openapi.json';
 
     $generator = new \OpenGenetics\Core\OpenApiGenerator($apiDir);
-    
+
     if ($generator->generate($outputPath)) {
         echo "  ✅ OpenAPI specification generated successfully!\n";
         echo "  📄 Saved to: public/openapi.json\n\n";

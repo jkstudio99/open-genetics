@@ -8,7 +8,7 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP 8.1+"></a>
     <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL">
-    <img src="https://img.shields.io/badge/version-2.0.2-6c63ff.svg" alt="v2.0.2">
+    <img src="https://img.shields.io/badge/version-2.0.3-6c63ff.svg" alt="v2.0.3">
   </p>
 </div>
 
@@ -16,18 +16,18 @@
 
 ## ✨ What's in v2.0
 
-| # | Feature | Description |
-|---|---------|-------------|
-| 1 | ⚡️ **Middleware Pipeline** | `#[Middleware('auth', 'rate:10,60')]` declarative middleware with Chain of Responsibility |
-| 2 | 🗄️ **DB Migrations** | Versioned, batch-rollback migrations with `migrate`, `migrate:rollback`, `migrate:status` |
-| 3 | 🧪 **Testing Framework** | `GeneticTestCase` with HTTP client, `actingAsAdmin()`, `assertOk()`, `assertPaginated()` |
-| 4 | 🚀 **Caching Layer** | File-based `Cache::remember()`, tag-based flush, zero dependencies |
-| 5 | 🔍 **Field Selector** | `?fields=id,name,price` sparse fieldsets — GraphQL-lite without the server |
-| 6 | 📡 **Genetic Pulse** | Server-Sent Events real-time push — no WebSocket server needed |
-| 7 | 🧩 **Genetic Modules** | `GeneticModule` plugin system with auto-discovery and lifecycle hooks |
-| 8 | 🛠️ **Admin Generator** | `make:admin <table>` — full CRUD admin endpoint from DB schema in seconds |
-| 9 | 🤖 **Endpoint AI** | `make:endpoint-ai products "CRUD with auth and cache"` — NLP scaffold |
-| 10 | 🏪 **Marketplace** | `market:install og/notifications` — community packages in one command |
+| #   | Feature                    | Description                                                                               |
+| --- | -------------------------- | ----------------------------------------------------------------------------------------- |
+| 1   | ⚡️ **Middleware Pipeline** | `#[Middleware('auth', 'rate:10,60')]` declarative middleware with Chain of Responsibility |
+| 2   | 🗄️ **DB Migrations**       | Versioned, batch-rollback migrations with `migrate`, `migrate:rollback`, `migrate:status` |
+| 3   | 🧪 **Testing Framework**   | `GeneticTestCase` with HTTP client, `actingAsAdmin()`, `assertOk()`, `assertPaginated()`  |
+| 4   | 🚀 **Caching Layer**       | File-based `Cache::remember()`, tag-based flush, zero dependencies                        |
+| 5   | 🔍 **Field Selector**      | `?fields=id,name,price` sparse fieldsets — GraphQL-lite without the server                |
+| 6   | 📡 **Genetic Pulse**       | Server-Sent Events real-time push — no WebSocket server needed                            |
+| 7   | 🧩 **Genetic Modules**     | `GeneticModule` plugin system with auto-discovery and lifecycle hooks                     |
+| 8   | 🛠️ **Admin Generator**     | `make:admin <table>` — full CRUD admin endpoint from DB schema in seconds                 |
+| 9   | 🤖 **Endpoint AI**         | `make:endpoint-ai products "CRUD with auth and cache"` — NLP scaffold                     |
+| 10  | 🏪 **Marketplace**         | `market:install og/notifications` — community packages in one command                     |
 
 > Plus all v1.0 features: JWT Auth, RBAC, i18n, Audit Trail, Dual SDK, File-based Routing, CLI, OpenAPI
 
@@ -51,7 +51,7 @@ php genetics serve
 # → http://127.0.0.1:8080
 ```
 
-**Default admin:** `admin@opengenetics.io` / `password` *(change immediately in production)*
+**Default admin:** `admin@opengenetics.io` / `password` _(change immediately in production)_
 
 ---
 
@@ -85,6 +85,7 @@ class Products
 ```
 
 Or scaffold in seconds:
+
 ```bash
 php genetics make:endpoint-ai products "CRUD with auth, search, pagination and cache"
 ```
@@ -144,12 +145,14 @@ my-api/
 ## 🔥 v2.0 Feature Highlights
 
 ### Middleware Pipeline
+
 ```php
 #[Middleware('auth:ADMIN', 'rate:10,60')]
 class AdminProducts { ... }
 ```
 
 ### Database Migrations
+
 ```bash
 php genetics migrate            # Run pending
 php genetics migrate:rollback   # Undo last batch
@@ -157,6 +160,7 @@ php genetics make:migration add_image_to_products
 ```
 
 ### Testing Framework
+
 ```php
 class ProductsTest extends GeneticTestCase {
     public function testList(): void {
@@ -167,17 +171,20 @@ class ProductsTest extends GeneticTestCase {
 ```
 
 ### Field Selector (GraphQL-lite)
+
 ```
 GET /api/products?fields=id,name,price,category.name
 ```
 
 ### Real-time SSE
+
 ```php
 Pulse::broadcast('orders', ['id' => 123, 'status' => 'new']);
 // Client: const es = new EventSource('/api/events');
 ```
 
 ### Marketplace
+
 ```bash
 php genetics market:search notifications
 php genetics market:install og/notifications
