@@ -3,11 +3,11 @@
 
 /**
  * 🧬 OpenGenetics — Genetic CLI
- * 
+ *
  * Install globally:
  *   composer global require open-genetics/framework
  *   genetics new my-project
- * 
+ *
  * Project commands:
  *   php genetics mutate            — Create tables & seed RBAC
  *   php genetics seed              — Seed RBAC roles & admin user
@@ -189,8 +189,8 @@ function newProject(?string $name): void
     echo "  Next steps:\n";
     echo "    cd {$name}\n";
     echo "    composer install\n";
-    echo "    php add/genetics mutate\n";
-    echo "    php add/genetics serve\n\n";
+    echo "    php genetics mutate\n";
+    echo "    php genetics serve\n\n";
 }
 
 function findSkeletonDir(): ?string
@@ -246,15 +246,15 @@ function createProjectFromScratch(string $dir, string $name): void
         'license' => 'MIT',
         'require' => [
             'php' => '>=8.1',
-            'open-genetics/framework' => '^1.0',
+            'open-genetics/framework' => '^2.0',
         ],
         'autoload' => [
             'psr-4' => ['App\\' => 'src/'],
         ],
         'scripts' => [
-            'mutate' => 'php add/genetics mutate',
-            'seed'   => 'php add/genetics seed',
-            'serve'  => 'php add/genetics serve',
+            'mutate' => 'php genetics mutate',
+            'seed'   => 'php genetics seed',
+            'serve'  => 'php genetics serve',
         ],
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
@@ -539,7 +539,7 @@ function makeEndpoint(string $root, ?string $name): void
 
 /**
  * GET|POST /api/{$name}
- * 
+ *
  * Auto-generated endpoint via `php add/genetics make:endpoint`.
  */
 
@@ -651,7 +651,7 @@ function generateDocs(string $root): void
     $outputPath = $root . '/public/openapi.json';
 
     $generator = new \OpenGenetics\Core\OpenApiGenerator($apiDir);
-    
+
     if ($generator->generate($outputPath)) {
         echo "  ✅ OpenAPI specification generated successfully!\n";
         echo "  📄 Saved to: public/openapi.json\n\n";
