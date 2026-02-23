@@ -1002,49 +1002,51 @@ function cliModulesList(string $root): void
 
 function help(): void
 {
-    echo "  Usage: genetics <command> [arguments]\n\n";
+    echo "\n  \033[1;36mOpenGenetics Framework v2.0\033[0m\n";
+    echo "  Enterprise PHP Micro-Framework built for Developer Experience.\n\n";
 
-    echo "  \033[33mProject Commands:\033[0m\n";
-    echo "    mutate              Create database tables & seed RBAC\n";
-    echo "    seed                Seed RBAC roles & admin user\n";
-    echo "    status              Show database connection status\n";
-    echo "    serve               Start PHP development server\n\n";
+    echo "  \033[33m🚀 Quick Start\033[0m\n";
+    echo "    \033[32m1.\033[0m composer create-project open-genetics/framework my-api && cd my-api\n";
+    echo "    \033[32m2.\033[0m cp .env.example .env (Edit DB info)\n";
+    echo "    \033[32m3.\033[0m php add/genetics mutate\n";
+    echo "    \033[32m4.\033[0m php add/genetics serve\n\n";
 
-    echo "  \033[33mMigrations:\033[0m\n";
-    echo "    migrate             Run pending migrations\n";
-    echo "    migrate:rollback    Undo last migration batch\n";
-    echo "    migrate:status      Show all migration statuses\n\n";
-
-    echo "  \033[33mScaffolding:\033[0m\n";
-    echo "    make:endpoint       Create a new API endpoint file\n";
-    echo "    make:middleware     Create a new middleware class\n";
-    echo "    make:migration      Create a new migration file\n";
-    echo "    make:test           Create a new test class\n";
-    echo "    make:admin          Generate CRUD admin endpoint from DB table\n";
-    echo "    make:endpoint-ai    AI-generated endpoint from description\n";
-    echo "    docs:generate       Auto-generate OpenAPI spec from `api/`\n";
-    echo "    new <name>          Create a new OpenGenetics project\n\n";
-
-    echo "  \033[33mCache (v2.0):\033[0m\n";
-    echo "    cache:clear         Clear all cached data\n";
-    echo "    cache:stats         Show cache statistics\n";
-    echo "    cache:gc            Remove expired cache entries\n\n";
-
-    echo "  \033[33mMarketplace (v2.0):\033[0m\n";
-    echo "    market:list         List available packages\n";
-    echo "    market:search <q>   Search packages by keyword\n";
-    echo "    market:install <p>  Install a marketplace package\n\n";
-
-    echo "  \033[33mModules (v2.0):\033[0m\n";
-    echo "    modules:list        List registered Genetic Modules\n\n";
-
-    echo "  \033[33mInfo:\033[0m\n";
-    echo "    help, --help, -h    Show this help message\n";
-    echo "    --version, -v       Show version\n\n";
-
-    echo "  \033[33mGlobal Install:\033[0m\n";
+    echo "  \033[33m📦 Global Install\033[0m\n";
     echo "    composer global require open-genetics/framework\n";
     echo "    genetics new my-api\n\n";
+
+    echo "  \033[33m🛠️  Commands Overview\033[0m\n\n";
+
+    echo "  \033[1;30m[ Scaffolding & Code Gen ]\033[0m\n";
+    echo "    \033[32mmake:endpoint\033[0m <path>       Create a new API endpoint file\n";
+    echo "    \033[32mmake:middleware\033[0m <name>     Create a new middleware class\n";
+    echo "    \033[32mmake:admin\033[0m <table>         Scaffold CRUD admin endpoint from DB\n";
+    echo "    \033[32mmake:endpoint-ai\033[0m <n> \"<d>\" Generate endpoint via natural language\n";
+    echo "    \033[32mmake:test\033[0m <name>           Create HTTP test class\n";
+    echo "    \033[32mdocs:generate\033[0m              Auto-generate OpenAPI spec from `api/`\n\n";
+
+    echo "  \033[1;30m[ Database & Migrations ]\033[0m\n";
+    echo "    \033[32mmutate\033[0m                     Run all migrations & seed auth tables\n";
+    echo "    \033[32mmigrate\033[0m                    Run pending migrations\n";
+    echo "    \033[32mmigrate:rollback\033[0m           Undo last migration batch\n";
+    echo "    \033[32mmigrate:status\033[0m             Show all migration statuses\n";
+    echo "    \033[32mmake:migration\033[0m <name>      Create a new migration file\n";
+    echo "    \033[32mseed\033[0m / \033[32mstatus\033[0m              Seed extra data / Check DB connection\n\n";
+
+    echo "  \033[1;30m[ Caching & System ]\033[0m\n";
+    echo "    \033[32mserve\033[0m                      Start PHP dev server (Port 8080)\n";
+    echo "    \033[32mcache:clear\033[0m                Clear all file-based cache\n";
+    echo "    \033[32mcache:stats\033[0m                Show cache disk usage & metrics\n";
+    echo "    \033[32mcache:gc\033[0m                   Cleanup expired cache files\n\n";
+
+    echo "  \033[1;30m[ Marketplace & Modules ]\033[0m\n";
+    echo "    \033[32mmarket:install\033[0m <pkg>       Install a community package\n";
+    echo "    \033[32mmarket:search\033[0m <q>          Search marketplace registry\n";
+    echo "    \033[32mmarket:list\033[0m                List all available packages\n";
+    echo "    \033[32mmodules:list\033[0m               List locally registered plugins\n\n";
+
+    echo "  \033[34m📚 Documentation:\033[0m https://open-genetics.vercel.app/\n";
+    echo "  \033[34m🐙 GitHub Repo  :\033[0m https://github.com/jkstudio99/open-genetics\n\n";
 }
 
 function unknownCommand(string $cmd): void
