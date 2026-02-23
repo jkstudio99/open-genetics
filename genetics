@@ -98,6 +98,12 @@ match ($command) {
 
 function findProjectRoot(): ?string
 {
+    // 0. Passed explicitly via env var (from proxy script)
+    $envRoot = getenv('GENETICS_PROJECT_ROOT');
+    if ($envRoot && is_dir($envRoot)) {
+        return $envRoot;
+    }
+
     $dir = getcwd();
     for ($i = 0; $i < 6; $i++) {
         // Has composer.json with open-genetics/framework dependency
@@ -336,7 +342,14 @@ if (!file_exists($vendorGenetics)) {
     echo "  ❌ Run 'composer install' first.\n";
     exit(1);
 }
-require $vendorGenetics;
+// Pass project root so vendor CLI can find it regardless of version
+putenv('GENETICS_PROJECT_ROOT=' . __DIR__);
+$_ENV['GENETICS_PROJECT_ROOT'] = __DIR__;
+// Forward all arguments to the vendor genetics CLI
+$args = array_map('escapeshellarg', array_slice($argv, 1));
+$cmd = 'GENETICS_PROJECT_ROOT=' . escapeshellarg(__DIR__) . ' ' . PHP_BINARY . ' ' . escapeshellarg($vendorGenetics) . ' ' . implode(' ', $args);
+passthru($cmd, $exitCode);
+exit($exitCode);
 PHP;
 
     file_put_contents($dir . '/genetics', $geneticsProxy . "\n");

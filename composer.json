@@ -1,5 +1,6 @@
 {
     "name": "open-genetics/framework",
+    "version": "2.0.3",
     "description": "Enterprise PHP Micro-Framework — JWT Auth, Genetic RBAC, i18n, Audit Trail, and Dual-Frontend SDK",
     "type": "project",
     "license": "MIT",
