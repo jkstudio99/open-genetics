@@ -374,13 +374,13 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 
 
 <h2 id="what-is-rbac">What is Genetic RBAC?</h2>
-<p>Genetic RBAC เป็นระบบจัดการสิทธิ์แบบ Role-Based ที่ออกแบบมาให้ใช้งานง่ายแต่ทรงพลัง รองรับ guard หลายระดับ ตั้งแต่ Admin, HR ไปจนถึง Employee</p>
+<p>Genetic RBAC เป็นระบบจัดการสิทธิ์แบบ Role-Based ที่ออกแบบมาให้ใช้งานง่ายแต่ทรงพลัง รองรับ guard หลายระดับ ตั้งแต่ Admin, Manager ไปจนถึง Employee</p>
 
 <h2 id="setup">Setup</h2>
 <p>เปิดใช้งาน RBAC ในไฟล์ config:</p>
 <pre><code><span class="st">'guards'</span> => [
     <span class="st">'admin'</span>  => App\Guards\AdminGuard::<span class="kw">class</span>,
-    <span class="st">'hr'</span>     => App\Guards\HRGuard::<span class="kw">class</span>,
+    <span class="st">'manager'</span>  => App\Guards\ManagerGuard::<span class="kw">class</span>,
     <span class="st">'employee'</span> => App\Guards\EmployeeGuard::<span class="kw">class</span>,
 ]</code></pre>
 
@@ -393,7 +393,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 
 <h2 id="custom-guards">Custom Guards</h2>
 <p>สร้าง guard ของตัวเองได้ง่ายๆ:</p>
-<pre><code><span class="kw">class</span> <span class="cl">HRGuard</span> <span class="kw">implements</span> Guard {
+<pre><code><span class="kw">class</span> <span class="cl">ManagerGuard</span> <span class="kw">implements</span> Guard {
     <span class="kw">public function</span> <span class="fn">check</span>(<span class="vr">$user</span>): <span class="nb">bool</span> {
         <span class="kw">return</span> <span class="vr">$user</span>->role === <span class="st">'hr'</span>
             || <span class="vr">$user</span>->role === <span class="st">'admin'</span>;
@@ -558,12 +558,22 @@ const searchData = [
   { title:'Directory Structure', desc:'โครงสร้างโปรเจค', href:'directory-structure.html', icon:'folder' },
   { title:'Architecture', desc:'สถาปัตยกรรม', href:'architecture.html', icon:'build' },
   { title:'Request Lifecycle', desc:'Request Lifecycle', href:'request-lifecycle.html', icon:'bolt' },
+  { title:'Middleware Pipeline', desc:'Middleware Pipeline', href:'middleware.html', icon:'bolt' },
   { title:'API Reference', desc:'API Reference', href:'api-reference.html', icon:'code' },
   { title:'Database', desc:'ฐานข้อมูล', href:'database.html', icon:'db' },
+  { title:'Migrations', desc:'Migrations', href:'migrations.html', icon:'db' },
   { title:'Response', desc:'Response', href:'response.html', icon:'out' },
   { title:'Authorization (Guards)', desc:'การกำหนดสิทธิ์', href:'guard.html', icon:'shield' },
   { title:'i18n', desc:'หลายภาษา (i18n)', href:'i18n.html', icon:'globe' },
   { title:'Audit Trail', desc:'Audit Trail', href:'audit-trail.html', icon:'clip' },
+  { title:'Testing Framework', desc:'Testing Framework', href:'testing.html', icon:'build' },
+  { title:'Caching Layer', desc:'Caching Layer', href:'cache.html', icon:'bolt' },
+  { title:'Field Selector', desc:'Field Selector', href:'field-selector.html', icon:'code' },
+  { title:'Genetic Pulse (SSE)', desc:'Genetic Pulse (SSE)', href:'pulse.html', icon:'bolt' },
+  { title:'Genetic Modules', desc:'Genetic Modules', href:'modules.html', icon:'cube' },
+  { title:'Admin Generator', desc:'Admin Generator', href:'admin-generator.html', icon:'build' },
+  { title:'Endpoint AI', desc:'Endpoint AI', href:'endpoint-ai.html', icon:'code' },
+  { title:'Marketplace', desc:'Marketplace', href:'marketplace.html', icon:'globe' },
   { title:'Genetic SDK', desc:'Genetic SDK', href:'sdk.html', icon:'dna' },
   { title:'CLI Tool', desc:'CLI Tool', href:'cli.html', icon:'term' },
   { title:'OpenAPI Generator', desc:'OpenAPI Generator', href:'openapi.html', icon:'code' },

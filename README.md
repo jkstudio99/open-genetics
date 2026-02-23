@@ -2,150 +2,204 @@
   <img src="public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics Logo" width="200" />
   <br/>
   <h1>OpenGenetics Framework</h1>
-  <p><strong>Enterprise PHP Micro-Framework</strong> &mdash; <em>JWT Auth, Genetic RBAC, i18n, Audit Trail, and Dual-Frontend SDK.</em></p>
+  <p><strong>Enterprise PHP Micro-Framework v2.0</strong> &mdash; <em>10 production features built-in. No config bloat. Just PHP.</em></p>
 
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-    <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP Version"></a>
-    <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL Version">
+    <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP 8.1+"></a>
+    <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL">
+    <img src="https://img.shields.io/badge/version-2.0.0-6c63ff.svg" alt="v2.0.0">
   </p>
 </div>
 
 ---
 
-## ✨ Features
+## ✨ What's in v2.0
 
-- ⚡️ **< 50ms Response** — No ORM overhead, PDO Singleton, static caching
-- 🔒 **JWT Authentication** — HS256 with Bcrypt 12-round password hashing
-- 🛡️ **Genetic RBAC** — Admin / HR / Employee guard system in one line
-- 🗂️ **File-based Routing** — Drop a PHP file in `api/`, get an endpoint instantly
-- 🌐 **i18n Engine** — Thai/English instant switching via HTTP header
-- 📝 **Audit Trail** — Non-blocking auto-logging for all mutations
-- ⚛️ **Dual SDK** — React Hook + Vanilla JS for single-line API calls
-- 🛠️ **CLI Tool** — Database migrations, seeding, scaffolding
+| # | Feature | Description |
+|---|---------|-------------|
+| 1 | ⚡️ **Middleware Pipeline** | `#[Middleware('auth', 'rate:10,60')]` declarative middleware with Chain of Responsibility |
+| 2 | 🗄️ **DB Migrations** | Versioned, batch-rollback migrations with `migrate`, `migrate:rollback`, `migrate:status` |
+| 3 | 🧪 **Testing Framework** | `GeneticTestCase` with HTTP client, `actingAsAdmin()`, `assertOk()`, `assertPaginated()` |
+| 4 | 🚀 **Caching Layer** | File-based `Cache::remember()`, tag-based flush, zero dependencies |
+| 5 | 🔍 **Field Selector** | `?fields=id,name,price` sparse fieldsets — GraphQL-lite without the server |
+| 6 | 📡 **Genetic Pulse** | Server-Sent Events real-time push — no WebSocket server needed |
+| 7 | 🧩 **Genetic Modules** | `GeneticModule` plugin system with auto-discovery and lifecycle hooks |
+| 8 | 🛠️ **Admin Generator** | `make:admin <table>` — full CRUD admin endpoint from DB schema in seconds |
+| 9 | 🤖 **Endpoint AI** | `make:endpoint-ai products "CRUD with auth and cache"` — NLP scaffold |
+| 10 | 🏪 **Marketplace** | `market:install og/notifications` — community packages in one command |
+
+> Plus all v1.0 features: JWT Auth, RBAC, i18n, Audit Trail, Dual SDK, File-based Routing, CLI, OpenAPI
 
 ---
 
-## 🚀 Quick Start (Composer)
+## 🚀 Quick Start
 
-Get started in 5 simple steps — just like installing Laravel!
-
-### 1. Create a New Project
 ```bash
-composer create-project open-genetics/framework my-api
-cd my-api
-```
+# 1. Clone or create project
+composer create-project open-genetics/framework my-api && cd my-api
 
-### 2. Install Dependencies
-```bash
-composer install
-```
-
-### 3. Setup Environment
-Create a database in phpMyAdmin, then configure your `.env` file:
-```bash
+# 2. Configure environment
 cp .env.example .env
-```
-*(Don't forget to update `DB_NAME`, `DB_USER`, `DB_PASS`, and `JWT_SECRET`)*
+# Edit: DB_NAME, DB_USER, DB_PASS, JWT_SECRET
 
-### 4. Genetic Scaffolding
-Create all tables, seed the RBAC roles, and create the default Admin user automatically:
-```bash
+# 3. Bootstrap (tables + RBAC + admin user)
 php add/genetics mutate
-```
 
-### 5. Start the Dev Server
-Ready to write APIs—no route declarations required!
-```bash
+# 4. Start dev server
 php add/genetics serve
-```
-> Server runs at `http://127.0.0.1:8080`.
-
----
-
-## 🔑 Default Admin Account
-After running `mutate`, a default admin is created:
-- **Email:** `admin@opengenetics.io`
-- **Password:** `password`
-
-*(Please change this password immediately in production)*
-
----
-
-## 🏗️ Project Structure
-
-```text
-my-api/
-├── api/                    # File-based route endpoints
-│   ├── auth/               # Auth routes (login, register...)
-│   └── dashboard.php       # GET  /api/dashboard
-├── add/genetics            # CLI tool (mutate, seed, serve, scaffold)
-├── src/                    # Framework core (PSR-4)
-│   ├── Auth/               # AuthService, Guard, JwtManager
-│   ├── Audit/              # AuditLog (non-blocking)
-│   ├── Core/               # Database, Env, Router, Response
-│   └── I18n/               # Multi-language engine (Thai/English)
-├── public/                 # Web root (index.php)
-├── sdk/                    # Frontend SDK (Vanilla JS + React Hook)
-├── locales/                # i18n dictionaries (en.json, th.json)
-└── .env                    # Environment config
+# → http://127.0.0.1:8080
 ```
 
+**Default admin:** `admin@opengenetics.io` / `password` *(change immediately in production)*
+
 ---
 
-## 💻 Building an Endpoint
+## 💻 Building an API Endpoint
 
-Just drop a file in the `api/` directory.
+Drop a file in `api/` — it's instantly a route. No registration needed.
 
 ```php
-// api/products.php 
-// Accessible via GET or POST /api/products
+// api/products.php  →  GET/POST /api/products
 
-use OpenGenetics\Auth\Guard;
-use OpenGenetics\Core\Database;
-use OpenGenetics\Core\Response;
+use OpenGenetics\Core\{Database, Response, Cache};
 
+#[\OpenGenetics\Core\Middleware('auth', 'rate:60,60')]
 class Products
 {
     public static function get(array $body): void
     {
-        // Require user to be logged in
-        Guard::requireAuth();
-
-        $products = Database::query("SELECT * FROM products WHERE active = 1");
+        // Cache for 5 minutes
+        $products = Cache::remember('products:all', 300, fn() =>
+            Database::query("SELECT * FROM products WHERE active = 1")
+        );
         Response::success($products);
     }
 
     public static function post(array $body): void
     {
-        // Require ADMIN role
-        Guard::requireRole(Guard::ADMIN);
-
-        // ... create product logic here
-        Response::success(null, 'Product Created', 201);
+        // AI-assisted scaffold: php add/genetics make:endpoint-ai products "with auth and audit"
+        Response::success(null, 'Created', 201);
     }
 }
 ```
 
-Or instantly scaffold it via CLI:
+Or scaffold in seconds:
 ```bash
-php add/genetics make:endpoint products
+php add/genetics make:endpoint-ai products "CRUD with auth, search, pagination and cache"
+```
+
+---
+
+## 🖥️ CLI — 25 Commands
+
+```
+Database:    mutate, seed, status, serve
+Migrations:  migrate, migrate:rollback, migrate:status
+Scaffold:    make:endpoint, make:middleware, make:migration,
+             make:test, make:admin, make:endpoint-ai
+Cache:       cache:clear, cache:stats, cache:gc
+Marketplace: market:list, market:search, market:install
+Modules:     modules:list
+Docs:        docs:generate
+Info:        help, --version, new
+```
+
+---
+
+## 🏗️ Project Structure
+
+```
+my-api/
+├── api/                    # File-based routing (1 file = 1 endpoint)
+│   └── auth/               # Auth routes (login, register, logout)
+├── src/Core/               # Framework core (PSR-4, PHP 8.1+)
+│   ├── Cache.php           # Caching layer (v2.0)
+│   ├── FieldSelector.php   # GraphQL-lite sparse fieldsets (v2.0)
+│   ├── Pulse.php           # Server-Sent Events (v2.0)
+│   ├── ModuleLoader.php    # Plugin system (v2.0)
+│   ├── AdminGenerator.php  # Admin endpoint scaffolder (v2.0)
+│   ├── EndpointAI.php      # AI endpoint generator (v2.0)
+│   ├── Marketplace.php     # Package registry (v2.0)
+│   ├── Pipeline.php        # Middleware pipeline (v2.0)
+│   ├── Migrator.php        # DB migrations (v2.0)
+│   ├── Database.php        # PDO Singleton
+│   ├── Router.php          # File-based router
+│   └── Response.php        # JSON response helpers
+├── src/Auth/               # JWT + Guard RBAC
+├── src/Testing/            # GeneticTestCase + TestResponse (v2.0)
+├── src/Middleware/         # Auth, CORS, RateLimit (v2.0)
+├── database/migrations/    # Versioned migration files (v2.0)
+├── modules/                # Genetic Modules (plugins)
+├── storage/cache/          # File cache store
+├── sdk/                    # Frontend SDK (React + Vanilla JS)
+├── locales/                # i18n dictionaries (en.json, th.json)
+├── add/genetics            # CLI tool
+├── public/                 # Web root (index.php)
+└── .env                    # Environment config
+```
+
+---
+
+## 🔥 v2.0 Feature Highlights
+
+### Middleware Pipeline
+```php
+#[Middleware('auth:ADMIN', 'rate:10,60')]
+class AdminProducts { ... }
+```
+
+### Database Migrations
+```bash
+php add/genetics migrate            # Run pending
+php add/genetics migrate:rollback   # Undo last batch
+php add/genetics make:migration add_image_to_products
+```
+
+### Testing Framework
+```php
+class ProductsTest extends GeneticTestCase {
+    public function testList(): void {
+        $this->actingAsAdmin();
+        $this->get('/api/products')->assertOk()->assertPaginated();
+    }
+}
+```
+
+### Field Selector (GraphQL-lite)
+```
+GET /api/products?fields=id,name,price,category.name
+```
+
+### Real-time SSE
+```php
+Pulse::broadcast('orders', ['id' => 123, 'status' => 'new']);
+// Client: const es = new EventSource('/api/events');
+```
+
+### Marketplace
+```bash
+php add/genetics market:search notifications
+php add/genetics market:install og/notifications
 ```
 
 ---
 
 ## 📚 Documentation
 
-The full official documentation is available inside the project:
-* Open `public/index.html` or `docs/site/overview.html` in your browser.
-* Or view live documentation if deployed.
+Full documentation: open `docs/site/overview.html` or browse the 26-page docs site.
+
+```bash
+# Regenerate docs
+cd docs/_tools && python3 _gen_pages.py
+```
 
 ---
 
 ## 🛡️ Security
 
-If you discover a security vulnerability, please send an email to `security@opengenetics.io` instead of using the issue tracker.
+Report vulnerabilities to `security@opengenetics.io` — do not use the issue tracker.
 
 ## 📄 License
 
-The OpenGenetics framework is open-sourced software licensed under the [MIT license](LICENSE).
+MIT License — free and open-source. See [LICENSE](LICENSE).

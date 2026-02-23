@@ -18,12 +18,22 @@ PAGES = [
     ('directory-structure', 'โครงสร้างโปรเจค',      'Directory Structure',  'ds.directory'),
     ('architecture',       'สถาปัตยกรรม',           'Architecture',        'ds.architecture'),
     ('request-lifecycle',  'Request Lifecycle',    'Request Lifecycle',   'ds.lifecycle'),
+    ('middleware',         'Middleware Pipeline',  'Middleware Pipeline', 'ds.middleware'),
     ('api-reference',      'API Reference',        'API Reference',       'ds.api_ref'),
     ('database',           'ฐานข้อมูล',             'Database',            'ds.database'),
+    ('migrations',         'Migrations',           'Migrations',          'ds.migrations'),
     ('response',           'Response',             'Response',            'ds.response'),
     ('guard',              'การกำหนดสิทธิ์',        'Authorization (Guards)', 'ds.authorization'),
     ('i18n',               'หลายภาษา (i18n)',       'i18n',                'ds.i18n'),
     ('audit-trail',        'Audit Trail',          'Audit Trail',         'ds.audit'),
+    ('testing',            'Testing Framework',    'Testing Framework',   'ds.testing'),
+    ('cache',              'Caching Layer',        'Caching Layer',       'ds.cache'),
+    ('field-selector',     'Field Selector',       'Field Selector',      'ds.field_selector'),
+    ('pulse',              'Genetic Pulse (SSE)',   'Genetic Pulse (SSE)', 'ds.pulse'),
+    ('modules',            'Genetic Modules',      'Genetic Modules',     'ds.modules'),
+    ('admin-generator',    'Admin Generator',      'Admin Generator',     'ds.admin_generator'),
+    ('endpoint-ai',        'Endpoint AI',          'Endpoint AI',         'ds.endpoint_ai'),
+    ('marketplace',        'Marketplace',          'Marketplace',         'ds.marketplace'),
     ('sdk',                'Genetic SDK',          'Genetic SDK',         'ds.sdk'),
     ('cli',                'CLI Tool',             'CLI Tool',            'ds.cli'),
     ('openapi',            'OpenAPI Generator',    'OpenAPI Generator',   'ds.openapi'),
@@ -33,8 +43,11 @@ PAGES = [
 GROUPS = {
     'overview': 'getting-started', 'installation': 'getting-started', 'configuration': 'getting-started',
     'directory-structure': 'structure', 'architecture': 'structure', 'request-lifecycle': 'structure',
-    'api-reference': 'api-ref', 'database': 'api-ref', 'response': 'api-ref',
+    'middleware': 'structure',
+    'api-reference': 'api-ref', 'database': 'api-ref', 'migrations': 'api-ref', 'response': 'api-ref',
     'guard': 'api-ref', 'i18n': 'api-ref', 'audit-trail': 'api-ref',
+    'testing': 'tools', 'cache': 'tools', 'field-selector': 'tools', 'pulse': 'tools',
+    'modules': 'tools', 'admin-generator': 'tools', 'endpoint-ai': 'tools', 'marketplace': 'tools',
     'sdk': 'tools', 'cli': 'tools', 'openapi': 'tools', 'deployment': 'tools',
 }
 
@@ -64,10 +77,13 @@ SI = {
 SEARCH_ICONS = {
     'overview': 'book', 'installation': 'cube', 'configuration': 'cog',
     'directory-structure': 'folder', 'architecture': 'build',
-    'request-lifecycle': 'bolt', 'api-reference': 'code',
-    'database': 'db', 'response': 'out', 'guard': 'shield',
-    'i18n': 'globe', 'audit-trail': 'clip', 'sdk': 'dna',
-    'cli': 'term', 'openapi': 'code', 'deployment': 'rocket',
+    'request-lifecycle': 'bolt', 'middleware': 'bolt',
+    'api-reference': 'code',
+    'database': 'db', 'migrations': 'db', 'response': 'out', 'guard': 'shield',
+    'i18n': 'globe', 'audit-trail': 'clip', 'testing': 'build',
+    'cache': 'bolt', 'field-selector': 'code', 'pulse': 'bolt',
+    'modules': 'cube', 'admin-generator': 'build', 'endpoint-ai': 'code', 'marketplace': 'globe',
+    'sdk': 'dna', 'cli': 'term', 'openapi': 'code', 'deployment': 'rocket',
 }
 
 # ── Extract content sections from _source.html ──

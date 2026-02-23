@@ -176,8 +176,10 @@
     'ds.directory': { th: 'โครงสร้างโปรเจค', en: 'Directory Structure' },
     'ds.architecture': { th: 'สถาปัตยกรรม', en: 'Architecture' },
     'ds.lifecycle': { th: 'Request Lifecycle', en: 'Request Lifecycle' },
+    'ds.middleware': { th: 'Middleware Pipeline', en: 'Middleware Pipeline' },
     'ds.routing': { th: 'การ Routing', en: 'Routing' },
     'ds.database': { th: 'ฐานข้อมูล', en: 'Database' },
+    'ds.migrations': { th: 'Migrations', en: 'Migrations' },
     'ds.response': { th: 'Response', en: 'Response' },
     'ds.environment': { th: 'Environment', en: 'Environment' },
     'ds.authentication': { th: 'การยืนยันตัวตน', en: 'Authentication' },
@@ -185,6 +187,14 @@
     'ds.security': { th: 'ความปลอดภัย & OWASP', en: 'Security & OWASP' },
     'ds.i18n': { th: 'หลายภาษา (i18n)', en: 'i18n' },
     'ds.audit': { th: 'Audit Trail', en: 'Audit Trail' },
+    'ds.testing': { th: 'Testing Framework', en: 'Testing Framework' },
+    'ds.cache': { th: 'Caching Layer', en: 'Caching Layer' },
+    'ds.field_selector': { th: 'Field Selector', en: 'Field Selector' },
+    'ds.pulse': { th: 'Genetic Pulse (SSE)', en: 'Genetic Pulse (SSE)' },
+    'ds.modules': { th: 'Genetic Modules', en: 'Genetic Modules' },
+    'ds.admin_generator': { th: 'Admin Generator', en: 'Admin Generator' },
+    'ds.endpoint_ai': { th: 'Endpoint AI', en: 'Endpoint AI' },
+    'ds.marketplace': { th: 'Marketplace', en: 'Marketplace' },
     'ds.sdk': { th: 'Genetic SDK', en: 'Genetic SDK' },
     'ds.api_ref': { th: 'API Reference', en: 'API Reference' },
     'ds.cli': { th: 'CLI Tool', en: 'CLI Tool' },
@@ -210,6 +220,21 @@
     'dh.security': { th: '# Security & OWASP', en: '# Security & OWASP' },
     'dh.i18n': { th: '# Internationalization (i18n)', en: '# Internationalization (i18n)' },
     'dh.audit': { th: '# Audit Trail', en: '# Audit Trail' },
+    'dh.middleware': { th: '# Middleware Pipeline', en: '# Middleware Pipeline' },
+    'dh.middleware.desc': {
+      th: 'v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline ก่อนถึง endpoint',
+      en: 'v2.0 — Middleware system with Chain of Responsibility pattern. Every request passes through a pipeline before reaching the endpoint.'
+    },
+    'dh.migrations': { th: '# Database Migrations', en: '# Database Migrations' },
+    'dh.migrations.desc': {
+      th: 'v2.0 — Version-tracked migrations with rollback — ต่างจาก mutate ที่สร้างทุกอย่างครั้งเดียว',
+      en: 'v2.0 — Version-tracked migrations with batch rollback. Different from mutate which creates everything at once.'
+    },
+    'dh.testing': { th: '# Testing Framework', en: '# Testing Framework' },
+    'dh.testing.desc': {
+      th: 'v2.0 — Testing Framework ที่รันผ่าน PHPUnit — GeneticTestCase ให้ HTTP test client พร้อม authentication helpers',
+      en: 'v2.0 — Testing Framework built on PHPUnit — GeneticTestCase provides an HTTP test client with authentication helpers and fluent assertions.'
+    },
     'dh.sdk': { th: '# Genetic SDK', en: '# Genetic SDK' },
     'dh.api_ref': { th: '# API Reference', en: '# API Reference' },
     'dh.cli': { th: '# CLI Tool', en: '# CLI Tool' },

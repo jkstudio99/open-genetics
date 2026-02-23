@@ -30,7 +30,7 @@ $projectRoot = findProjectRoot();
 // Banner
 echo "\n";
 echo "  ╔═══════════════════════════════════════════╗\n";
-echo "  ║  🧬 OpenGenetics — Genetic CLI  v1.0.6    ║\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.0.0    ║\n";
 echo "  ║  Enterprise PHP Micro-Framework            ║\n";
 echo "  ╚═══════════════════════════════════════════╝\n";
 echo "\n";
@@ -69,13 +69,27 @@ if (!$projectRoot) {
 bootstrapProject($projectRoot);
 
 match ($command) {
-    'mutate'          => mutate(),
-    'seed'            => seed(),
-    'status'          => status(),
-    'make:endpoint'   => makeEndpoint($projectRoot, $argv[2] ?? null),
-    'make:middleware' => makeMiddleware($projectRoot, $argv[2] ?? null),
-    'docs:generate'   => generateDocs($projectRoot),
-    default           => unknownCommand($command),
+    'mutate'            => mutate(),
+    'seed'              => seed(),
+    'status'            => status(),
+    'migrate'           => cliMigrate($projectRoot),
+    'migrate:rollback'  => cliMigrateRollback($projectRoot),
+    'migrate:status'    => cliMigrateStatus($projectRoot),
+    'make:endpoint'     => makeEndpoint($projectRoot, $argv[2] ?? null),
+    'make:middleware'   => makeMiddleware($projectRoot, $argv[2] ?? null),
+    'make:migration'    => cliMakeMigration($projectRoot, $argv[2] ?? null),
+    'make:test'         => cliMakeTest($projectRoot, $argv[2] ?? null),
+    'make:admin'        => cliMakeAdmin($projectRoot, $argv[2] ?? null),
+    'make:endpoint-ai'  => cliMakeEndpointAI($projectRoot, $argv[2] ?? null, $argv[3] ?? ''),
+    'cache:clear'       => cliCacheClear($projectRoot),
+    'cache:stats'       => cliCacheStats($projectRoot),
+    'cache:gc'          => cliCacheGc($projectRoot),
+    'market:list'       => cliMarketList($projectRoot, $argv[2] ?? null),
+    'market:search'     => cliMarketSearch($argv[2] ?? null),
+    'market:install'    => cliMarketInstall($projectRoot, $argv[2] ?? null),
+    'modules:list'      => cliModulesList($projectRoot),
+    'docs:generate'     => generateDocs($projectRoot),
+    default             => unknownCommand($command),
 };
 
 // ═══════════════════════════════════════════════════════
@@ -571,6 +585,10 @@ function makeMiddleware(string $root, ?string $name): void
     }
 
     $className = ucfirst($name);
+    if (!str_ends_with($className, 'Middleware')) {
+        $className .= 'Middleware';
+    }
+
     $filePath = $root . '/src/Middleware/' . $className . '.php';
 
     if (file_exists($filePath)) {
@@ -583,22 +601,32 @@ function makeMiddleware(string $root, ?string $name): void
         mkdir($dir, 0755, true);
     }
 
+    // Generate alias name: CacheMiddleware → cache
+    $nameAlias = strtolower(str_replace('Middleware', '', $className));
+
     $template = <<<PHP
 <?php
+
+declare(strict_types=1);
 
 namespace OpenGenetics\Middleware;
 
 /**
  * {$className} Middleware
- * 
+ *
  * Auto-generated via `php add/genetics make:middleware`.
+ * Register via: Pipeline::alias('{$nameAlias}', {$className}::class);
+ * Use in endpoints: #[Middleware('{$nameAlias}')]
  */
-class {$className}
+final class {$className}
 {
-    public static function handle(): void
+    public function handle(array \$request, callable \$next): void
     {
-        // TODO: Implement middleware logic
-        // Throw \\RuntimeException to halt the request.
+        // TODO: Add pre-processing logic here
+        // Example: Validate headers, check permissions, etc.
+
+        // Pass to next middleware
+        \$next(\$request);
     }
 }
 
@@ -606,7 +634,8 @@ PHP;
 
     file_put_contents($filePath, $template);
     echo "  ✅ Created middleware: src/Middleware/{$className}.php\n";
-    echo "  📝 Namespace: OpenGenetics\\Middleware\\{$className}\n\n";
+    echo "  📝 Namespace: OpenGenetics\\Middleware\\{$className}\n";
+    echo "  💡 Register: Pipeline::alias('{$nameAlias}', {$className}::class);\n\n";
 }
 
 // ═══════════════════════════════════════════════════════
@@ -631,8 +660,345 @@ function generateDocs(string $root): void
 }
 
 // ═══════════════════════════════════════════════════════
+// Command: migrate — Run pending migrations
+// ═══════════════════════════════════════════════════════
+
+function cliMigrate(string $root): void
+{
+    echo "  🔄 Running pending migrations...\n\n";
+
+    $migrator = new \OpenGenetics\Core\Migrator($root);
+    $executed = $migrator->migrate();
+
+    if (empty($executed)) {
+        echo "  ℹ️  Nothing to migrate — all up to date.\n\n";
+        return;
+    }
+
+    foreach ($executed as $name) {
+        echo "  ✅ Migrated: {$name}\n";
+    }
+
+    echo "\n  🧬 " . count($executed) . " migration(s) executed.\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: migrate:rollback — Undo last batch
+// ═══════════════════════════════════════════════════════
+
+function cliMigrateRollback(string $root): void
+{
+    echo "  ⏪ Rolling back last migration batch...\n\n";
+
+    $migrator   = new \OpenGenetics\Core\Migrator($root);
+    $rolledBack = $migrator->rollback();
+
+    if (empty($rolledBack)) {
+        echo "  ℹ️  Nothing to rollback.\n\n";
+        return;
+    }
+
+    foreach ($rolledBack as $name) {
+        echo "  ↩️  Rolled back: {$name}\n";
+    }
+
+    echo "\n  🧬 " . count($rolledBack) . " migration(s) rolled back.\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: migrate:status — Show migration status
+// ═══════════════════════════════════════════════════════
+
+function cliMigrateStatus(string $root): void
+{
+    echo "  📋 Migration Status\n\n";
+
+    $migrator = new \OpenGenetics\Core\Migrator($root);
+    $statuses = $migrator->status();
+
+    if (empty($statuses)) {
+        echo "  ℹ️  No migration files found.\n\n";
+        return;
+    }
+
+    printf("  %-50s %-10s %-8s %s\n", 'Migration', 'Status', 'Batch', 'Date');
+    echo "  " . str_repeat('─', 90) . "\n";
+
+    foreach ($statuses as $s) {
+        $icon = $s['status'] === 'Ran' ? '✅' : '⏳';
+        printf("  %s %-48s %-10s %-8s %s\n",
+            $icon,
+            $s['name'],
+            $s['status'],
+            $s['batch'] ?? '—',
+            $s['date'] ?? '—'
+        );
+    }
+
+    echo "\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: make:migration — Create migration file
+// ═══════════════════════════════════════════════════════
+
+function cliMakeMigration(string $root, ?string $name): void
+{
+    if (empty($name)) {
+        echo "  ❌ Usage: php add/genetics make:migration <name>\n";
+        echo "  Example: php add/genetics make:migration add_image_to_equipment\n\n";
+        return;
+    }
+
+    $migrator = new \OpenGenetics\Core\Migrator($root);
+    $path     = $migrator->createMigration($name);
+    $basename = basename($path);
+
+    echo "  ✅ Created migration: database/migrations/{$basename}\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: make:test — Create test class
+// ═══════════════════════════════════════════════════════
+
+function cliMakeTest(string $root, ?string $name): void
+{
+    if (empty($name)) {
+        echo "  ❌ Usage: php add/genetics make:test <Name>\n";
+        echo "  Example: php add/genetics make:test UsersTest\n\n";
+        return;
+    }
+
+    $className = ucfirst($name);
+    if (!str_ends_with($className, 'Test')) {
+        $className .= 'Test';
+    }
+
+    $filePath = $root . '/tests/' . $className . '.php';
+
+    if (file_exists($filePath)) {
+        echo "  ⚠️  Test already exists: tests/{$className}.php\n\n";
+        return;
+    }
+
+    $dir = dirname($filePath);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+
+    $template = <<<PHP
+<?php
+
+use OpenGenetics\Testing\GeneticTestCase;
+
+/**
+ * {$className}
+ *
+ * Auto-generated via `php add/genetics make:test`.
+ */
+class {$className} extends GeneticTestCase
+{
+    public function testExample(): void
+    {
+        \$this->actingAsAdmin();
+
+        \$response = \$this->get('/api/health');
+        \$response->assertOk()->assertSuccess();
+    }
+}
+
+PHP;
+
+    file_put_contents($filePath, $template);
+    echo "  ✅ Created test: tests/{$className}.php\n";
+    echo "  🧪 Run with: vendor/bin/phpunit tests/{$className}.php\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Commands: cache:clear, cache:stats, cache:gc
+// ═══════════════════════════════════════════════════════
+
+function cliCacheClear(string $root): void
+{
+    bootstrapProject($root);
+    \OpenGenetics\Core\Cache::clear();
+    echo "  ✅ Cache cleared.\n\n";
+}
+
+function cliCacheStats(string $root): void
+{
+    bootstrapProject($root);
+    $stats = \OpenGenetics\Core\Cache::stats();
+    echo "  📊 Cache Stats\n";
+    echo "  " . str_repeat('─', 40) . "\n";
+    printf("  %-20s %s\n", 'Total entries:',  $stats['entries']);
+    printf("  %-20s %s\n", 'Expired entries:', $stats['expired']);
+    printf("  %-20s %s KB\n", 'Disk size:',   $stats['size_kb']);
+    echo "\n  Tags:\n";
+    foreach ($stats['tags'] as $tag => $count) {
+        echo "    {$tag}: {$count} entries\n";
+    }
+    echo "\n";
+}
+
+function cliCacheGc(string $root): void
+{
+    bootstrapProject($root);
+    $removed = \OpenGenetics\Core\Cache::gc();
+    echo "  🧹 Cache GC: removed {$removed} expired entr" . ($removed === 1 ? 'y' : 'ies') . ".\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: make:admin — Generate CRUD admin endpoint
+// ═══════════════════════════════════════════════════════
+
+function cliMakeAdmin(string $root, ?string $table): void
+{
+    if (empty($table)) {
+        echo "  ❌ Usage: php add/genetics make:admin <table>\n";
+        echo "  Example: php add/genetics make:admin products\n\n";
+        return;
+    }
+
+    bootstrapProject($root);
+    $path = \OpenGenetics\Core\AdminGenerator::scaffoldApiEndpoint($root, $table);
+    $rel  = str_replace($root . '/', '', $path);
+    echo "  ✅ Admin endpoint: {$rel}\n";
+    echo "  🔐 Protected by: ADMIN role middleware\n";
+    echo "  📋 Methods: GET (paginated), POST, PUT, DELETE\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: make:endpoint-ai — AI-powered endpoint scaffold
+// ═══════════════════════════════════════════════════════
+
+function cliMakeEndpointAI(string $root, ?string $name, string $description): void
+{
+    if (empty($name)) {
+        echo "  ❌ Usage: php add/genetics make:endpoint-ai <name> \"<description>\"\n";
+        echo "  Example: php add/genetics make:endpoint-ai products \"CRUD with auth and search\"\n\n";
+        return;
+    }
+
+    $features = \OpenGenetics\Core\EndpointAI::analyze($description);
+    echo "  🤖 AI Analysis: \"{$description}\"\n";
+    echo "  " . str_repeat('─', 50) . "\n";
+    foreach ($features as $feat => $enabled) {
+        if ($enabled) {
+            echo "  ✅ " . str_replace('needs_', '', $feat) . "\n";
+        }
+    }
+    echo "\n";
+
+    $path = \OpenGenetics\Core\EndpointAI::scaffold($name, $description, [], $root);
+    $rel  = str_replace($root . '/', '', $path);
+    echo "  ✅ Created: {$rel}\n\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Commands: market:list, market:search, market:install
+// ═══════════════════════════════════════════════════════
+
+function cliMarketList(string $root, ?string $type): void
+{
+    echo "  🏪 Genetic Marketplace\n\n";
+    $packages = \OpenGenetics\Core\Marketplace::list($type);
+
+    if (empty($packages)) {
+        echo "  ℹ️  No packages found.\n\n";
+        return;
+    }
+
+    printf("  %-30s %-10s %-12s %s\n", 'Name', 'Version', 'Type', 'Description');
+    echo "  " . str_repeat('─', 80) . "\n";
+    foreach ($packages as $p) {
+        printf("  %-30s %-10s %-12s %s\n",
+            $p['name']    ?? '—',
+            $p['version'] ?? '—',
+            $p['type']    ?? '—',
+            mb_strimwidth($p['description'] ?? '', 0, 40, '...')
+        );
+    }
+    echo "\n  Install: php add/genetics market:install <name>\n\n";
+}
+
+function cliMarketSearch(?string $query): void
+{
+    if (empty($query)) {
+        echo "  ❌ Usage: php add/genetics market:search <keyword>\n\n";
+        return;
+    }
+
+    $results = \OpenGenetics\Core\Marketplace::search($query);
+
+    if (empty($results)) {
+        echo "  🔍 No packages found for \"{$query}\"\n\n";
+        return;
+    }
+
+    echo "  🔍 Results for \"{$query}\":\n\n";
+    foreach ($results as $p) {
+        echo "  📦 {$p['name']} v{$p['version']}\n";
+        echo "     {$p['description']}\n";
+        echo "     Tags: " . implode(', ', $p['tags'] ?? []) . "\n";
+        echo "     URL:  {$p['url']}\n\n";
+    }
+}
+
+function cliMarketInstall(string $root, ?string $package): void
+{
+    if (empty($package)) {
+        echo "  ❌ Usage: php add/genetics market:install <package-name>\n";
+        echo "  Example: php add/genetics market:install og/notifications\n\n";
+        return;
+    }
+
+    echo "  📦 Installing {$package}...\n\n";
+    $result = \OpenGenetics\Core\Marketplace::install($package, $root);
+
+    if (!$result['success']) {
+        echo "  ❌ {$result['message']}\n\n";
+        return;
+    }
+
+    echo "  ✅ {$result['message']}\n";
+    if (!empty($result['actions'])) {
+        echo "\n  Next steps:\n";
+        foreach ($result['actions'] as $action) {
+            echo "    → {$action}\n";
+        }
+    }
+    echo "\n";
+}
+
+// ═══════════════════════════════════════════════════════
+// Command: modules:list — Show registered modules
+// ═══════════════════════════════════════════════════════
+
+function cliModulesList(string $root): void
+{
+    bootstrapProject($root);
+    $modules = \OpenGenetics\Core\ModuleLoader::status();
+
+    if (empty($modules)) {
+        echo "  ℹ️  No modules registered.\n";
+        echo "  💡 Register in index.php: ModuleLoader::register(new MyModule());\n\n";
+        return;
+    }
+
+    echo "  🧩 Registered Modules\n\n";
+    foreach ($modules as $m) {
+        echo "  📦 {$m['name']} v{$m['version']}\n";
+        if ($m['middleware']) echo "     Middleware: " . implode(', ', $m['middleware']) . "\n";
+        if ($m['commands'])   echo "     Commands:   " . implode(', ', $m['commands']) . "\n";
+        echo "\n";
+    }
+}
+
+// ═══════════════════════════════════════════════════════
 // Command: help
 // ═══════════════════════════════════════════════════════
+
 
 function help(): void
 {
@@ -644,11 +1010,33 @@ function help(): void
     echo "    status              Show database connection status\n";
     echo "    serve               Start PHP development server\n\n";
 
+    echo "  \033[33mMigrations:\033[0m\n";
+    echo "    migrate             Run pending migrations\n";
+    echo "    migrate:rollback    Undo last migration batch\n";
+    echo "    migrate:status      Show all migration statuses\n\n";
+
     echo "  \033[33mScaffolding:\033[0m\n";
     echo "    make:endpoint       Create a new API endpoint file\n";
     echo "    make:middleware     Create a new middleware class\n";
+    echo "    make:migration      Create a new migration file\n";
+    echo "    make:test           Create a new test class\n";
+    echo "    make:admin          Generate CRUD admin endpoint from DB table\n";
+    echo "    make:endpoint-ai    AI-generated endpoint from description\n";
     echo "    docs:generate       Auto-generate OpenAPI spec from `api/`\n";
     echo "    new <name>          Create a new OpenGenetics project\n\n";
+
+    echo "  \033[33mCache (v2.0):\033[0m\n";
+    echo "    cache:clear         Clear all cached data\n";
+    echo "    cache:stats         Show cache statistics\n";
+    echo "    cache:gc            Remove expired cache entries\n\n";
+
+    echo "  \033[33mMarketplace (v2.0):\033[0m\n";
+    echo "    market:list         List available packages\n";
+    echo "    market:search <q>   Search packages by keyword\n";
+    echo "    market:install <p>  Install a marketplace package\n\n";
+
+    echo "  \033[33mModules (v2.0):\033[0m\n";
+    echo "    modules:list        List registered Genetic Modules\n\n";
 
     echo "  \033[33mInfo:\033[0m\n";
     echo "    help, --help, -h    Show this help message\n";

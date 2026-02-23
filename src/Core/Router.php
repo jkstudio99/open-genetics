@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 namespace OpenGenetics\Core;
 
+use OpenGenetics\Middleware\CorsMiddleware;
+use OpenGenetics\Middleware\AuthMiddleware;
+use OpenGenetics\Middleware\RateLimitMiddleware;
+
 /**
- * 🧬 OpenGenetics — File-based API Router
+ * 🧬 OpenGenetics — File-based API Router (v2.0 with Middleware Pipeline)
  *
  * Maps HTTP requests to PHP files in the api/ directory.
  * Each .php file = one endpoint. Supports REST methods via static class pattern.
+ * Now supports Middleware Pipeline via #[Middleware] PHP 8.1+ attributes.
  *
- * Example: api/auth/login.php → POST /api/auth/login
+ * Example:
+ *   api/auth/login.php → POST /api/auth/login
+ *
+ *   #[Middleware('auth', 'rate:10,60')]
+ *   class Products { ... }
  */
 final class Router
 {
@@ -22,6 +31,11 @@ final class Router
     {
         $this->basePath = rtrim($basePath, '/');
         $this->apiDir   = rtrim($apiDir, '/');
+
+        // Register default middleware aliases
+        Pipeline::alias('auth', AuthMiddleware::class);
+        Pipeline::alias('rate', RateLimitMiddleware::class);
+        Pipeline::alias('cors', CorsMiddleware::class);
     }
 
     /**
@@ -31,19 +45,7 @@ final class Router
     {
         $method = strtoupper($_SERVER['REQUEST_METHOD']);
 
-        // CORS headers (set once for all requests including preflight)
-        $origin = Env::get('CORS_ORIGIN', '*');
         header('Content-Type: application/json; charset=utf-8');
-        header("Access-Control-Allow-Origin: {$origin}");
-        header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Locale');
-        header('Access-Control-Max-Age: 86400');
-
-        // Handle preflight
-        if ($method === 'OPTIONS') {
-            http_response_code(204);
-            exit;
-        }
 
         $uri = $this->parseUri();
 
@@ -77,12 +79,47 @@ final class Router
         // Parse request body
         $body = $this->parseBody();
 
-        // Execute handler — delegate all uncaught exceptions to ErrorHandler
+        // Collect middleware stack: global + endpoint-level
+        $middleware = $this->collectMiddleware($className);
+
+        // Execute through Pipeline
+        Pipeline::send($body)
+            ->through($middleware)
+            ->then(function (array $body) use ($className, $handler) {
+                try {
+                    $className::$handler($body);
+                } catch (\Throwable $e) {
+                    ErrorHandler::handleException($e);
+                }
+            });
+    }
+
+    /**
+     * Collect middleware for an endpoint: global + class-level #[Middleware] attributes.
+     *
+     * @return array<string> Resolved middleware class names
+     */
+    private function collectMiddleware(string $className): array
+    {
+        // Start with global middleware
+        $stack = Pipeline::getGlobal();
+
+        // Parse #[Middleware] attributes from the endpoint class (PHP 8.1+)
         try {
-            $className::$handler($body);
-        } catch (\Throwable $e) {
-            ErrorHandler::handleException($e);
+            $reflection = new \ReflectionClass($className);
+            $attributes = $reflection->getAttributes(Middleware::class);
+
+            foreach ($attributes as $attr) {
+                $instance = $attr->newInstance();
+                foreach ($instance->middleware as $name) {
+                    $stack[] = Pipeline::resolve($name);
+                }
+            }
+        } catch (\ReflectionException $e) {
+            // Ignore — class without attributes
         }
+
+        return $stack;
     }
 
     /**
@@ -147,7 +184,6 @@ final class Router
         $name  = '';
 
         foreach ($parts as $part) {
-            // Convert hyphenated segments: "audit-logs" → "AuditLogs"
             $segments = explode('-', $part);
             $name .= implode('', array_map('ucfirst', $segments));
         }

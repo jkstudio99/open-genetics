@@ -1727,6 +1727,119 @@ Response::success() / error()
     ↓
 JSON Output</code></pre>
 
+    <!-- Middleware Pipeline -->
+    <h2 id="middleware"><a href="#middleware" data-i18n="dh.middleware"># Middleware Pipeline</a></h2>
+    <p data-i18n="dh.middleware.desc">v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
+      ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request และ Auth/RateLimit ประกาศผ่าน
+      <code>#[Middleware]</code> attribute</p>
+
+    <h3>Request Lifecycle v2.0</h3>
+    <pre><code>HTTP Request
+    ↓
+Apache .htaccess  →  public/index.php
+    ↓
+Pipeline::addGlobal(CorsMiddleware::class)   ← Global middleware
+    ↓
+Router::dispatch()  →  resolve api/{path}.php
+    ↓
+Collect #[Middleware] attributes from endpoint class
+    ↓
+Pipeline::send($body)
+  →  CorsMiddleware::handle()     ← Sets CORS headers
+  →  AuthMiddleware::handle()     ← Validates JWT, sets Guard user
+  →  RateLimitMiddleware::handle() ← Checks file-based rate limit
+    ↓
+Class::method($body)               ← Endpoint handler
+    ↓
+Response::success() / error()
+    ↓
+JSON Output</code></pre>
+
+    <h3>การใช้งาน #[Middleware] Attribute</h3>
+    <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Core\Middleware</span>;
+
+<span class="cm">// ต้อง login เท่านั้น</span>
+#[<span class="cl">Middleware</span>(<span class="st">'auth'</span>)]
+<span class="kw">class</span> <span class="cl">Products</span>
+{
+    <span class="kw">public static function</span> <span class="fn">get</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span>
+    {
+        <span class="cl">Response</span>::<span class="fn">success</span>([<span class="st">'data'</span> =&gt; <span class="st">'...'</span>]);
+    }
+}
+
+<span class="cm">// เฉพาะ Admin เท่านั้น</span>
+#[<span class="cl">Middleware</span>(<span class="st">'auth:admin'</span>)]
+<span class="kw">class</span> <span class="cl">AdminPanel</span> { ... }
+
+<span class="cm">// Auth + Rate Limit 10 req/60s</span>
+#[<span class="cl">Middleware</span>(<span class="st">'auth'</span>, <span class="st">'rate:10,60'</span>)]
+<span class="kw">class</span> <span class="cl">SensitiveEndpoint</span> { ... }</code></pre>
+
+    <h3>Middleware ที่มีให้ใช้งาน</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Alias</th>
+          <th>Class</th>
+          <th>Params</th>
+          <th>การใช้งาน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>cors</code></td>
+          <td><code>CorsMiddleware</code></td>
+          <td>—</td>
+          <td>CORS headers + preflight (global)</td>
+        </tr>
+        <tr>
+          <td><code>auth</code></td>
+          <td><code>AuthMiddleware</code></td>
+          <td><code>role1,role2</code></td>
+          <td>ตรวจ JWT + role อาจระบุหรือไม่ก็ได้</td>
+        </tr>
+        <tr>
+          <td><code>rate</code></td>
+          <td><code>RateLimitMiddleware</code></td>
+          <td><code>max,window</code></td>
+          <td>จำกัด request ต่อ IP (default 60/60s)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>สร้าง Middleware ใหม่</h3>
+    <pre><code><span class="cm"># Scaffold ด้วย CLI</span>
+php add/genetics make:middleware Cache
+<span class="cm"># → สร้าง src/Middleware/CacheMiddleware.php</span></code></pre>
+
+    <pre><code><span class="kw">final class</span> <span class="cl">CacheMiddleware</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="kw">array</span> <span class="vr">$request</span>, <span class="kw">callable</span> <span class="vr">$next</span>): <span class="kw">void</span>
+    {
+        <span class="cm">// ตรวจ cache ก่อน</span>
+        <span class="vr">$cached</span> = <span class="cl">Cache</span>::<span class="fn">get</span>(<span class="vr">$cacheKey</span>);
+        <span class="kw">if</span> (<span class="vr">$cached</span>) {
+            <span class="cl">Response</span>::<span class="fn">success</span>(<span class="vr">$cached</span>);
+            <span class="kw">return</span>;
+        }
+        <span class="vr">$next</span>(<span class="vr">$request</span>);
+    }
+}
+
+<span class="cm">// Register alias ใน index.php</span>
+<span class="cl">Pipeline</span>::<span class="fn">alias</span>(<span class="st">'cache'</span>, <span class="cl">CacheMiddleware</span>::<span class="kw">class</span>);</code></pre>
+
+    <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg></span>
+      <div>
+        <p>Middleware ทุกตัวต้องมี <code>handle(array $request, callable $next)</code> — เรียก
+          <code>$next($request)</code> เพื่อส่งต่อ pipeline หรือไม่เรียกเพื่อ short-circuit</p>
+      </div>
+    </div>
+
     <!-- API Reference -->
     <h2 id="api-reference"><a href="#api-reference" data-i18n="dh.api_ref"># API Reference</a></h2>
     <h3 data-i18n="dh.auth_endpoints">Authentication Endpoints</h3>
@@ -1824,6 +1937,57 @@ X-Locale: th</code></pre>
       <div>
         <p><strong>LIMIT/OFFSET:</strong> ใช้ <code>intval()</code> guard เพราะ MySQL ไม่รองรับ named params ใน LIMIT
           เมื่อ <code>EMULATE_PREPARES=false</code></p>
+      </div>
+    </div>
+
+    <!-- Migrations -->
+    <h2 id="migrations"><a href="#migrations" data-i18n="dh.migrations"># Database Migrations</a></h2>
+    <p data-i18n="dh.migrations.desc">v2.0 — ระบบ version-tracked migrations สามารถ rollback แต่ละ batch ได้ ต่างจาก
+      <code>mutate</code> ที่สร้างตารางครั้งเดียว migrations จะบันทึกสิ่งที่รันไปแล้วไว้ในตาราง
+      <code>og_migrations</code></p>
+
+    <h3>CLI Commands</h3>
+    <pre><code><span class="cm"># รัน migrations ที่ยังไม่ได้รัน</span>
+php add/genetics migrate
+
+<span class="cm"># ย้อนกลับ batch ล่าสุด</span>
+php add/genetics migrate:rollback
+
+<span class="cm"># ดู status ของทุก migration</span>
+php add/genetics migrate:status
+
+<span class="cm"># สร้าง migration file ใหม่</span>
+php add/genetics make:migration add_image_to_equipment</code></pre>
+
+    <h3>โครงสร้าง Migration File</h3>
+    <pre><code><span class="cm">// database/migrations/2026_03_01_100000_add_image_to_equipment.php</span>
+<span class="kw">return new class</span> {
+    <span class="kw">public function</span> <span class="fn">up</span>(<span class="cl">PDO</span> <span class="vr">$pdo</span>): <span class="kw">void</span>
+    {
+        <span class="vr">$pdo</span>-&gt;<span class="fn">exec</span>(<span class="st">&quot;ALTER TABLE equipment ADD image_path VARCHAR(500)&quot;</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">down</span>(<span class="cl">PDO</span> <span class="vr">$pdo</span>): <span class="kw">void</span>
+    {
+        <span class="vr">$pdo</span>-&gt;<span class="fn">exec</span>(<span class="st">&quot;ALTER TABLE equipment DROP COLUMN image_path&quot;</span>);
+    }
+};</code></pre>
+
+    <h3>migrate:status output</h3>
+    <pre><code>  Migration                                          Status     Batch    Date
+  ──────────────────────────────────────────────────────────────────────────────────────────
+  ✅ 2026_01_01_000000_create_users_table            Ran        1        2026-01-01 00:00:00
+  ✅ 2026_01_01_000001_seed_rbac_roles               Ran        1        2026-01-01 00:00:00
+  ⏳ 2026_03_01_100000_add_image_to_equipment        Pending    —        —</code></pre>
+
+    <div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg></span>
+      <div>
+        <p>Migrations จะรันตามลำดับ timestamp ในชื่อไฟล์ — ชื่อไฟล์รูปแบบ <code>YYYY_MM_DD_HHmmss_description.php</code>
+          และ <code>make:migration</code> จะสร้างชื่อไฟล์ที่ถูกต้องให้อัตโนมัติ</p>
       </div>
     </div>
 
@@ -1996,6 +2160,505 @@ X-Locale: th</code></pre>
         </tr>
       </tbody>
     </table>
+
+    <!-- Testing Framework -->
+    <h2 id="testing"><a href="#testing" data-i18n="dh.testing"># Testing Framework</a></h2>
+    <p data-i18n="dh.testing.desc">v2.0 — Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
+      test client พร้อม authentication helpers และ fluent assertions</p>
+
+    <h3>สร้าง Test File</h3>
+    <pre><code><span class="cm"># Scaffold test class</span>
+php add/genetics make:test Users
+<span class="cm"># → tests/UsersTest.php</span></code></pre>
+
+    <h3>ตัวอย่างการใช้งาน</h3>
+    <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Testing\GeneticTestCase</span>;
+
+<span class="kw">class</span> <span class="cl">UsersTest</span> <span class="kw">extends</span> <span class="cl">GeneticTestCase</span>
+{
+    <span class="kw">public function</span> <span class="fn">testListUsers</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-&gt;<span class="fn">actingAsAdmin</span>();
+
+        <span class="vr">$this</span>-&gt;<span class="fn">get</span>(<span class="st">'/api/users'</span>)
+            -&gt;<span class="fn">assertOk</span>()           <span class="cm">// HTTP 200</span>
+            -&gt;<span class="fn">assertSuccess</span>()      <span class="cm">// {"success":true,...}</span>
+            -&gt;<span class="fn">assertJsonStructure</span>([<span class="st">'data'</span>]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">testRequiresAuth</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-&gt;<span class="fn">asGuest</span>();
+        <span class="vr">$this</span>-&gt;<span class="fn">get</span>(<span class="st">'/api/users'</span>)-&gt;<span class="fn">assertUnauthorized</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">testCreateUser</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-&gt;<span class="fn">actingAs</span>([<span class="st">'role_name'</span> =&gt; <span class="st">'ADMIN'</span>]);
+
+        <span class="vr">$this</span>-&gt;<span class="fn">post</span>(<span class="st">'/api/users'</span>, [
+            <span class="st">'email'</span>    =&gt; <span class="st">'new@test.io'</span>,
+            <span class="st">'password'</span> =&gt; <span class="st">'secret123'</span>,
+        ])-&gt;<span class="fn">assertCreated</span>();
+
+        <span class="vr">$this</span>-&gt;<span class="fn">assertDatabaseHas</span>(<span class="st">'users'</span>, [<span class="st">'email'</span> =&gt; <span class="st">'new@test.io'</span>]);
+    }
+}</code></pre>
+
+    <h3>Authentication Helpers</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>การใช้งาน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>actingAs(array $user)</code></td>
+          <td>ระบุ user ที่ต้องการ authenticate</td>
+        </tr>
+        <tr>
+          <td><code>actingAsAdmin()</code></td>
+          <td>Shorthand สำหรับ admin user</td>
+        </tr>
+        <tr>
+          <td><code>asGuest()</code></td>
+          <td>ไม่มี authentication token</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Fluent Assertions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>ตรวจสอบ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>assertOk()</code></td>
+          <td>HTTP 200</td>
+        </tr>
+        <tr>
+          <td><code>assertCreated()</code></td>
+          <td>HTTP 201</td>
+        </tr>
+        <tr>
+          <td><code>assertUnauthorized()</code></td>
+          <td>HTTP 401</td>
+        </tr>
+        <tr>
+          <td><code>assertForbidden()</code></td>
+          <td>HTTP 403</td>
+        </tr>
+        <tr>
+          <td><code>assertUnprocessable()</code></td>
+          <td>HTTP 422</td>
+        </tr>
+        <tr>
+          <td><code>assertJsonHas(key, val)</code></td>
+          <td>JSON field มีค่าที่ระบุ</td>
+        </tr>
+        <tr>
+          <td><code>assertJsonStructure([keys])</code></td>
+          <td>JSON มี keys ที่ระบุ</td>
+        </tr>
+        <tr>
+          <td><code>assertSuccess()</code></td>
+          <td><code>{"success":true}</code></td>
+        </tr>
+        <tr>
+          <td><code>assertPaginated()</code></td>
+          <td>มี <code>data</code> และ <code>meta</code></td>
+        </tr>
+        <tr>
+          <td><code>assertDatabaseHas(table, cond)</code></td>
+          <td>มีแถวใน DB ที่ตรงเงื่อนไข</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>รัน Tests</h3>
+    <pre><code><span class="cm"># รัน tests ทั้งหมด</span>
+vendor/bin/phpunit
+
+<span class="cm"># รัน test file เดียว</span>
+vendor/bin/phpunit tests/UsersTest.php
+
+<span class="cm"># รันพร้อม output ละเอียด</span>
+vendor/bin/phpunit --testdox</code></pre>
+
+    <!-- Cache -->
+    <h2 id="cache"><a href="#cache" data-i18n="dh.cache"># Caching Layer</a></h2>
+    <p data-i18n="dh.cache.desc">v2.0 — File-based cache พร้อม TTL, tag-based invalidation และ <code>remember()</code>
+      pattern — ไม่ต้องติดตั้ง Redis หรือ Memcached</p>
+
+    <h3>การใช้งานพื้นฐาน</h3>
+    <pre><code><span class="cm">// เก็บ cache 5 นาที</span>
+<span class="cl">Cache</span>::<span class="fn">put</span>(<span class="st">'user:1'</span>, <span class="vr">$userData</span>, <span class="nb">300</span>);
+
+<span class="cm">// ดึง cache</span>
+<span class="vr">$user</span> = <span class="cl">Cache</span>::<span class="fn">get</span>(<span class="st">'user:1'</span>);
+
+<span class="cm">// remember() — ดึงจาก cache หรือ compute ถ้าหมดอายุ</span>
+<span class="vr">$products</span> = <span class="cl">Cache</span>::<span class="fn">remember</span>(<span class="st">'products:all'</span>, <span class="nb">300</span>, <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="cl">Database</span>::<span class="fn">query</span>(<span class="st">"SELECT * FROM products"</span>);
+});
+
+<span class="cm">// Tag-based flush</span>
+<span class="cl">Cache</span>::<span class="fn">tag</span>(<span class="st">'products'</span>)-><span class="fn">put</span>(<span class="st">'list'</span>, <span class="vr">$data</span>, <span class="nb">300</span>);
+<span class="cl">Cache</span>::<span class="fn">flush</span>(<span class="st">'products'</span>); <span class="cm">// ลบทุก entry ที่ tag=products</span></code></pre>
+
+    <h3>API Reference</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>การใช้งาน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Cache::put(key, val, ttl)</code></td>
+          <td>เก็บ cache พร้อม TTL (วินาที, 0=forever)</td>
+        </tr>
+        <tr>
+          <td><code>Cache::get(key, default)</code></td>
+          <td>ดึง cache หรือ default ถ้าหมดอายุ</td>
+        </tr>
+        <tr>
+          <td><code>Cache::remember(key, ttl, fn)</code></td>
+          <td>ดึง/คำนวณ+เก็บ ถ้าไม่พบ</td>
+        </tr>
+        <tr>
+          <td><code>Cache::forget(key)</code></td>
+          <td>ลบ cache entry เดียว</td>
+        </tr>
+        <tr>
+          <td><code>Cache::flush(tag)</code></td>
+          <td>ลบทุก entry ของ tag</td>
+        </tr>
+        <tr>
+          <td><code>Cache::clear()</code></td>
+          <td>ล้าง cache ทั้งหมด</td>
+        </tr>
+        <tr>
+          <td><code>Cache::gc()</code></td>
+          <td>ลบ expired entries</td>
+        </tr>
+        <tr>
+          <td><code>Cache::stats()</code></td>
+          <td>แสดงสถิติ cache</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>CLI Commands</h3>
+    <pre><code>php add/genetics cache:clear    <span class="cm"># ล้าง cache ทั้งหมด</span>
+php add/genetics cache:stats    <span class="cm"># แสดง disk size, entries, tags</span>
+php add/genetics cache:gc       <span class="cm"># ลบ expired entries</span></code></pre>
+
+    <!-- Field Selector -->
+    <h2 id="field-selector"><a href="#field-selector" data-i18n="dh.field_selector"># Field Selector (GraphQL-lite)</a>
+    </h2>
+    <p data-i18n="dh.field_selector.desc">v2.0 — Sparse Fieldsets ผ่าน <code>?fields=</code> query param — ลด response
+      payload โดยไม่ต้องใช้ GraphQL server</p>
+
+    <h3>การใช้งาน</h3>
+    <pre><code><span class="cm">// Client request: GET /api/products?fields=id,name,price</span>
+
+<span class="cm">// ใน endpoint — apply() กรอง fields อัตโนมัติ</span>
+<span class="vr">$products</span> = <span class="cl">Database</span>::<span class="fn">query</span>(<span class="st">"SELECT * FROM products"</span>);
+<span class="cl">Response</span>::<span class="fn">success</span>(<span class="cl">FieldSelector</span>::<span class="fn">apply</span>(<span class="vr">$products</span>));
+
+<span class="cm">// Whitelist ป้องกัน data leakage</span>
+<span class="cl">FieldSelector</span>::<span class="fn">allow</span>([<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'price'</span>]);
+<span class="cl">Response</span>::<span class="fn">success</span>(<span class="cl">FieldSelector</span>::<span class="fn">apply</span>(<span class="vr">$products</span>));
+
+<span class="cm">// Dot-notation สำหรับ nested fields</span>
+<span class="cm">// GET /api/products?fields=id,category.name,tags.title</span></code></pre>
+
+    <h3>API Reference</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>การใช้งาน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>FieldSelector::apply($rows)</code></td>
+          <td>กรอง array ของ records</td>
+        </tr>
+        <tr>
+          <td><code>FieldSelector::applyOne($row)</code></td>
+          <td>กรอง record เดียว</td>
+        </tr>
+        <tr>
+          <td><code>FieldSelector::allow($fields)</code></td>
+          <td>Whitelist fields ที่อนุญาต</td>
+        </tr>
+        <tr>
+          <td><code>FieldSelector::requested()</code></td>
+          <td>ดึง fields จาก ?fields= param</td>
+        </tr>
+        <tr>
+          <td><code>FieldSelector::respond($rows)</code></td>
+          <td>apply + Response::success() ในคำสั่งเดียว</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pulse (SSE) -->
+    <h2 id="pulse"><a href="#pulse" data-i18n="dh.pulse"># Genetic Pulse — Real-time SSE</a></h2>
+    <p data-i18n="dh.pulse.desc">v2.0 — Server-Sent Events สำหรับ real-time push ไปยัง browser — ไม่ต้องใช้ WebSocket
+      server ทำงานผ่าน HTTP ปกติ</p>
+
+    <h3>SSE Endpoint</h3>
+    <pre><code><span class="cm">// api/events.php</span>
+<span class="cl">Pulse</span>::<span class="fn">stream</span>(<span class="kw">function</span> (<span class="cl">Pulse</span> <span class="vr">$pulse</span>) {
+    <span class="kw">while</span> (<span class="vr">$pulse</span>-><span class="fn">isConnected</span>()) {
+        <span class="cm">// รับ events จาก queue</span>
+        <span class="kw">foreach</span> (<span class="cl">Pulse</span>::<span class="fn">consume</span>(<span class="st">'notifications'</span>) <span class="kw">as</span> <span class="vr">$event</span>) {
+            <span class="vr">$pulse</span>-><span class="fn">send</span>(<span class="vr">$event</span>[<span class="st">'data'</span>], <span class="st">'notification'</span>);
+        }
+        <span class="vr">$pulse</span>-><span class="fn">checkHeartbeat</span>(); <span class="cm">// ส่ง heartbeat ทุก 15s</span>
+        <span class="fn">sleep</span>(<span class="nb">2</span>);
+    }
+});</code></pre>
+
+    <h3>Broadcast จาก Endpoint อื่น</h3>
+    <pre><code><span class="cm">// ยิง event จาก endpoint ใดก็ได้</span>
+<span class="cl">Pulse</span>::<span class="fn">broadcast</span>(<span class="st">'notifications'</span>, [
+    <span class="st">'title'</span> => <span class="st">'New Order'</span>,
+    <span class="st">'body'</span>  => <span class="st">'Order #1234 received'</span>,
+]);</code></pre>
+
+    <h3>Client (JavaScript)</h3>
+    <pre><code><span class="kw">const</span> es = <span class="kw">new</span> <span class="cl">EventSource</span>(<span class="st">'/api/events'</span>);
+es.<span class="fn">addEventListener</span>(<span class="st">'notification'</span>, e => {
+    <span class="kw">const</span> data = <span class="cl">JSON</span>.<span class="fn">parse</span>(e.data);
+    <span class="fn">showNotification</span>(data.title, data.body);
+});
+es.<span class="fn">addEventListener</span>(<span class="st">'close'</span>, () => es.<span class="fn">close</span>());</code></pre>
+
+    <!-- Modules -->
+    <h2 id="modules"><a href="#modules" data-i18n="dh.modules"># Genetic Modules (Plugin System)</a></h2>
+    <p data-i18n="dh.modules.desc">v2.0 — ระบบ plugin ที่ให้ extend framework ผ่าน Module โดยไม่ต้องแก้ core files</p>
+
+    <h3>สร้าง Module</h3>
+    <pre><code><span class="cm">// modules/Notifications/NotificationsModule.php</span>
+<span class="kw">class</span> <span class="cl">NotificationsModule</span> <span class="kw">extends</span> <span class="cl">GeneticModuleBase</span>
+{
+    <span class="kw">public function</span> <span class="fn">name</span>(): <span class="kw">string</span> { <span class="kw">return</span> <span class="st">'Notifications'</span>; }
+
+    <span class="kw">public function</span> <span class="fn">boot</span>(): <span class="kw">void</span>
+    {
+        <span class="cm">// สร้าง storage/pulse/ directory</span>
+        <span class="kw">if</span> (!<span class="fn">is_dir</span>(<span class="st">'storage/pulse'</span>)) {
+            <span class="fn">mkdir</span>(<span class="st">'storage/pulse'</span>, <span class="nb">0755</span>, <span class="kw">true</span>);
+        }
+    }
+
+    <span class="kw">public function</span> <span class="fn">middleware</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [<span class="st">'notify'</span> => <span class="cl">NotifyMiddleware</span>::<span class="kw">class</span>];
+    }
+}</code></pre>
+
+    <h3>ลงทะเบียน Module ใน index.php</h3>
+    <pre><code><span class="cl">ModuleLoader</span>::<span class="fn">register</span>(<span class="kw">new</span> <span class="cl">NotificationsModule</span>());
+<span class="cl">ModuleLoader</span>::<span class="fn">boot</span>(); <span class="cm">// เรียกหลัง register ทั้งหมด</span></code></pre>
+
+    <h3>Auto-discovery</h3>
+    <pre><code><span class="cm">// Scan และ register modules จาก modules/ directory อัตโนมัติ</span>
+<span class="cl">ModuleLoader</span>::<span class="fn">discover</span>(<span class="vr">$root</span> . <span class="st">'/modules'</span>);
+<span class="cl">ModuleLoader</span>::<span class="fn">boot</span>();</code></pre>
+
+    <pre><code>php add/genetics modules:list    <span class="cm"># แสดง modules ที่ลงทะเบียน</span></code></pre>
+
+    <!-- Admin Generator -->
+    <h2 id="admin-generator"><a href="#admin-generator" data-i18n="dh.admin_generator"># Admin Generator</a></h2>
+    <p data-i18n="dh.admin_generator.desc">v2.0 — ตรวจ schema ของ database table แล้ว generate CRUD admin API endpoint
+      โดยอัตโนมัติ — พร้อม pagination, RBAC, และ HTTP methods ครบ</p>
+
+    <h3>สร้าง Admin Endpoint ผ่าน CLI</h3>
+    <pre><code><span class="cm"># Generate admin endpoint จาก DB table</span>
+php add/genetics make:admin products
+<span class="cm"># → สร้าง api/admin/products.php</span></code></pre>
+
+    <h3>Generated Endpoint ที่ได้</h3>
+    <pre><code><span class="cm">// api/admin/products.php — ทำงานได้ทันที</span>
+#[<span class="cl">Middleware</span>(<span class="st">'auth:ADMIN'</span>)]
+<span class="kw">class</span> <span class="cl">ProductsAdmin</span>
+{
+    <span class="kw">public static function</span> <span class="fn">get</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span>    { <span class="cm">/* paginated list */</span> }
+    <span class="kw">public static function</span> <span class="fn">post</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span>   { <span class="cm">/* create */</span> }
+    <span class="kw">public static function</span> <span class="fn">put</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span>    { <span class="cm">/* update ?id= */</span> }
+    <span class="kw">public static function</span> <span class="fn">delete</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span> { <span class="cm">/* delete ?id= */</span> }
+}</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>URL</th>
+          <th>ทำอะไร</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>GET</td>
+          <td><code>/api/admin/products</code></td>
+          <td>List แบบ paginated รองรับ ?page= ?per_page=</td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td><code>/api/admin/products</code></td>
+          <td>Create record ใหม่</td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td><code>/api/admin/products?id=1</code></td>
+          <td>Update record</td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td><code>/api/admin/products?id=1</code></td>
+          <td>Delete record</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Endpoint AI -->
+    <h2 id="endpoint-ai"><a href="#endpoint-ai" data-i18n="dh.endpoint_ai"># Endpoint AI Generator</a></h2>
+    <p data-i18n="dh.endpoint_ai.desc">v2.0 — Generate endpoint จาก natural language description — ตรวจจับ auth,
+      pagination, search, cache, audit, RBAC โดยอัตโนมัติจากคำบรรยาย</p>
+
+    <h3>การใช้งาน</h3>
+    <pre><code><span class="cm"># บอกสิ่งที่ต้องการเป็นภาษาธรรมชาติ</span>
+php add/genetics make:endpoint-ai products <span class="st">"CRUD with auth, search, pagination and cache"</span>
+
+<span class="cm"># Output:</span>
+<span class="cm">#   🤖 AI Analysis: "CRUD with auth, search, pagination and cache"</span>
+<span class="cm">#   ──────────────────────────────────────────────────</span>
+<span class="cm">#   ✅ auth</span>
+<span class="cm">#   ✅ crud</span>
+<span class="cm">#   ✅ paginate</span>
+<span class="cm">#   ✅ search</span>
+<span class="cm">#   ✅ cache</span>
+<span class="cm">#   ✅ Created: api/products.php</span></code></pre>
+
+    <h3>Features ที่ตรวจจับได้</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>คำสำคัญ</th>
+          <th>Feature ที่ generate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>auth, login, jwt, token</td>
+          <td>#[Middleware('auth')] + Guard::requireAuth()</td>
+        </tr>
+        <tr>
+          <td>admin, role, rbac</td>
+          <td>#[Middleware('auth:ADMIN')]</td>
+        </tr>
+        <tr>
+          <td>list, page, paginate, all</td>
+          <td>paginated response + LIMIT/OFFSET</td>
+        </tr>
+        <tr>
+          <td>search, filter, find</td>
+          <td>WHERE name LIKE :q</td>
+        </tr>
+        <tr>
+          <td>cache, performance, fast</td>
+          <td>Cache::remember() + Cache::flush()</td>
+        </tr>
+        <tr>
+          <td>audit, log, track</td>
+          <td>AuditLog::log() calls</td>
+        </tr>
+        <tr>
+          <td>validate, required</td>
+          <td>Validator::check() block</td>
+        </tr>
+        <tr>
+          <td>realtime, stream, live</td>
+          <td>Pulse::stream() setup</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Marketplace -->
+    <h2 id="marketplace"><a href="#marketplace" data-i18n="dh.marketplace"># Genetic Marketplace</a></h2>
+    <p data-i18n="dh.marketplace.desc">v2.0 — Package registry สำหรับค้นหา, ติดตั้ง และ publish OpenGenetics modules จาก
+      community</p>
+
+    <h3>CLI Commands</h3>
+    <pre><code><span class="cm"># ดู packages ทั้งหมด</span>
+php add/genetics market:list
+
+<span class="cm"># ค้นหา package</span>
+php add/genetics market:search notifications
+
+<span class="cm"># ติดตั้ง package</span>
+php add/genetics market:install og/notifications</code></pre>
+
+    <h3>Built-in Featured Packages</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>og/jwt-refresh</code></td>
+          <td>module</td>
+          <td>JWT Refresh Token support</td>
+        </tr>
+        <tr>
+          <td><code>og/notifications</code></td>
+          <td>module</td>
+          <td>Real-time push notifications via SSE</td>
+        </tr>
+        <tr>
+          <td><code>og/file-upload</code></td>
+          <td>middleware</td>
+          <td>Secure file upload with MIME validation</td>
+        </tr>
+        <tr>
+          <td><code>og/two-factor</code></td>
+          <td>module</td>
+          <td>TOTP-based Two-Factor Authentication</td>
+        </tr>
+        <tr>
+          <td><code>og/graphql-lite</code></td>
+          <td>module</td>
+          <td>Full GraphQL-lite query engine</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Publish Package</h3>
+    <pre><code><span class="cm">// ลงทะเบียน package ใน local registry</span>
+<span class="cl">Marketplace</span>::<span class="fn">publish</span>([
+    <span class="st">'name'</span>        => <span class="st">'og/my-module'</span>,
+    <span class="st">'version'</span>     => <span class="st">'1.0.0'</span>,
+    <span class="st">'description'</span> => <span class="st">'My awesome module'</span>,
+    <span class="st">'type'</span>        => <span class="st">'module'</span>,
+    <span class="st">'url'</span>         => <span class="st">'https://github.com/me/og-my-module'</span>,
+]);</code></pre>
 
     <!-- SDK -->
     <h2 id="sdk"><a href="#sdk" data-i18n="dh.sdk"># Genetic SDK</a></h2>

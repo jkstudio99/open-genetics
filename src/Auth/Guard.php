@@ -28,6 +28,14 @@ final class Guard
     private static ?array $currentUser = null;
 
     /**
+     * Set the authenticated user (called by AuthMiddleware).
+     */
+    public static function setUser(array $user): void
+    {
+        self::$currentUser = $user;
+    }
+
+    /**
      * Require authentication. Returns user data or sends 401.
      */
     public static function requireAuth(): array
