@@ -10,7 +10,7 @@ cd framework
 composer install
 cp .env.example .env
 # Configure .env with your database credentials
-php add/genetics mutate
+php genetics mutate
 ```
 
 ## Branch Naming

@@ -421,16 +421,16 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 
     <h3>CLI Commands</h3>
     <pre><code><span class="cm"># รัน migrations ที่ยังไม่ได้รัน</span>
-php add/genetics migrate
+php genetics migrate
 
 <span class="cm"># ย้อนกลับ batch ล่าสุด</span>
-php add/genetics migrate:rollback
+php genetics migrate:rollback
 
 <span class="cm"># ดู status ของทุก migration</span>
-php add/genetics migrate:status
+php genetics migrate:status
 
 <span class="cm"># สร้าง migration file ใหม่</span>
-php add/genetics make:migration add_image_to_equipment</code></pre>
+php genetics make:migration add_image_to_equipment</code></pre>
 
     <h3>โครงสร้าง Migration File</h3>
     <pre><code><span class="cm">// database/migrations/2026_03_01_100000_add_image_to_equipment.php</span>

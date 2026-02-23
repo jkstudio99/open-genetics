@@ -32,9 +32,9 @@ namespace OpenGenetics\Core;
  *   ]);
  *
  * CLI Commands:
- *   php add/genetics market:list
- *   php add/genetics market:search notifications
- *   php add/genetics market:install og/notifications
+ *   php genetics market:list
+ *   php genetics market:search notifications
+ *   php genetics market:install og/notifications
  */
 final class Marketplace
 {
@@ -239,7 +239,7 @@ final class Marketplace
             ],
             [
                 'name'         => 'og/graphql-lite',
-                'version'      => '2.0.0',
+                'version'      => '2.0.2',
                 'description'  => 'Full GraphQL-lite query engine built on FieldSelector',
                 'author'       => 'jkstudio99',
                 'type'         => 'module',

@@ -8,7 +8,7 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP 8.1+"></a>
     <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL">
-    <img src="https://img.shields.io/badge/version-2.0.0-6c63ff.svg" alt="v2.0.0">
+    <img src="https://img.shields.io/badge/version-2.0.2-6c63ff.svg" alt="v2.0.2">
   </p>
 </div>
 
@@ -44,10 +44,10 @@ cp .env.example .env
 # Edit: DB_NAME, DB_USER, DB_PASS, JWT_SECRET
 
 # 3. Bootstrap (tables + RBAC + admin user)
-php add/genetics mutate
+php genetics mutate
 
 # 4. Start dev server
-php add/genetics serve
+php genetics serve
 # → http://127.0.0.1:8080
 ```
 
@@ -78,7 +78,7 @@ class Products
 
     public static function post(array $body): void
     {
-        // AI-assisted scaffold: php add/genetics make:endpoint-ai products "with auth and audit"
+        // AI-assisted scaffold: php genetics make:endpoint-ai products "with auth and audit"
         Response::success(null, 'Created', 201);
     }
 }
@@ -86,7 +86,7 @@ class Products
 
 Or scaffold in seconds:
 ```bash
-php add/genetics make:endpoint-ai products "CRUD with auth, search, pagination and cache"
+php genetics make:endpoint-ai products "CRUD with auth, search, pagination and cache"
 ```
 
 ---
@@ -134,7 +134,7 @@ my-api/
 ├── storage/cache/          # File cache store
 ├── sdk/                    # Frontend SDK (React + Vanilla JS)
 ├── locales/                # i18n dictionaries (en.json, th.json)
-├── add/genetics            # CLI tool
+├── genetics            # CLI tool
 ├── public/                 # Web root (index.php)
 └── .env                    # Environment config
 ```
@@ -151,9 +151,9 @@ class AdminProducts { ... }
 
 ### Database Migrations
 ```bash
-php add/genetics migrate            # Run pending
-php add/genetics migrate:rollback   # Undo last batch
-php add/genetics make:migration add_image_to_products
+php genetics migrate            # Run pending
+php genetics migrate:rollback   # Undo last batch
+php genetics make:migration add_image_to_products
 ```
 
 ### Testing Framework
@@ -179,8 +179,8 @@ Pulse::broadcast('orders', ['id' => 123, 'status' => 'new']);
 
 ### Marketplace
 ```bash
-php add/genetics market:search notifications
-php add/genetics market:install og/notifications
+php genetics market:search notifications
+php genetics market:install og/notifications
 ```
 
 ---

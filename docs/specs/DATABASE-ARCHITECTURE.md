@@ -261,10 +261,10 @@ Database::transaction(function ($pdo) {
 
 ```bash
 # สร้างตารางทั้งหมด + seed RBAC roles + admin user
-php add/genetics mutate
+php genetics mutate
 
 # ตรวจสอบ connection
-php add/genetics status
+php genetics status
 ```
 
 ---

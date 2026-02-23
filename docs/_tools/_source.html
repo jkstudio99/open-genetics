@@ -1541,11 +1541,11 @@
 
     <h4 data-i18n="install.step4">4. Genetic Scaffolding</h4>
     <p data-i18n="install.step4_desc">สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ</p>
-    <pre><code><span class="fn">php add/genetics</span> mutate</code></pre>
+    <pre><code><span class="fn">php genetics</span> mutate</code></pre>
 
     <h4 data-i18n="install.step5">5. เริ่มสร้าง API</h4>
     <p data-i18n="install.step5_desc">เขียน API ได้ทันที — ไม่ต้องประกาศ route</p>
-    <pre><code><span class="fn">php add/genetics</span> serve</code></pre>
+    <pre><code><span class="fn">php genetics</span> serve</code></pre>
 
     <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
           viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -1699,7 +1699,7 @@ DEFAULT_LOCALE=th</code></pre>
 }</code></pre>
 
     <h3 data-i18n="dh.scaffolding">Scaffolding</h3>
-    <pre><code>$ <span class="fn">php add/genetics make:endpoint</span> reports/monthly
+    <pre><code>$ <span class="fn">php genetics make:endpoint</span> reports/monthly
 
   ✓ Created endpoint: api/reports/monthly.php
   Class: ReportsMonthly
@@ -1811,7 +1811,7 @@ JSON Output</code></pre>
 
     <h3>สร้าง Middleware ใหม่</h3>
     <pre><code><span class="cm"># Scaffold ด้วย CLI</span>
-php add/genetics make:middleware Cache
+php genetics make:middleware Cache
 <span class="cm"># → สร้าง src/Middleware/CacheMiddleware.php</span></code></pre>
 
     <pre><code><span class="kw">final class</span> <span class="cl">CacheMiddleware</span>
@@ -1951,16 +1951,16 @@ X-Locale: th</code></pre>
 
     <h3>CLI Commands</h3>
     <pre><code><span class="cm"># รัน migrations ที่ยังไม่ได้รัน</span>
-php add/genetics migrate
+php genetics migrate
 
 <span class="cm"># ย้อนกลับ batch ล่าสุด</span>
-php add/genetics migrate:rollback
+php genetics migrate:rollback
 
 <span class="cm"># ดู status ของทุก migration</span>
-php add/genetics migrate:status
+php genetics migrate:status
 
 <span class="cm"># สร้าง migration file ใหม่</span>
-php add/genetics make:migration add_image_to_equipment</code></pre>
+php genetics make:migration add_image_to_equipment</code></pre>
 
     <h3>โครงสร้าง Migration File</h3>
     <pre><code><span class="cm">// database/migrations/2026_03_01_100000_add_image_to_equipment.php</span>
@@ -2171,7 +2171,7 @@ php add/genetics make:migration add_image_to_equipment</code></pre>
 
     <h3>สร้าง Test File</h3>
     <pre><code><span class="cm"># Scaffold test class</span>
-php add/genetics make:test Users
+php genetics make:test Users
 <span class="cm"># → tests/UsersTest.php</span></code></pre>
 
     <h3>ตัวอย่างการใช้งาน</h3>
@@ -2360,9 +2360,9 @@ vendor/bin/phpunit --testdox</code></pre>
     </table>
 
     <h3>CLI Commands</h3>
-    <pre><code>php add/genetics cache:clear    <span class="cm"># ล้าง cache ทั้งหมด</span>
-php add/genetics cache:stats    <span class="cm"># แสดง disk size, entries, tags</span>
-php add/genetics cache:gc       <span class="cm"># ลบ expired entries</span></code></pre>
+    <pre><code>php genetics cache:clear    <span class="cm"># ล้าง cache ทั้งหมด</span>
+php genetics cache:stats    <span class="cm"># แสดง disk size, entries, tags</span>
+php genetics cache:gc       <span class="cm"># ลบ expired entries</span></code></pre>
 
     <!-- Field Selector -->
     <h2 id="field-selector"><a href="#field-selector" data-i18n="dh.field_selector"># Field Selector (GraphQL-lite)</a>
@@ -2482,7 +2482,7 @@ es.<span class="fn">addEventListener</span>(<span class="st">'close'</span>, () 
 <span class="cl">ModuleLoader</span>::<span class="fn">discover</span>(<span class="vr">$root</span> . <span class="st">'/modules'</span>);
 <span class="cl">ModuleLoader</span>::<span class="fn">boot</span>();</code></pre>
 
-    <pre><code>php add/genetics modules:list    <span class="cm"># แสดง modules ที่ลงทะเบียน</span></code></pre>
+    <pre><code>php genetics modules:list    <span class="cm"># แสดง modules ที่ลงทะเบียน</span></code></pre>
 
     <!-- Admin Generator -->
     <h2 id="admin-generator"><a href="#admin-generator" data-i18n="dh.admin_generator"># Admin Generator</a></h2>
@@ -2491,7 +2491,7 @@ es.<span class="fn">addEventListener</span>(<span class="st">'close'</span>, () 
 
     <h3>สร้าง Admin Endpoint ผ่าน CLI</h3>
     <pre><code><span class="cm"># Generate admin endpoint จาก DB table</span>
-php add/genetics make:admin products
+php genetics make:admin products
 <span class="cm"># → สร้าง api/admin/products.php</span></code></pre>
 
     <h3>Generated Endpoint ที่ได้</h3>
@@ -2544,7 +2544,7 @@ php add/genetics make:admin products
 
     <h3>การใช้งาน</h3>
     <pre><code><span class="cm"># บอกสิ่งที่ต้องการเป็นภาษาธรรมชาติ</span>
-php add/genetics make:endpoint-ai products <span class="st">"CRUD with auth, search, pagination and cache"</span>
+php genetics make:endpoint-ai products <span class="st">"CRUD with auth, search, pagination and cache"</span>
 
 <span class="cm"># Output:</span>
 <span class="cm">#   🤖 AI Analysis: "CRUD with auth, search, pagination and cache"</span>
@@ -2607,13 +2607,13 @@ php add/genetics make:endpoint-ai products <span class="st">"CRUD with auth, sea
 
     <h3>CLI Commands</h3>
     <pre><code><span class="cm"># ดู packages ทั้งหมด</span>
-php add/genetics market:list
+php genetics market:list
 
 <span class="cm"># ค้นหา package</span>
-php add/genetics market:search notifications
+php genetics market:search notifications
 
 <span class="cm"># ติดตั้ง package</span>
-php add/genetics market:install og/notifications</code></pre>
+php genetics market:install og/notifications</code></pre>
 
     <h3>Built-in Featured Packages</h3>
     <table>
@@ -2710,7 +2710,7 @@ php add/genetics market:install og/notifications</code></pre>
 
     <h3>🛠️ ภาพรวมคำสั่ง (Command Overview)</h3>
     <pre><code><span class="cm">// เรียกดูคำสั่งทั้งหมดที่มีในระบบ</span>
-<span class="fn">php add/genetics</span> help</code></pre>
+<span class="fn">php genetics</span> help</code></pre>
 
     <h3>1. คำสั่งกลุ่ม Scaffolding & Code Generation</h3>
     <p>ช่วยสร้างไฟล์โครงสร้างพื้นฐานให้คุณ พร้อม wiring คลาสให้อัตโนมัติในตำแหน่งที่ถูกต้องตามสถาปัตยกรรมของโปรเจกต์</p>
@@ -2877,7 +2877,7 @@ php add/genetics market:install og/notifications</code></pre>
 
     <h3 data-i18n="dh.openapi.setup">การสร้าง Specification</h3>
     <p data-i18n="dh.openapi.setup.desc">ใช้คำสั่งสคริปต์ CLI เพื่อสร้างไฟล์ JSON สำหรับ OpenAPI:</p>
-    <pre><code>$ <span class="fn">php add/genetics</span> docs:generate</code></pre>
+    <pre><code>$ <span class="fn">php genetics</span> docs:generate</code></pre>
     <p data-i18n="dh.openapi.output">คำสั่งนี้จะทำการ scan โฟลเดอร์ <code>api/</code> ทั้งหมดเพื่อสร้างไฟล์
       <code>public/openapi.json</code>
     </p>
@@ -2936,7 +2936,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
         </tr>
         <tr>
           <td>5</td>
-          <td><code>php add/genetics mutate</code></td>
+          <td><code>php genetics mutate</code></td>
           <td>Verify tables ก่อน go-live</td>
         </tr>
         <tr>
@@ -3189,7 +3189,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
       { title: 'i18n', desc: 'Internationalization Thai English X-Locale lang', href: '#i18n', icon: 'globe' },
       { title: 'Audit Trail', desc: 'AuditLogger log CREATE UPDATE DELETE LOGIN', href: '#audit', icon: 'clip' },
       { title: 'Genetic SDK', desc: 'React Hook Vanilla JS useGenetics GeneticSDK', href: '#sdk', icon: 'dna' },
-      { title: 'CLI', desc: 'php add/genetics mutate serve make:api', href: '#cli', icon: 'term' },
+      { title: 'CLI', desc: 'php genetics mutate serve make:api', href: '#cli', icon: 'term' },
       { title: 'Deployment', desc: 'Production Apache XAMPP CORS APP_DEBUG', href: '#deployment', icon: 'rocket' },
       { title: 'JWT Authentication', desc: 'HS256 Bcrypt firebase/php-jwt token auth', href: '#api-reference', icon: 'lock' },
       { title: 'Landing Page', desc: 'กลับไปหน้าหลัก OpenGenetics', href: '../../public/index.html', icon: 'home' },

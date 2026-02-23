@@ -12,10 +12,10 @@ namespace OpenGenetics\Core;
  * timestamped to ensure execution order.
  *
  * CLI:
- *   php add/genetics migrate              — Run pending migrations
- *   php add/genetics migrate:rollback     — Undo last batch
- *   php add/genetics migrate:status       — Show migration history
- *   php add/genetics make:migration name  — Create migration file
+ *   php genetics migrate              — Run pending migrations
+ *   php genetics migrate:rollback     — Undo last batch
+ *   php genetics migrate:status       — Show migration history
+ *   php genetics make:migration name  — Create migration file
  */
 final class Migrator
 {

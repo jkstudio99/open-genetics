@@ -137,7 +137,7 @@ const searchData = [
   { title:'i18n',               desc:'Internationalization Thai English X-Locale lang',            href:'i18n.html',               icon:'🌐' },
   { title:'Audit Trail',        desc:'AuditLogger log CREATE UPDATE DELETE LOGIN',                 href:'audit-trail.html',        icon:'📝' },
   { title:'Genetic SDK',        desc:'React Hook Vanilla JS useGenetics GeneticSDK',               href:'sdk.html',                icon:'🧬' },
-  { title:'CLI Tool',           desc:'php add/genetics mutate serve make:api',                     href:'cli.html',                icon:'💻' },
+  { title:'CLI Tool',           desc:'php genetics mutate serve make:api',                     href:'cli.html',                icon:'💻' },
   { title:'Deployment',         desc:'Production Apache XAMPP CORS APP_DEBUG',                     href:'deployment.html',         icon:'🚀' },
 ];
 

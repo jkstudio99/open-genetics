@@ -3,9 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.2.html).
 
-## [2.0.0] - 2026-02-23
+## [2.0.2] - 2026-02-23
 
 ### Added — Feature 1: Middleware Pipeline
 - `Pipeline` class — Chain of responsibility pattern for HTTP request processing
@@ -68,9 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `Router` v2.0 — integrated Pipeline, removed hard-coded CORS (now CorsMiddleware)
 - `index.php` v2.0 — registers global middleware via Pipeline
-- CLI upgraded to v2.0.0 with **25 total commands**
+- CLI upgraded to v2.0.2 with **25 total commands**
 - Docs: 19 generated pages (added `middleware.html`, `migrations.html`, `testing.html`)
-- Landing page: bumped to v2.0.0
+- Landing page: bumped to v2.0.2
 
 
 ## [1.0.0] - 2024-01-01

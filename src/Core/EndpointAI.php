@@ -15,8 +15,8 @@ namespace OpenGenetics\Core;
  * It uses pattern matching and template intelligence to scaffold code.
  *
  * Usage via CLI:
- *   php add/genetics make:endpoint-ai "Products CRUD with auth and pagination"
- *   php add/genetics make:endpoint-ai "User profile endpoint that requires admin role"
+ *   php genetics make:endpoint-ai "Products CRUD with auth and pagination"
+ *   php genetics make:endpoint-ai "User profile endpoint that requires admin role"
  *
  * Or directly:
  *   EndpointAI::scaffold('products', 'List products with search and pagination', [
@@ -84,7 +84,8 @@ final class EndpointAI
             $filePath = $root . '/api/' . strtolower($name) . '_' . time() . '.php';
         }
 
-        $code = self::buildCode($className, $table, $description, $features);
+        $summary = self::featureSummary($features);
+        $code = self::buildCode($className, $table, $description, $features, $summary);
         file_put_contents($filePath, $code);
 
         return $filePath;
@@ -96,7 +97,8 @@ final class EndpointAI
         string $className,
         string $table,
         string $description,
-        array  $f
+        array  $f,
+        string $summary = ''
     ): string {
         $middlewares = [];
         if ($f['needs_auth'])  {
@@ -128,7 +130,7 @@ final class EndpointAI
  * Description: {$description}
  * Generated:   {$timestamp} by EndpointAI
  *
- * Detected features: {$this->featureSummary($f)}
+ * Detected features: {$summary}
  */
 
 {$useStatements}
