@@ -30,7 +30,7 @@ $projectRoot = findProjectRoot();
 // Banner
 echo "\n";
 echo "  ╔═══════════════════════════════════════════╗\n";
-echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.0.3    ║\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.1.0    ║\n";
 echo "  ║  Enterprise PHP Micro-Framework            ║\n";
 echo "  ╚═══════════════════════════════════════════╝\n";
 echo "\n";
@@ -50,7 +50,7 @@ if ($command === 'help' || $command === '--help' || $command === '-h') {
 }
 
 if ($command === '--version' || $command === '-v') {
-    echo "  OpenGenetics Framework v2.0.3\n\n";
+    echo "  OpenGenetics Framework v2.1.0\n\n";
     exit(0);
 }
 
