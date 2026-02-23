@@ -30,7 +30,7 @@ $projectRoot = findProjectRoot();
 // Banner
 echo "\n";
 echo "  ╔═══════════════════════════════════════════╗\n";
-echo "  ║  🧬 OpenGenetics — Genetic CLI  v1.0.5    ║\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v1.0.6    ║\n";
 echo "  ║  Enterprise PHP Micro-Framework            ║\n";
 echo "  ╚═══════════════════════════════════════════╝\n";
 echo "\n";
