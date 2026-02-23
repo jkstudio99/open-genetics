@@ -22,8 +22,8 @@
 
     // ── Hero ──
     'hero.subtitle': {
-      th: 'เฟรมเวิร์ค PHP ที่มาพร้อม JWT Auth, RBAC, i18n และ Genetic SDK ให้คุณสร้าง REST API ที่ปลอดภัย เร็ว และขยายได้ — บน XAMPP',
-      en: 'A PHP framework with built-in JWT Auth, RBAC, i18n and Genetic SDK. Build secure, fast, and scalable REST APIs — on XAMPP.'
+      th: 'เฟรมเวิร์ค PHP ที่มาพร้อม <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">i18n</strong> และ <strong class="text-white/70 font-medium">Genetic SDK</strong> ให้คุณสร้าง REST API ที่ปลอดภัย เร็ว และขยายได้ — บน XAMPP',
+      en: 'A PHP framework with built-in <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">i18n</strong> and <strong class="text-white/70 font-medium">Genetic SDK</strong>. Build secure, fast, and scalable REST APIs — on XAMPP.'
     },
     'hero.btn.start': { th: 'เริ่มต้นใช้งาน', en: 'Get Started' },
     'hero.btn.docs': { th: 'อ่านคู่มือ', en: 'Read Docs' },
