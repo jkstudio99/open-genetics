@@ -42,17 +42,17 @@
         }
     },
     "bin": [
-        "bin/genetics"
+        "add/genetics"
     ],
     "scripts": {
         "post-create-project-cmd": [
             "php -r \"copy('.env.example', '.env');\"",
             "php -r \"file_put_contents('.env', str_replace('your-secret-key-change-this', bin2hex(random_bytes(32)), file_get_contents('.env')));\"",
-            "@php bin/genetics help"
+            "@php add/genetics help"
         ],
-        "mutate": "php bin/genetics mutate",
-        "seed": "php bin/genetics seed",
-        "serve": "php bin/genetics serve",
+        "mutate": "php add/genetics mutate",
+        "seed": "php add/genetics seed",
+        "serve": "php add/genetics serve",
         "test": "phpunit"
     },
     "config": {

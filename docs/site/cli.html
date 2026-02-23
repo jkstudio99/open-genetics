@@ -405,21 +405,21 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 
 <h2 id="cli"><a href="#cli" data-i18n="dh.cli"># CLI — Genetics Tool</a></h2>
     <p data-i18n="dh.cli.desc">เครื่องมือ command-line สำหรับ scaffold, migrate และ manage โปรเจกต์</p>
-    <pre><code><span class="fn">php bin/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
-<span class="fn">php bin/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
-<span class="fn">php bin/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
-<span class="fn">php bin/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
-<span class="fn">php bin/genetics</span> docs:generate     <span class="cm"># Generate OpenAPI JSON from source code</span>
-<span class="fn">php bin/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
-<span class="fn">php bin/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
+    <pre><code><span class="fn">php add/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
+<span class="fn">php add/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
+<span class="fn">php add/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
+<span class="fn">php add/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
+<span class="fn">php add/genetics</span> docs:generate     <span class="cm"># Generate OpenAPI JSON from source code</span>
+<span class="fn">php add/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
+<span class="fn">php add/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
 
     <h3 data-i18n="dh.docs_generate">docs:generate</h3>
-    <pre><code>$ <span class="fn">php bin/genetics docs:generate</span>
+    <pre><code>$ <span class="fn">php add/genetics docs:generate</span>
 
   ✓ OpenAPI spec generated successfully: public/openapi.json</code></pre>
 
     <h3 data-i18n="dh.make_endpoint">make:endpoint</h3>
-    <pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> products/list
+    <pre><code>$ <span class="fn">php add/genetics make:endpoint</span> products/list
 
   ✓ Created: api/products/list.php
   Class: ProductsList

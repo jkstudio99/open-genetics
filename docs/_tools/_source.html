@@ -1541,11 +1541,11 @@
 
     <h4 data-i18n="install.step4">4. Genetic Scaffolding</h4>
     <p data-i18n="install.step4_desc">สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ</p>
-    <pre><code><span class="fn">php bin/genetics</span> mutate</code></pre>
+    <pre><code><span class="fn">php add/genetics</span> mutate</code></pre>
 
     <h4 data-i18n="install.step5">5. เริ่มสร้าง API</h4>
     <p data-i18n="install.step5_desc">เขียน API ได้ทันที — ไม่ต้องประกาศ route</p>
-    <pre><code><span class="fn">php bin/genetics</span> serve</code></pre>
+    <pre><code><span class="fn">php add/genetics</span> serve</code></pre>
 
     <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
           viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -1699,7 +1699,7 @@ DEFAULT_LOCALE=th</code></pre>
 }</code></pre>
 
     <h3 data-i18n="dh.scaffolding">Scaffolding</h3>
-    <pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> reports/monthly
+    <pre><code>$ <span class="fn">php add/genetics make:endpoint</span> reports/monthly
 
   ✓ Created endpoint: api/reports/monthly.php
   Class: ReportsMonthly
@@ -2039,21 +2039,21 @@ X-Locale: th</code></pre>
     <!-- CLI -->
     <h2 id="cli"><a href="#cli" data-i18n="dh.cli"># CLI — Genetics Tool</a></h2>
     <p data-i18n="dh.cli.desc">เครื่องมือ command-line สำหรับ scaffold, migrate และ manage โปรเจกต์</p>
-    <pre><code><span class="fn">php bin/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
-<span class="fn">php bin/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
-<span class="fn">php bin/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
-<span class="fn">php bin/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
-<span class="fn">php bin/genetics</span> docs:generate     <span class="cm"># Generate OpenAPI JSON from source code</span>
-<span class="fn">php bin/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
-<span class="fn">php bin/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
+    <pre><code><span class="fn">php add/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
+<span class="fn">php add/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
+<span class="fn">php add/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
+<span class="fn">php add/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
+<span class="fn">php add/genetics</span> docs:generate     <span class="cm"># Generate OpenAPI JSON from source code</span>
+<span class="fn">php add/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
+<span class="fn">php add/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
 
     <h3 data-i18n="dh.docs_generate">docs:generate</h3>
-    <pre><code>$ <span class="fn">php bin/genetics docs:generate</span>
+    <pre><code>$ <span class="fn">php add/genetics docs:generate</span>
 
   ✓ OpenAPI spec generated successfully: public/openapi.json</code></pre>
 
     <h3 data-i18n="dh.make_endpoint">make:endpoint</h3>
-    <pre><code>$ <span class="fn">php bin/genetics make:endpoint</span> products/list
+    <pre><code>$ <span class="fn">php add/genetics make:endpoint</span> products/list
 
   ✓ Created: api/products/list.php
   Class: ProductsList
@@ -2101,7 +2101,7 @@ X-Locale: th</code></pre>
 
     <h3 data-i18n="dh.openapi.setup">การสร้าง Specification</h3>
     <p data-i18n="dh.openapi.setup.desc">ใช้คำสั่งสคริปต์ CLI เพื่อสร้างไฟล์ JSON สำหรับ OpenAPI:</p>
-    <pre><code>$ <span class="fn">php bin/genetics</span> docs:generate</code></pre>
+    <pre><code>$ <span class="fn">php add/genetics</span> docs:generate</code></pre>
     <p data-i18n="dh.openapi.output">คำสั่งนี้จะทำการ scan โฟลเดอร์ <code>api/</code> ทั้งหมดเพื่อสร้างไฟล์
       <code>public/openapi.json</code></p>
 
@@ -2159,7 +2159,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
         </tr>
         <tr>
           <td>5</td>
-          <td><code>php bin/genetics mutate</code></td>
+          <td><code>php add/genetics mutate</code></td>
           <td>Verify tables ก่อน go-live</td>
         </tr>
         <tr>
@@ -2412,7 +2412,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]</code></pre>
       { title: 'i18n', desc: 'Internationalization Thai English X-Locale lang', href: '#i18n', icon: 'globe' },
       { title: 'Audit Trail', desc: 'AuditLogger log CREATE UPDATE DELETE LOGIN', href: '#audit', icon: 'clip' },
       { title: 'Genetic SDK', desc: 'React Hook Vanilla JS useGenetics GeneticSDK', href: '#sdk', icon: 'dna' },
-      { title: 'CLI', desc: 'php bin/genetics mutate serve make:api', href: '#cli', icon: 'term' },
+      { title: 'CLI', desc: 'php add/genetics mutate serve make:api', href: '#cli', icon: 'term' },
       { title: 'Deployment', desc: 'Production Apache XAMPP CORS APP_DEBUG', href: '#deployment', icon: 'rocket' },
       { title: 'JWT Authentication', desc: 'HS256 Bcrypt firebase/php-jwt token auth', href: '#api-reference', icon: 'lock' },
       { title: 'Landing Page', desc: 'กลับไปหน้าหลัก OpenGenetics', href: '../../public/index.html', icon: 'home' },

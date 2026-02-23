@@ -90,8 +90,8 @@ function findProjectRoot(): ?string
         if (file_exists($dir . '/src/bootstrap.php') && file_exists($dir . '/api')) {
             return $dir;
         }
-        // Check if bin/genetics is in this dir (running from project root)
-        if (file_exists($dir . '/bin/genetics') && file_exists($dir . '/src/bootstrap.php')) {
+        // Check if add/genetics is in this dir (running from project root)
+        if (file_exists($dir . '/add/genetics') && file_exists($dir . '/src/bootstrap.php')) {
             return $dir;
         }
         $parent = dirname($dir);
@@ -99,7 +99,7 @@ function findProjectRoot(): ?string
         $dir = $parent;
     }
 
-    // 2. Check relative to this script (for local usage: /project/bin/genetics)
+    // 2. Check relative to this script (for local usage: /project/add/genetics)
     $scriptDir = dirname(__DIR__);
     if (file_exists($scriptDir . '/src/bootstrap.php') && file_exists($scriptDir . '/api')) {
         return $scriptDir;
@@ -175,8 +175,8 @@ function newProject(?string $name): void
     echo "  Next steps:\n";
     echo "    cd {$name}\n";
     echo "    composer install\n";
-    echo "    php bin/genetics mutate\n";
-    echo "    php bin/genetics serve\n\n";
+    echo "    php add/genetics mutate\n";
+    echo "    php add/genetics serve\n\n";
 }
 
 function findSkeletonDir(): ?string
@@ -238,9 +238,9 @@ function createProjectFromScratch(string $dir, string $name): void
             'psr-4' => ['App\\' => 'src/'],
         ],
         'scripts' => [
-            'mutate' => 'php bin/genetics mutate',
-            'seed'   => 'php bin/genetics seed',
-            'serve'  => 'php bin/genetics serve',
+            'mutate' => 'php add/genetics mutate',
+            'seed'   => 'php add/genetics seed',
+            'serve'  => 'php add/genetics serve',
         ],
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
@@ -492,8 +492,8 @@ function status(): void
 function makeEndpoint(string $root, ?string $name): void
 {
     if (empty($name)) {
-        echo "  ❌ Usage: php bin/genetics make:endpoint <name>\n";
-        echo "  Example: php bin/genetics make:endpoint users/export\n\n";
+        echo "  ❌ Usage: php add/genetics make:endpoint <name>\n";
+        echo "  Example: php add/genetics make:endpoint users/export\n\n";
         return;
     }
 
@@ -525,7 +525,7 @@ function makeEndpoint(string $root, ?string $name): void
 /**
  * GET|POST /api/{$name}
  * 
- * Auto-generated endpoint via `php bin/genetics make:endpoint`.
+ * Auto-generated endpoint via `php add/genetics make:endpoint`.
  */
 
 use OpenGenetics\Auth\Guard;
@@ -565,8 +565,8 @@ PHP;
 function makeMiddleware(string $root, ?string $name): void
 {
     if (empty($name)) {
-        echo "  ❌ Usage: php bin/genetics make:middleware <Name>\n";
-        echo "  Example: php bin/genetics make:middleware RateLimit\n\n";
+        echo "  ❌ Usage: php add/genetics make:middleware <Name>\n";
+        echo "  Example: php add/genetics make:middleware RateLimit\n\n";
         return;
     }
 
@@ -591,7 +591,7 @@ namespace OpenGenetics\Middleware;
 /**
  * {$className} Middleware
  * 
- * Auto-generated via `php bin/genetics make:middleware`.
+ * Auto-generated via `php add/genetics make:middleware`.
  */
 class {$className}
 {
@@ -662,5 +662,5 @@ function help(): void
 function unknownCommand(string $cmd): void
 {
     echo "  ❌ Unknown command: {$cmd}\n\n";
-    echo "  Run `php bin/genetics help` to see available commands.\n\n";
+    echo "  Run `php add/genetics help` to see available commands.\n\n";
 }

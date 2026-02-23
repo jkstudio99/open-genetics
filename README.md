@@ -51,13 +51,13 @@ cp .env.example .env
 ### 4. Genetic Scaffolding
 Create all tables, seed the RBAC roles, and create the default Admin user automatically:
 ```bash
-php bin/genetics mutate
+php add/genetics mutate
 ```
 
 ### 5. Start the Dev Server
 Ready to write APIs—no route declarations required!
 ```bash
-php bin/genetics serve
+php add/genetics serve
 ```
 > Server runs at `http://127.0.0.1:8080`.
 
@@ -79,7 +79,7 @@ my-api/
 ├── api/                    # File-based route endpoints
 │   ├── auth/               # Auth routes (login, register...)
 │   └── dashboard.php       # GET  /api/dashboard
-├── bin/genetics            # CLI tool (mutate, seed, serve, scaffold)
+├── add/genetics            # CLI tool (mutate, seed, serve, scaffold)
 ├── src/                    # Framework core (PSR-4)
 │   ├── Auth/               # AuthService, Guard, JwtManager
 │   ├── Audit/              # AuditLog (non-blocking)
@@ -129,7 +129,7 @@ class Products
 
 Or instantly scaffold it via CLI:
 ```bash
-php bin/genetics make:endpoint products
+php add/genetics make:endpoint products
 ```
 
 ---
