@@ -98,14 +98,17 @@ match ($command) {
 
 function findProjectRoot(): ?string
 {
-    // 1. Check if we're inside a project (cwd or parent has composer.json with open-genetics)
     $dir = getcwd();
-    for ($i = 0; $i < 5; $i++) {
-        if (file_exists($dir . '/src/bootstrap.php') && file_exists($dir . '/api')) {
-            return $dir;
+    for ($i = 0; $i < 6; $i++) {
+        // Has composer.json with open-genetics/framework dependency
+        if (file_exists($dir . '/composer.json')) {
+            $json = json_decode(file_get_contents($dir . '/composer.json'), true);
+            if (isset($json['require']['open-genetics/framework'])) {
+                return $dir;
+            }
         }
-        // Check if add/genetics is in this dir (running from project root)
-        if (file_exists($dir . '/add/genetics') && file_exists($dir . '/src/bootstrap.php')) {
+        // Has vendor/open-genetics (already installed)
+        if (is_dir($dir . '/vendor/open-genetics/framework')) {
             return $dir;
         }
         $parent = dirname($dir);
@@ -113,10 +116,13 @@ function findProjectRoot(): ?string
         $dir = $parent;
     }
 
-    // 2. Check relative to this script (for local usage: /project/add/genetics)
+    // Fallback: running from inside vendor (global install)
     $scriptDir = dirname(__DIR__);
-    if (file_exists($scriptDir . '/src/bootstrap.php') && file_exists($scriptDir . '/api')) {
-        return $scriptDir;
+    if (file_exists($scriptDir . '/composer.json')) {
+        $json = json_decode(file_get_contents($scriptDir . '/composer.json'), true);
+        if (isset($json['require']['open-genetics/framework'])) {
+            return $scriptDir;
+        }
     }
 
     return null;
@@ -124,9 +130,31 @@ function findProjectRoot(): ?string
 
 function bootstrapProject(string $root): void
 {
-    require_once $root . '/src/bootstrap.php';
+    // Load autoloader
+    $autoload = $root . '/vendor/autoload.php';
+    if (file_exists($autoload)) {
+        require_once $autoload;
+    }
 
-    \OpenGenetics\Core\Env::load($root);
+    // Load bootstrap if exists (full framework install)
+    $bootstrap = $root . '/src/bootstrap.php';
+    if (file_exists($bootstrap)) {
+        require_once $bootstrap;
+    }
+
+    // Load .env
+    if (class_exists('\OpenGenetics\Core\Env')) {
+        \OpenGenetics\Core\Env::load($root);
+    } elseif (file_exists($root . '/.env')) {
+        foreach (file($root . '/.env') as $line) {
+            $line = trim($line);
+            if ($line && !str_starts_with($line, '#') && str_contains($line, '=')) {
+                [$k, $v] = explode('=', $line, 2);
+                $_ENV[trim($k)] = trim($v);
+                putenv(trim($k) . '=' . trim($v));
+            }
+        }
+    }
 }
 
 // ═══════════════════════════════════════════════════════
