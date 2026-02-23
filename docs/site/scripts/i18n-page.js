@@ -343,6 +343,13 @@
     });
   }
 
+  // Export for external toggles
+  window.OGi18n = {
+    setLocale,
+    applyLocale,
+    getLocale
+  };
+
   // Run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
