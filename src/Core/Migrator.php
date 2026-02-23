@@ -64,7 +64,7 @@ final class Migrator
 
         foreach ($pending as $file) {
             $name      = pathinfo($file, PATHINFO_FILENAME);
-            $migration = require $file;
+            $migration = (static function (string $f) { return require $f; })($file);
 
             if (is_object($migration) && method_exists($migration, 'up')) {
                 Database::transaction(function (\PDO $pdo) use ($migration, $name, $batch) {
@@ -108,7 +108,7 @@ final class Migrator
 
             Database::transaction(function (\PDO $pdo) use ($file, $name) {
                 if (file_exists($file)) {
-                    $migration = require $file;
+                    $migration = (static function (string $f) { return require $f; })($file);
                     if (is_object($migration) && method_exists($migration, 'down')) {
                         $migration->down($pdo);
                     }

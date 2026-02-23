@@ -221,6 +221,9 @@ final class Pulse
      *
      * Pulse::broadcast('chat', ['user' => 'John', 'msg' => 'Hello']);
      */
+    /** Max broadcast queue file size: 1 MB */
+    private const MAX_QUEUE_BYTES = 1_048_576;
+
     public static function broadcast(string $channel, mixed $data): void
     {
         $dir  = dirname(__DIR__, 2) . '/storage/pulse';
@@ -235,7 +238,12 @@ final class Pulse
             'timestamp' => microtime(true),
         ]) . "\n";
 
-        file_put_contents($file, $payload, FILE_APPEND | LOCK_EX);
+        // Prevent unbounded file growth — truncate if over limit
+        if (file_exists($file) && filesize($file) >= self::MAX_QUEUE_BYTES) {
+            file_put_contents($file, $payload, LOCK_EX);
+        } else {
+            file_put_contents($file, $payload, FILE_APPEND | LOCK_EX);
+        }
     }
 
     /**

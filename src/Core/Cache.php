@@ -123,10 +123,29 @@ final class Cache
 
     /**
      * Check if a key exists and is not expired.
+     * Correctly handles cached null values.
      */
     public function has(string $key): bool
     {
-        return $this->get($key) !== null;
+        $key  = $this->taggedKey($key);
+        $file = self::filePath($key);
+
+        if (!file_exists($file)) {
+            return false;
+        }
+
+        $payload = @unserialize(file_get_contents($file));
+        if ($payload === false) {
+            @unlink($file);
+            return false;
+        }
+
+        if ($payload['expires'] > 0 && time() > $payload['expires']) {
+            @unlink($file);
+            return false;
+        }
+
+        return true;
     }
 
     /**

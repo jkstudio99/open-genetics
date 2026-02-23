@@ -34,7 +34,7 @@ final class FieldSelector
 
     /**
      * Whitelist allowed fields to prevent information leakage.
-     * Call before apply() in your endpoint.
+     * Whitelist is automatically cleared after apply()/applyOne()/respond().
      *
      * @param array $fields Allowed field names
      */
@@ -44,7 +44,7 @@ final class FieldSelector
     }
 
     /**
-     * Reset whitelist (call between requests if reused).
+     * Reset whitelist (auto-called after apply — safe to call manually too).
      */
     public static function reset(): void
     {
@@ -94,11 +94,11 @@ final class FieldSelector
     public static function apply(array $rows): array
     {
         $fields = self::requested();
-        if ($fields === null) {
-            return $rows;
-        }
-
-        return array_map(fn(array $row) => self::filterRow($row, $fields), $rows);
+        $result = $fields === null
+            ? $rows
+            : array_map(fn(array $row) => self::filterRow($row, $fields), $rows);
+        self::reset();
+        return $result;
     }
 
     /**
@@ -107,10 +107,9 @@ final class FieldSelector
     public static function applyOne(array $row): array
     {
         $fields = self::requested();
-        if ($fields === null) {
-            return $row;
-        }
-        return self::filterRow($row, $fields);
+        $result = $fields === null ? $row : self::filterRow($row, $fields);
+        self::reset();
+        return $result;
     }
 
     /**

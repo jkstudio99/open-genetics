@@ -45,7 +45,7 @@ final class Response
     /**
      * Send a success response.
      */
-    public static function success(mixed $data = null, string $message = 'OK', int $status = 200): void
+    public static function success(mixed $data = null, string $message = 'OK', int $status = 200): never
     {
         self::json([
             'success' => true,
@@ -57,7 +57,7 @@ final class Response
     /**
      * Send an error response.
      */
-    public static function error(string $message, int $status = 400, mixed $errors = null): void
+    public static function error(string $message, int $status = 400, mixed $errors = null): never
     {
         $payload = [
             'success' => false,
@@ -74,7 +74,7 @@ final class Response
     /**
      * Send a paginated response.
      */
-    public static function paginated(array $data, int $total, int $page, int $perPage): void
+    public static function paginated(array $data, int $total, int $page, int $perPage): never
     {
         $totalPages = (int) ceil($total / max($perPage, 1));
         self::json([

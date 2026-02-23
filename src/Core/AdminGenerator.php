@@ -109,7 +109,7 @@ final class AdminGenerator
 
         $timestamp  = self::timestamp();
         $columns    = self::describeTable($table);
-        $colList    = implode(', ', array_column($columns, 'Field'));
+        $colList    = implode(', ', array_map(fn($f) => "`{$f}`", array_column($columns, 'Field')));
         $pkField    = self::getPrimaryKey($columns);
 
         $editableCols = array_filter($columns, fn($c) => !in_array($c['Field'], [$pkField, 'created_at', 'updated_at'], true));
@@ -201,16 +201,22 @@ PHP;
             mkdir($this->outputDir, 0755, true);
         }
 
+        $success = true;
         foreach ($this->tables as $table) {
-            $path = self::scaffoldApiEndpoint(
-                dirname($this->outputDir),
-                $table,
-                ltrim(str_replace(dirname($this->outputDir), '', $this->outputDir), '/'),
-                $this->requiredRole
-            );
+            try {
+                self::scaffoldApiEndpoint(
+                    dirname($this->outputDir),
+                    $table,
+                    ltrim(str_replace(dirname($this->outputDir), '', $this->outputDir), '/'),
+                    $this->requiredRole
+                );
+            } catch (\Throwable $e) {
+                error_log("[AdminGenerator] Failed to scaffold {$table}: " . $e->getMessage());
+                $success = false;
+            }
         }
 
-        return true;
+        return $success;
     }
 
     private static function timestamp(): string
