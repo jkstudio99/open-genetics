@@ -1,5 +1,5 @@
 *,*::before,*::after{box-sizing:border-box}
-body{font-family:'Inter','Noto Sans Thai',sans-serif;background:#0e0e1a;color:#cbd5e1;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:'Inter','Prompt','Noto Sans Thai',sans-serif;background:#0e0e1a;color:#cbd5e1;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;will-change:transform}
 .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(30,24,207,.2) 0%,transparent 65%);top:-200px;left:-150px;filter:blur(60px)}
 .orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,207,255,.1) 0%,transparent 65%);top:40%;right:-150px;filter:blur(70px)}

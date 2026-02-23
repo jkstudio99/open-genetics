@@ -1731,7 +1731,8 @@ JSON Output</code></pre>
     <h2 id="middleware"><a href="#middleware" data-i18n="dh.middleware"># Middleware Pipeline</a></h2>
     <p data-i18n="dh.middleware.desc">v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
       ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request และ Auth/RateLimit ประกาศผ่าน
-      <code>#[Middleware]</code> attribute</p>
+      <code>#[Middleware]</code> attribute
+    </p>
 
     <h3>Request Lifecycle v2.0</h3>
     <pre><code>HTTP Request
@@ -1836,7 +1837,8 @@ php add/genetics make:middleware Cache
         </svg></span>
       <div>
         <p>Middleware ทุกตัวต้องมี <code>handle(array $request, callable $next)</code> — เรียก
-          <code>$next($request)</code> เพื่อส่งต่อ pipeline หรือไม่เรียกเพื่อ short-circuit</p>
+          <code>$next($request)</code> เพื่อส่งต่อ pipeline หรือไม่เรียกเพื่อ short-circuit
+        </p>
       </div>
     </div>
 
@@ -1944,7 +1946,8 @@ X-Locale: th</code></pre>
     <h2 id="migrations"><a href="#migrations" data-i18n="dh.migrations"># Database Migrations</a></h2>
     <p data-i18n="dh.migrations.desc">v2.0 — ระบบ version-tracked migrations สามารถ rollback แต่ละ batch ได้ ต่างจาก
       <code>mutate</code> ที่สร้างตารางครั้งเดียว migrations จะบันทึกสิ่งที่รันไปแล้วไว้ในตาราง
-      <code>og_migrations</code></p>
+      <code>og_migrations</code>
+    </p>
 
     <h3>CLI Commands</h3>
     <pre><code><span class="cm"># รัน migrations ที่ยังไม่ได้รัน</span>
@@ -2701,58 +2704,168 @@ php add/genetics market:install og/notifications</code></pre>
 
     <!-- CLI -->
     <h2 id="cli"><a href="#cli" data-i18n="dh.cli"># CLI — Genetics Tool</a></h2>
-    <p data-i18n="dh.cli.desc">เครื่องมือ command-line สำหรับ scaffold, migrate และ manage โปรเจกต์</p>
-    <pre><code><span class="fn">php add/genetics</span> mutate            <span class="cm"># สร้างตาราง + seed RBAC + admin user</span>
-<span class="fn">php add/genetics</span> serve             <span class="cm"># Start dev server http://127.0.0.1:8080</span>
-<span class="fn">php add/genetics</span> make:endpoint     <span class="cm"># Scaffold API endpoint file</span>
-<span class="fn">php add/genetics</span> make:middleware   <span class="cm"># Scaffold middleware</span>
-<span class="fn">php add/genetics</span> docs:generate     <span class="cm"># Generate OpenAPI JSON from source code</span>
-<span class="fn">php add/genetics</span> new &lt;name&gt;        <span class="cm"># Create new project</span>
-<span class="fn">php add/genetics</span> help              <span class="cm"># Show all commands</span></code></pre>
+    <p data-i18n="dh.cli.desc">Genetics CLI คือหัวใจสำคัญของ Developer Experience (DX) ใน OpenGenetics v2.0
+      ออกแบบมาเพื่อลดงานซ้ำซ้อน ทั้งการวางโครงสร้างไฟล์แบบ Auto-wiring, การจัดการ Database Migration และระบบ AI
+      Scaffolding ที่ช่วยย่นเวลาการเขียนโค้ดซ้ำๆ ให้เหลือเพียงเสี้ยววินาที</p>
 
-    <h3 data-i18n="dh.docs_generate">docs:generate</h3>
-    <pre><code>$ <span class="fn">php add/genetics docs:generate</span>
+    <h3>🛠️ ภาพรวมคำสั่ง (Command Overview)</h3>
+    <pre><code><span class="cm">// เรียกดูคำสั่งทั้งหมดที่มีในระบบ</span>
+<span class="fn">php add/genetics</span> help</code></pre>
 
-  ✓ OpenAPI spec generated successfully: public/openapi.json</code></pre>
-
-    <h3 data-i18n="dh.make_endpoint">make:endpoint</h3>
-    <pre><code>$ <span class="fn">php add/genetics make:endpoint</span> products/list
-
-  ✓ Created: api/products/list.php
-  Class: ProductsList
-  Route: GET|POST /api/products/list</code></pre>
-
+    <h3>1. คำสั่งกลุ่ม Scaffolding & Code Generation</h3>
+    <p>ช่วยสร้างไฟล์โครงสร้างพื้นฐานให้คุณ พร้อม wiring คลาสให้อัตโนมัติในตำแหน่งที่ถูกต้องตามสถาปัตยกรรมของโปรเจกต์</p>
     <table>
       <thead>
         <tr>
-          <th>Command</th>
-          <th>Description</th>
+          <th>คำสั่ง (Command)</th>
+          <th>คำอธิบาย (Description)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><code>mutate</code></td>
-          <td>Run migrations + seed default RBAC data</td>
-        </tr>
-        <tr>
-          <td><code>serve</code></td>
-          <td>PHP built-in dev server on port 8080</td>
-        </tr>
-        <tr>
           <td><code>make:endpoint &lt;path&gt;</code></td>
-          <td>Scaffold new API endpoint with class template</td>
+          <td>สร้าง API Endpoint เปล่า (เช่น <code>users/profile</code>) พร้อมคลาสที่พร้อมรองรับ HTTP Methods</td>
         </tr>
         <tr>
           <td><code>make:middleware &lt;name&gt;</code></td>
-          <td>Scaffold middleware class</td>
+          <td>สร้างคลาส Middleware ตัวใหม่ (เช่น <code>RateLimiter</code>) ใน <code>src/Middleware/</code></td>
+        </tr>
+        <tr>
+          <td><code>make:migration &lt;name&gt;</code></td>
+          <td>สร้างไฟล์ DB Migration ลงใน <code>database/migrations/</code> พร้อม Timestamp</td>
+        </tr>
+        <tr>
+          <td><code>make:test &lt;name&gt;</code></td>
+          <td>สร้าง HTTP Test Class (เช่น <code>UserApiTest</code>) เพื่อใช้กับ PHPUnit</td>
+        </tr>
+        <tr>
+          <td><code>make:admin &lt;table&gt;</code></td>
+          <td><strong>(v2.0)</strong> สแกน Database Table แล้วสร้าง CRUD Admin API (GET, POST, PUT, DELETE) พร้อม
+            Pagination และ RBAC <br><span class="cm">เช่น: <code>make:admin products</code></span></td>
+        </tr>
+        <tr>
+          <td><code>make:endpoint-ai &lt;name&gt; "&lt;desc&gt;"</code></td>
+          <td><strong>(v2.0)</strong> สร้าง Endpoint จากคำสั่ง NLP โดย AI จะประเมินและใส่โค้ดให้สอดคล้อง (Auth, Search,
+            Paginate, Audit)<br><span class="cm">เช่น:
+              <code>make:endpoint-ai orders "CRUD with auth, pagination and cache"</code></span></td>
         </tr>
         <tr>
           <td><code>docs:generate</code></td>
-          <td>Automatically generate OpenAPI definitions (<code>openapi.json</code>)</td>
+          <td>สแกน Source code ของคุณแล้วสร้างไฟล์ OpenAPI 3.0 (<code>openapi.json</code>) อัตโนมัติ</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>2. คำสั่งกลุ่ม Database & Migrations</h3>
+    <p>ควบคุมโครงสร้างของฐานข้อมูลให้ตรงกันทั้งทีม และทำให้การ Deploy ขึ้น Server ปลอดภัยที่สุด</p>
+    <table>
+      <thead>
+        <tr>
+          <th>คำสั่ง (Command)</th>
+          <th>คำอธิบาย (Description)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>migrate</code></td>
+          <td><strong>(v2.0)</strong> ทยอยรันไฟล์ Migration ที่ยังไม่เคยถูกรันในฐานข้อมูล</td>
+        </tr>
+        <tr>
+          <td><code>migrate:rollback</code></td>
+          <td><strong>(v2.0)</strong> ย้อนสถานะ Database กลับไป 1 ชุด (Batch) ล่าสุด</td>
+        </tr>
+        <tr>
+          <td><code>migrate:status</code></td>
+          <td><strong>(v2.0)</strong> แสดงตารางรายชื่อไฟล์ Migration ทั้งหมด พร้อมบอกสถานะ (รันแล้ว/ยังไม่รัน)</td>
+        </tr>
+        <tr>
+          <td><code>mutate</code></td>
+          <td>รันคำสั่ง Migration เริ่มต้น + เสก Table หายากเบื้องต้น (เช่น <code>users</code>) และ <strong>Seed
+              ข้อมูลแอดมินคนแรก</strong> ลงไปให้ใช้งานทันที</td>
+        </tr>
+        <tr>
+          <td><code>seed</code></td>
+          <td>นำข้อมูล Dummy (Seeders) ยัดใส่ Database ใช้สำหรับตอน Development</td>
+        </tr>
+        <tr>
+          <td><code>status</code></td>
+          <td>ตรวจสอบการเชื่อมต่อกับ Database ว่ายังปกติอยู่หรือไม่ผ่าน PDO</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3. คำสั่งกลุ่ม Caching System</h3>
+    <p>จัดการ File-based Cache ในระบบแบบ Zero-dependency (เก็บลง `/storage/cache`)</p>
+    <table>
+      <thead>
+        <tr>
+          <th>คำสั่ง (Command)</th>
+          <th>คำอธิบาย (Description)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>cache:clear</code></td>
+          <td><strong>(v2.0)</strong> ล้างข้อมูลใน Cache ทั้งหมดให้ว่างเปล่า (Hard clear)</td>
+        </tr>
+        <tr>
+          <td><code>cache:stats</code></td>
+          <td><strong>(v2.0)</strong> แสดงสถิติ Cache (จำนวนไฟล์, Total Size, จำนวนไฟล์หมดอายุ, Tag usage)</td>
+        </tr>
+        <tr>
+          <td><code>cache:gc</code></td>
+          <td><strong>(v2.0)</strong> Garbage Collection ตระเวนลบไฟล์ Cache ที่หมดเวลา (Expired TTL) เพื่อคืนพื้นที่
+            Disk</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>4. คำสั่งกลุ่ม Genetic Marketplace & Modules</h3>
+    <p>ค้นหาและดาวน์โหลดส่วนเสริมที่ช่วยให้คุณทำงานน้อยลง (เช่น 2FA, JWT Refresh, File Uploaders)</p>
+    <table>
+      <thead>
+        <tr>
+          <th>คำสั่ง (Command)</th>
+          <th>คำอธิบาย (Description)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>market:list</code></td>
+          <td><strong>(v2.0)</strong> แสดงรายชื่อ Packages ทั้งหมดที่มีในระบบ Registry</td>
+        </tr>
+        <tr>
+          <td><code>market:search &lt;keyword&gt;</code></td>
+          <td><strong>(v2.0)</strong> ค้นหา Package ด้วยชื่อหรือรายละเอียด</td>
+        </tr>
+        <tr>
+          <td><code>market:install &lt;pkg&gt;</code></td>
+          <td><strong>(v2.0)</strong> ติดตั้ง Package เข้ามายัง <code>modules/</code> ของคุณทันที <br><span
+              class="cm">เช่น: <code>market:install og/notifications</code></span></td>
+        </tr>
+        <tr>
+          <td><code>modules:list</code></td>
+          <td><strong>(v2.0)</strong> เช็คดูว่า ณ ปัจจุบันมี Modules ไหนโหลดเข้ามาฝังในระบบแล้วบ้าง</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>5. คำสั่งระบบ (System)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>คำสั่ง (Command)</th>
+          <th>คำอธิบาย (Description)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>serve</code></td>
+          <td>เปิดหน้าต่าง Development Server บน PHP Router ผ่านพอร์ต 8080 (<code>http://127.0.0.1:8080</code>)</td>
         </tr>
         <tr>
           <td><code>new &lt;name&gt;</code></td>
-          <td>Create new OpenGenetics project</td>
+          <td>สร้างโครงสร้างเปล่าโปรเจกต์ OpenGenetics ตัวใหม่ พร้อม Composer Install</td>
         </tr>
       </tbody>
     </table>

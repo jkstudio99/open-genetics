@@ -416,7 +416,8 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <h2 id="middleware"><a href="#middleware" data-i18n="dh.middleware"># Middleware Pipeline</a></h2>
     <p data-i18n="dh.middleware.desc">v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
       ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request และ Auth/RateLimit ประกาศผ่าน
-      <code>#[Middleware]</code> attribute</p>
+      <code>#[Middleware]</code> attribute
+    </p>
 
     <h3>Request Lifecycle v2.0</h3>
     <pre><code>HTTP Request
@@ -521,7 +522,8 @@ php add/genetics make:middleware Cache
         </svg></span>
       <div>
         <p>Middleware ทุกตัวต้องมี <code>handle(array $request, callable $next)</code> — เรียก
-          <code>$next($request)</code> เพื่อส่งต่อ pipeline หรือไม่เรียกเพื่อ short-circuit</p>
+          <code>$next($request)</code> เพื่อส่งต่อ pipeline หรือไม่เรียกเพื่อ short-circuit
+        </p>
       </div>
     </div>
 
