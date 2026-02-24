@@ -259,18 +259,18 @@
     'dh.audit': { th: '# Audit Trail', en: '# Audit Trail' },
     'dh.middleware': { th: '# Middleware Pipeline', en: '# Middleware Pipeline' },
     'dh.middleware.desc': {
-      th: 'v2.2 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline ก่อนถึง endpoint รองรับ #[SkipMiddleware] และ Pipeline::after()',
-      en: 'v2.2 — Middleware system with Chain of Responsibility pattern. Every request passes through a pipeline before reaching the endpoint. Supports #[SkipMiddleware] and Pipeline::after().'
+      th: 'ระบบ Middleware แบบ Chain of Responsibility — ทุก request ผ่าน pipeline ก่อนถึง endpoint รองรับ #[SkipMiddleware] และ Pipeline::after()',
+      en: 'Middleware system with Chain of Responsibility pattern — every request passes through a pipeline before reaching the endpoint. Supports #[SkipMiddleware] and Pipeline::after().'
     },
     'dh.migrations': { th: '# Database Migrations', en: '# Database Migrations' },
     'dh.migrations.desc': {
-      th: 'v2.0 — Version-tracked migrations with rollback — ต่างจาก mutate ที่สร้างทุกอย่างครั้งเดียว',
-      en: 'v2.0 — Version-tracked migrations with batch rollback. Different from mutate which creates everything at once.'
+      th: 'ระบบ version-tracked migrations สามารถ rollback แต่ละ batch ได้ — ต่างจาก mutate ที่สร้างทุกอย่างครั้งเดียว',
+      en: 'Version-tracked migrations with batch rollback — different from mutate which creates everything at once.'
     },
     'dh.testing': { th: '# Testing Framework', en: '# Testing Framework' },
     'dh.testing.desc': {
-      th: 'v2.2 — Testing Framework ที่รันผ่าน PHPUnit — GeneticTestCase ให้ HTTP test client พร้อม actingAs(), seed() และ fluent assertions',
-      en: 'v2.2 — Testing Framework built on PHPUnit — GeneticTestCase provides an HTTP test client with actingAs(), seed() and fluent assertions.'
+      th: 'Testing Framework ที่รันผ่าน PHPUnit — GeneticTestCase ให้ HTTP test client พร้อม actingAs(), seed() และ fluent assertions',
+      en: 'Testing Framework built on PHPUnit — GeneticTestCase provides an HTTP test client with actingAs(), seed() and fluent assertions.'
     },
     'dh.sdk': { th: '# Genetic SDK', en: '# Genetic SDK' },
     'dh.api_ref': { th: '# API Reference', en: '# API Reference' },
@@ -283,6 +283,39 @@
     'dh.openapi.phpdoc': { th: 'การเขียน PHPDoc', en: 'Writing PHPDoc' },
     'dh.openapi.phpdoc.desc': { th: 'คุณสามารถใช้ PHPDoc บน class ของ endpoint เพื่อเพิ่มคำอธิบายใน API Spec:', en: 'You can use PHPDoc on the endpoint class to add a description to the API Spec:' },
     'dh.deployment': { th: '# Deployment', en: '# Deployment' },
+    'dh.query_builder': { th: '# Query Builder <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(108,99,255,.2);color:#a5b4fc;border:1px solid rgba(108,99,255,.3);letter-spacing:.03em;margin-left:8px;vertical-align:middle;line-height:1.6">NEW v2.3</span>', en: '# Query Builder <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(108,99,255,.2);color:#a5b4fc;border:1px solid rgba(108,99,255,.3);letter-spacing:.03em;margin-left:8px;vertical-align:middle;line-height:1.6">NEW v2.3</span>' },
+    'dh.cache': { th: '# Caching Layer', en: '# Caching Layer' },
+    'dh.field_selector': { th: '# Field Selector (GraphQL-lite)', en: '# Field Selector (GraphQL-lite)' },
+    'dh.field_selector.desc': {
+      th: 'Sparse Fieldsets ผ่าน <code>?fields=</code> query param — ลด response payload โดยไม่ต้องใช้ GraphQL server',
+      en: 'Sparse Fieldsets via <code>?fields=</code> query param — reduce response payload without a GraphQL server.'
+    },
+    'dh.pulse': { th: '# Genetic Pulse — Real-time SSE', en: '# Genetic Pulse — Real-time SSE' },
+    'dh.pulse.desc': {
+      th: 'Server-Sent Events สำหรับ real-time push ไปยัง browser — ไม่ต้องใช้ WebSocket server ทำงานผ่าน HTTP ปกติ',
+      en: 'Server-Sent Events for real-time push to the browser — no WebSocket server needed, works over plain HTTP.'
+    },
+    'dh.modules': { th: '# Genetic Modules (Plugin System)', en: '# Genetic Modules (Plugin System)' },
+    'dh.modules.desc': {
+      th: 'ระบบ plugin ที่ให้ extend framework ผ่าน Module โดยไม่ต้องแก้ core files',
+      en: 'Plugin system that lets you extend the framework through Modules without modifying core files.'
+    },
+    'dh.admin_generator': { th: '# Admin Generator', en: '# Admin Generator' },
+    'dh.admin_generator.desc': {
+      th: 'ตรวจ schema ของ database table แล้ว generate CRUD admin API endpoint โดยอัตโนมัติ — พร้อม pagination, RBAC, และ HTTP methods ครบ',
+      en: 'Inspects the database table schema and auto-generates a full CRUD admin API endpoint — with pagination, RBAC, and all HTTP methods.'
+    },
+    'dh.endpoint_ai': { th: '# Endpoint AI Generator', en: '# Endpoint AI Generator' },
+    'dh.endpoint_ai.desc': {
+      th: 'Generate endpoint จาก natural language description — ตรวจจับ auth, pagination, search, cache, audit, RBAC โดยอัตโนมัติจากคำบรรยาย',
+      en: 'Generate endpoints from natural language descriptions — auto-detects auth, pagination, search, cache, audit, and RBAC from the description.'
+    },
+    'dh.marketplace': { th: '# Genetic Marketplace', en: '# Genetic Marketplace' },
+    'dh.marketplace.desc': {
+      th: 'Package registry สำหรับค้นหา, ติดตั้ง และ publish OpenGenetics modules จาก community',
+      en: 'Package registry for discovering, installing, and publishing OpenGenetics modules from the community.'
+    },
+    'nav.sdk': { th: 'SDK', en: 'SDK' },
 
     // Doc sub-headings
     'dh.steps': { th: 'ขั้นตอนการติดตั้ง', en: 'Installation Steps' },
@@ -324,8 +357,8 @@
       en: 'OpenGenetics uses <strong>File-based Routing</strong> — URL paths map directly to file paths in <code>api/</code>. No route registry needed.'
     },
     'dh.database.desc': {
-      th: 'v2.2 — เข้าถึงฐานข้อมูลได้ 2 วิธี: <strong>Query Builder</strong> (<code>DB::table()</code>) สำหรับ dynamic queries ที่อ่านง่าย และ <strong>Raw SQL</strong> (<code>Database::query()</code>) สำหรับ queries ที่ซับซ้อน — ทั้งคู่ใช้ PDO prepared statements ป้องกัน SQL Injection โดยค่าเริ่มต้น',
-      en: 'v2.2 — Two ways to query: <strong>Query Builder</strong> (<code>DB::table()</code>) for readable dynamic queries, and <strong>Raw SQL</strong> (<code>Database::query()</code>) for complex operations — both use PDO prepared statements to prevent SQL Injection by default.'
+      th: 'เข้าถึงฐานข้อมูลได้ 2 วิธี: <strong>Query Builder</strong> (<code>DB::table()</code>) สำหรับ dynamic queries ที่อ่านง่าย และ <strong>Raw SQL</strong> (<code>Database::query()</code>) สำหรับ queries ที่ซับซ้อน — ทั้งคู่ใช้ PDO prepared statements ป้องกัน SQL Injection โดยค่าเริ่มต้น',
+      en: 'Two ways to query: <strong>Query Builder</strong> (<code>DB::table()</code>) for readable dynamic queries, and <strong>Raw SQL</strong> (<code>Database::query()</code>) for complex operations — both use PDO prepared statements to prevent SQL Injection by default.'
     },
     'dh.guard.desc': {
       th: 'Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — ใช้ <code>requireAuth()</code> / <code>requireRole()</code> แบบ strict (throw 401/403) หรือ <code>Guard::check()</code> แบบ soft (คืนค่า <code>bool</code>) สำหรับ endpoint ที่ auth เป็น optional',
@@ -344,8 +377,8 @@
       en: 'The Genetics CLI is the heart of OpenGenetics DX — 25+ commands that eliminate boilerplate: scaffold endpoints, manage migrations, and generate production-ready code with auth and caching in seconds.'
     },
     'dh.cache.desc': {
-      th: 'v2.2 — File-based cache พร้อม TTL, tag-based invalidation, <code>remember()</code> pattern และ <code>Cache::namespace()</code> สำหรับแยก key space ระหว่าง module — ไม่ต้องติดตั้ง Redis หรือ Memcached',
-      en: 'v2.2 — File-based cache with TTL, tag-based invalidation, <code>remember()</code> pattern, and <code>Cache::namespace()</code> to isolate key spaces between modules — no Redis or Memcached required.'
+      th: 'File-based cache พร้อม TTL, tag-based invalidation, <code>remember()</code> pattern และ <code>Cache::namespace()</code> สำหรับแยก key space ระหว่าง module — ไม่ต้องติดตั้ง Redis หรือ Memcached',
+      en: 'File-based cache with TTL, tag-based invalidation, <code>remember()</code> pattern, and <code>Cache::namespace()</code> to isolate key spaces between modules — no Redis or Memcached required.'
     },
   };
 
