@@ -210,7 +210,21 @@ function newProject(?string $name): void
             '.env',
             'node_modules',
             'bin',
+            'tests',
+            'docs',
+            '.github',
+            '.claude',
+            '.vercel',
+            'firebase-debug.log',
+            'CHANGELOG.md',
+            'CONTRIBUTING.md',
+            '.phpunit.result.cache',
+            'phpunit.xml',
+            'composer.lock',
         ]);
+        // Override framework's composer.json with a project-specific template
+        writeProjectComposerJson($targetDir, $name);
+        echo "  ✅ composer.json (project template)\n";
     }
 
     // Create .env from example
@@ -243,12 +257,43 @@ function newProject(?string $name): void
 
 function findSkeletonDir(): ?string
 {
-    // When installed globally, skeleton is at the package root
-    $packageRoot = dirname(__DIR__);
+    // When installed globally, __DIR__ = ~/.composer/vendor/open-genetics/framework
+    // When run locally, __DIR__ = /path/to/project (but 'new' is only used globally)
+    $packageRoot = __DIR__;
     if (file_exists($packageRoot . '/src/bootstrap.php') && file_exists($packageRoot . '/api')) {
         return $packageRoot;
     }
     return null;
+}
+
+function writeProjectComposerJson(string $dir, string $name): void
+{
+    $composerJson = json_encode([
+        'name'        => 'my-project/' . $name,
+        'description' => 'An OpenGenetics API project',
+        'type'        => 'project',
+        'license'     => 'MIT',
+        'require'     => [
+            'php'                      => '>=8.1',
+            'open-genetics/framework'  => '^2.2',
+        ],
+        'autoload'    => [
+            'psr-4' => ['App\\' => 'src/'],
+        ],
+        'scripts'     => [
+            'mutate' => 'php genetics mutate',
+            'seed'   => 'php genetics seed',
+            'serve'  => 'php genetics serve',
+        ],
+        'config'      => [
+            'preferred-install' => 'dist',
+            'sort-packages'     => true,
+        ],
+        'minimum-stability' => 'stable',
+        'prefer-stable'     => true,
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    file_put_contents($dir . '/composer.json', $composerJson . "\n");
 }
 
 function copyDirectory(string $src, string $dst, array $exclude = []): void
@@ -292,6 +337,11 @@ function createProjectFromScratch(string $dir, string $name): void
         'locales',
         'sdk',
         'bin',
+        'database',
+        'database/migrations',
+        'storage',
+        'storage/cache',
+        'tests',
     ];
 
     foreach ($dirs as $d) {
@@ -306,7 +356,7 @@ function createProjectFromScratch(string $dir, string $name): void
         'license' => 'MIT',
         'require' => [
             'php' => '>=8.1',
-            'open-genetics/framework' => '^2.0',
+            'open-genetics/framework' => '^2.2',
         ],
         'autoload' => [
             'psr-4' => ['App\\' => 'src/'],
@@ -323,7 +373,8 @@ function createProjectFromScratch(string $dir, string $name): void
 
     // Create .env.example
     $envExample = <<<'ENV'
-DB_HOST=localhost
+# Database (use 127.0.0.1 instead of localhost for TCP; XAMPP may use port 3308)
+DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=my-api-db
 DB_USER=root
