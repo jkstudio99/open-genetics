@@ -1,0 +1,10 @@
+# robots.txt for OpenGenetics Documentation
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://opengenetics.dev/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1

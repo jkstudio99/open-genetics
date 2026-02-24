@@ -12,9 +12,23 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon/apple-touch-icon.png">
   <link rel="manifest" href="../images/favicon/site.webmanifest">
   <meta name="theme-color" content="#06060f">
-  <meta property="og:title" content="OpenGenetics PHP Framework">
-  <meta property="og:description" content="PHP Micro-Framework — JWT Auth, RBAC 3 ระดับ, i18n, Genetic SDK">
+  <meta name="keywords" content="PHP Framework, Micro-Framework, REST API, JWT Authentication, RBAC, PHP 8, Query Builder, Testing Framework, i18n, Audit Trail, OpenGenetics, PHP Middleware, Caching, Database Migration">
+  <meta name="author" content="jkstudio99">
+  <link rel="canonical" href="https://opengenetics.dev/">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://opengenetics.dev/">
+  <meta property="og:title" content="OpenGenetics — PHP Micro-Framework">
+  <meta property="og:description" content="PHP Micro-Framework พร้อม JWT Auth, RBAC 3 ระดับ, Query Builder, Testing Framework, i18n และ Genetic SDK — สร้าง REST API ที่ปลอดภัย เร็ว และขยายได้">
+  <meta property="og:image" content="https://opengenetics.dev/images/og-image.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://opengenetics.dev/">
+  <meta property="twitter:title" content="OpenGenetics — PHP Micro-Framework">
+  <meta property="twitter:description" content="PHP Micro-Framework พร้อม JWT Auth, RBAC, Query Builder, Testing Framework — สร้าง REST API ที่ปลอดภัย เร็ว และขยายได้">
+  <meta property="twitter:image" content="https://opengenetics.dev/images/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -23,6 +37,47 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'Noto Sans Thai', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }, transitionTimingFunction: { 'out-expo': 'cubic-bezier(0.16,1,0.3,1)' }, transitionDuration: { '600': '600ms', '800': '800ms' } } } }
+  </script>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "OpenGenetics",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "description": "PHP Micro-Framework with JWT Auth, RBAC, Query Builder, Testing Framework, i18n, Audit Trail, and Genetic SDK for building secure, fast, and scalable REST APIs",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "jkstudio99",
+      "url": "https://github.com/jkstudio99"
+    },
+    "programmingLanguage": "PHP",
+    "softwareVersion": "2.3.0",
+    "url": "https://opengenetics.dev",
+    "downloadUrl": "https://github.com/jkstudio99/open-genetics",
+    "codeRepository": "https://github.com/jkstudio99/open-genetics",
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "OpenGenetics",
+    "url": "https://opengenetics.dev",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://opengenetics.dev/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
