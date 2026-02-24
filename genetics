@@ -223,10 +223,16 @@ function newProject(?string $name): void
             'phpunit.xml',
             'composer.lock',
             'vercel.json',
+            'openapi.json',
         ]);
         // Override framework's composer.json with a project-specific template
         writeProjectComposerJson($targetDir, $name);
         echo "  ✅ composer.json (project template)\n";
+
+        // Clean runtime files from skeleton (logs, rate-limit data, cache)
+        foreach (glob($targetDir . '/storage/logs/*.log') ?: [] as $f) @unlink($f);
+        foreach (glob($targetDir . '/storage/rate-limit/*.json') ?: [] as $f) @unlink($f);
+        foreach (glob($targetDir . '/storage/cache/*.php') ?: [] as $f) @unlink($f);
     }
 
     // Create .env from example
@@ -235,18 +241,37 @@ function newProject(?string $name): void
         echo "  ✅ .env created from .env.example\n";
     }
 
-    // Generate JWT secret
+    // Generate JWT secret and update APP_URL for the new project
     $envFile = $targetDir . '/.env';
     if (file_exists($envFile)) {
         $env = file_get_contents($envFile);
+
+        // Generate JWT secret
         $secret = bin2hex(random_bytes(32));
-        $env = str_replace(
-            'JWT_SECRET=your-secret-key-change-this',
-            'JWT_SECRET=' . $secret,
-            $env
-        );
-        file_put_contents($envFile, $env);
+        $env = preg_replace('/^JWT_SECRET=.*/m', 'JWT_SECRET=' . $secret, $env);
         echo "  🔑 JWT_SECRET generated\n";
+
+        // Update APP_URL to match new project path
+        // CLI has no DOCUMENT_ROOT — detect web root by common htdocs patterns
+        $absTarget = realpath($targetDir) ?: $targetDir;
+        $absTarget = str_replace('\\', '/', $absTarget);
+        $webRoots  = ['/htdocs', '/www', '/public_html', '/var/www/html', '/var/www'];
+        $appUrl    = null;
+        foreach ($webRoots as $webRoot) {
+            $pos = strpos($absTarget, $webRoot . '/');
+            if ($pos !== false) {
+                $relPath = substr($absTarget, $pos + strlen($webRoot));
+                $appUrl  = 'http://localhost' . $relPath;
+                break;
+            }
+        }
+        if (!$appUrl) {
+            $appUrl = 'http://localhost/' . $name;
+        }
+        $env = preg_replace('/^APP_URL=.*/m', 'APP_URL=' . $appUrl, $env);
+        echo "  🌐 APP_URL set to: {$appUrl}\n";
+
+        file_put_contents($envFile, $env);
     }
 
     echo "\n  ✅ Project created: {$name}/\n\n";
@@ -304,6 +329,8 @@ function copyDirectory(string $src, string $dst, array $exclude = []): void
         mkdir($dst, 0755, true);
     }
 
+    $realDst = realpath($dst) ?: $dst;
+
     $items = scandir($src);
     foreach ($items as $item) {
         if ($item === '.' || $item === '..')
@@ -313,6 +340,13 @@ function copyDirectory(string $src, string $dst, array $exclude = []): void
 
         $srcPath = $src . '/' . $item;
         $dstPath = $dst . '/' . $item;
+
+        // Skip if this source item IS the destination root (prevents infinite recursion
+        // when target dir is created inside the skeleton source directory)
+        $realSrcPath = realpath($srcPath) ?: $srcPath;
+        if ($realSrcPath === $realDst || str_starts_with($realSrcPath . '/', $realDst . '/')) {
+            continue;
+        }
 
         if (is_dir($srcPath)) {
             copyDirectory($srcPath, $dstPath, $exclude);
@@ -740,6 +774,20 @@ function generateDocs(string $root): void
     if ($generator->generate($outputPath)) {
         echo "  ✅ OpenAPI specification generated successfully!\n";
         echo "  📄 Saved to: public/openapi.json\n\n";
+
+        // Show the docs URL hint
+        $envFile = $root . '/.env';
+        $appUrl = 'http://localhost';
+        if (file_exists($envFile)) {
+            $envContent = file_get_contents($envFile);
+            if (preg_match('/^APP_URL=(.+)$/m', $envContent, $m)) {
+                $appUrl = trim($m[1]);
+            }
+        }
+        $docsUrl = rtrim($appUrl, '/') . '/public/api/docs';
+        echo "  🌐 Swagger UI available at:\n";
+        echo "     {$docsUrl}\n\n";
+        echo "  💡 The root URL (/) will now auto-redirect to /api/docs\n\n";
     } else {
         echo "  ❌ Failed to generate OpenAPI specification.\n\n";
     }

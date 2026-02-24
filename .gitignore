@@ -30,6 +30,13 @@ Desktop.ini
 storage/logs/*
 !storage/logs/.gitkeep
 
+# Rate limit
+storage/rate-limit/*
+!storage/rate-limit/.gitkeep
+
+# Generated API spec
+public/openapi.json
+
 # Cache
 storage/cache/*
 !storage/cache/.gitkeep

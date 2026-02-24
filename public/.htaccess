@@ -1,3 +1,5 @@
+DirectoryIndex index.php index.html
+
 RewriteEngine On
 
 # Pass Authorization header to PHP (Apache strips it by default)
