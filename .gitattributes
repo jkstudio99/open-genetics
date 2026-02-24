@@ -11,3 +11,8 @@
 /phpunit.xml        export-ignore
 /CHANGELOG.md       export-ignore
 /CONTRIBUTING.md    export-ignore
+/add                export-ignore
+/.claude            export-ignore
+/.vercel            export-ignore
+/firebase-debug.log export-ignore
+/.phpunit.result.cache export-ignore
