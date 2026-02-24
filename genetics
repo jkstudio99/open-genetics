@@ -222,6 +222,7 @@ function newProject(?string $name): void
             '.phpunit.result.cache',
             'phpunit.xml',
             'composer.lock',
+            'vercel.json',
         ]);
         // Override framework's composer.json with a project-specific template
         writeProjectComposerJson($targetDir, $name);

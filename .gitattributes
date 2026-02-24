@@ -14,5 +14,6 @@
 /add                export-ignore
 /.claude            export-ignore
 /.vercel            export-ignore
+/vercel.json        export-ignore
 /firebase-debug.log export-ignore
 /.phpunit.result.cache export-ignore
