@@ -1080,7 +1080,7 @@ function cliModulesList(string $root): void
 
 function help(): void
 {
-    echo "\n  \033[1;36mOpenGenetics Framework v2.0\033[0m\n";
+    echo "\n  \033[1;36mOpenGenetics Framework v2.2.0\033[0m\n";
     echo "  Enterprise PHP Micro-Framework built for Developer Experience.\n\n";
 
     echo "  \033[33m🚀 Quick Start\033[0m\n";
