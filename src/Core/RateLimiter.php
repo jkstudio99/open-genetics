@@ -26,22 +26,46 @@ final class RateLimiter
      * @param int    $maxAttempts Maximum attempts allowed
      * @param int    $windowSeconds Time window in seconds
      */
-    public static function check(string $key, string $identifier, int $maxAttempts = 5, int $windowSeconds = 300): void
+    /**
+     * Check rate limit atomically. Returns remaining attempts after this request.
+     * Throws RuntimeException(429) if limit is exceeded.
+     */
+    public static function check(string $key, string $identifier, int $maxAttempts = 5, int $windowSeconds = 300): int
     {
         self::ensureStorageDir();
+        $file   = self::getFilePath($key, $identifier);
+        $cutoff = time() - $windowSeconds;
 
-        $file = self::getFilePath($key, $identifier);
-        $attempts = self::getAttempts($file, $windowSeconds);
+        // Exclusive lock around read-check-write prevents race conditions under concurrency
+        $fp = @fopen($file, 'c+');
+        if ($fp === false) {
+            return max(0, $maxAttempts - 1); // storage unavailable: fail open
+        }
+
+        flock($fp, LOCK_EX);
+
+        $raw      = stream_get_contents($fp);
+        $data     = json_decode($raw ?: '[]', true);
+        $attempts = \is_array($data)
+            ? array_values(array_filter($data, fn(int $t) => $t > $cutoff))
+            : [];
 
         if (count($attempts) >= $maxAttempts) {
             $retryAfter = $attempts[0] + $windowSeconds - time();
+            flock($fp, LOCK_UN);
+            fclose($fp);
             header("Retry-After: {$retryAfter}");
             throw new \RuntimeException('Too many attempts. Please try again later.', 429);
         }
 
-        // Record this attempt
         $attempts[] = time();
-        file_put_contents($file, json_encode($attempts), LOCK_EX);
+        fseek($fp, 0);
+        ftruncate($fp, 0);
+        fwrite($fp, json_encode($attempts));
+        flock($fp, LOCK_UN);
+        fclose($fp);
+
+        return max(0, $maxAttempts - count($attempts));
     }
 
     /**

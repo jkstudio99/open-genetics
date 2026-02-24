@@ -44,6 +44,7 @@ final class Guard
 
         if ($user === null) {
             Response::error('Authentication required', 401);
+            return []; // unreachable at runtime; makes flow explicit for static analysis and tests
         }
 
         self::$currentUser = $user;
@@ -63,6 +64,7 @@ final class Guard
 
         if (!\in_array($userRole, array_map('strtoupper', $allowedRoles), true)) {
             Response::error('Insufficient permissions', 403);
+            return []; // unreachable at runtime; makes flow explicit for static analysis and tests
         }
 
         return $user;

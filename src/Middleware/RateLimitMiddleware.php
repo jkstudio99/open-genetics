@@ -29,10 +29,8 @@ final class RateLimitMiddleware
         $ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
 
-        RateLimiter::check($uri, $ip, (int) $maxAttempts, (int) $windowSeconds);
-
-        // Add rate limit headers
-        $remaining = RateLimiter::remaining($uri, $ip, (int) $maxAttempts, (int) $windowSeconds);
+        // check() returns remaining count atomically — no second file read needed
+        $remaining = RateLimiter::check($uri, $ip, (int) $maxAttempts, (int) $windowSeconds);
         header("X-RateLimit-Limit: {$maxAttempts}");
         header("X-RateLimit-Remaining: {$remaining}");
 

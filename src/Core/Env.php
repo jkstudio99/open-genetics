@@ -52,8 +52,12 @@ final class Env
 
             $value = self::parseValue($raw);
 
-            $_ENV[$key] = $value;
-            putenv("{$key}={$value}");
+            // Don't overwrite variables already set in the system environment
+            // (e.g. Docker ENV directives, CI secrets) — system takes precedence
+            if (!isset($_ENV[$key]) && getenv($key) === false) {
+                $_ENV[$key] = $value;
+                putenv("{$key}={$value}");
+            }
         }
 
         self::$loaded = true;

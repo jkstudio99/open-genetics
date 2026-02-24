@@ -24,6 +24,10 @@ final class CorsMiddleware
         header("Access-Control-Allow-Methods: {$methods}");
         header("Access-Control-Allow-Headers: {$headers}");
         header('Access-Control-Max-Age: 86400');
+        // Vary: Origin prevents CDN/proxy caching a response for one origin and serving it to another
+        if ($origin !== '*') {
+            header('Vary: Origin');
+        }
 
         // Handle preflight
         if (strtoupper($_SERVER['REQUEST_METHOD']) === 'OPTIONS') {

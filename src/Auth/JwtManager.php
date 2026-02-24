@@ -170,7 +170,13 @@ final class JwtManager
     private static function secret(): string
     {
         if (self::$cachedSecret === null) {
-            self::$cachedSecret = Env::get('JWT_SECRET');
+            $secret = Env::get('JWT_SECRET', '');
+            if (strlen($secret) < 32) {
+                throw new \RuntimeException(
+                    'JWT_SECRET must be set and at least 32 characters. Run: php genetics mutate'
+                );
+            }
+            self::$cachedSecret = $secret;
         }
         return self::$cachedSecret;
     }

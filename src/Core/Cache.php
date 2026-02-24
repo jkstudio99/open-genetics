@@ -103,7 +103,7 @@ final class Cache
             'tag'     => $this->instanceTag,
             'data'    => $value,
         ];
-        file_put_contents(self::filePath($key), serialize($payload), LOCK_EX);
+        file_put_contents(self::filePath($key), json_encode($payload, JSON_UNESCAPED_UNICODE), LOCK_EX);
     }
 
     /**
@@ -118,9 +118,9 @@ final class Cache
             return $default;
         }
 
-        $payload = unserialize(file_get_contents($file));
+        $payload = json_decode(file_get_contents($file), true);
 
-        if ($payload === false) {
+        if (!\is_array($payload)) {
             @unlink($file);
             return $default;
         }
@@ -147,8 +147,8 @@ final class Cache
             return false;
         }
 
-        $payload = @unserialize(file_get_contents($file));
-        if ($payload === false) {
+        $payload = json_decode(file_get_contents($file), true);
+        if (!\is_array($payload)) {
             @unlink($file);
             return false;
         }
@@ -181,9 +181,10 @@ final class Cache
     public static function remember(string $key, int $ttl, callable $callback): mixed
     {
         $instance = new static();
-        $cached = $instance->get($key);
-        if ($cached !== null) {
-            return $cached;
+        $sentinel = new \stdClass();
+        $cached   = $instance->get($key, $sentinel);
+        if ($cached !== $sentinel) {
+            return $cached; // correctly returns cached null too
         }
 
         $value = $callback();
@@ -229,8 +230,8 @@ final class Cache
         $dir  = self::dir();
 
         foreach (glob($dir . '/*.cache') ?: [] as $file) {
-            $payload = @unserialize(file_get_contents($file));
-            if ($payload === false) {
+            $payload = json_decode(file_get_contents($file), true);
+            if (!\is_array($payload)) {
                 @unlink($file);
                 continue;
             }
@@ -263,8 +264,8 @@ final class Cache
 
         foreach ($files as $file) {
             $size += filesize($file);
-            $payload = @unserialize(file_get_contents($file));
-            if (!$payload) continue;
+            $payload = json_decode(file_get_contents($file), true);
+            if (!is_array($payload)) continue;
 
             $tag = $payload['tag'] ?? null;
             if ($tag) {

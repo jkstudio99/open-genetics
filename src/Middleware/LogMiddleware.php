@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace OpenGenetics\Middleware;
 
-use OpenGenetics\Core\Env;
-
 /**
  * 🧬 OpenGenetics — Request/Response Logger Middleware
  *
@@ -23,12 +21,12 @@ final class LogMiddleware
 {
     private static string $logDir = '';
 
-    public function handle(array $request, callable $next, string ...$params): void
+    public function handle(array $request, callable $next, string ...$_params): void
     {
         $start  = hrtime(true);
-        $method = $_SERVER['REQUEST_METHOD'] ?? 'UNKNOWN';
-        $uri    = $_SERVER['REQUEST_URI'] ?? '/';
-        $ip     = $_SERVER['REMOTE_ADDR'] ?? '-';
+        $method = str_replace(["\r", "\n"], ['', ''], $_SERVER['REQUEST_METHOD'] ?? 'UNKNOWN');
+        $uri    = str_replace(["\r", "\n"], ['\\r', '\\n'], $_SERVER['REQUEST_URI'] ?? '/');
+        $ip     = str_replace(["\r", "\n"], ['', ''], $_SERVER['REMOTE_ADDR'] ?? '-');
 
         $next($request);
 

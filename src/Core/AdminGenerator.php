@@ -116,7 +116,7 @@ final class AdminGenerator
         $insertFields = array_column(array_values($editableCols), 'Field');
         $insertCols   = implode(', ', $insertFields);
         $insertParams = implode(', ', array_map(fn($f) => ":{$f}", $insertFields));
-        $updateSet    = implode(', ', array_map(fn($f) => "{$f} = :{$f}", $insertFields));
+        $updateSet    = implode(', ', array_map(fn($f) => "`{$f}` = :{$f}", $insertFields));
 
         $insertBindings = implode("\n        ", array_map(
             fn($f) => "'{$f}' => \$body['{$f}'] ?? null,",

@@ -36,31 +36,28 @@ final class AuthService
             throw new \RuntimeException('Invalid email format', 422);
         }
 
-        // Check duplicate email
-        $existing = Database::queryOne(
-            "SELECT id FROM users WHERE email = :email",
-            ['email' => $email]
-        );
-
-        if ($existing !== null) {
-            throw new \RuntimeException('Email already registered', 409);
-        }
-
         // Hash password with Bcrypt
         $cost = (int) Env::get('BCRYPT_COST', '12');
         $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => $cost]);
 
-        // Insert user
-        Database::execute(
-            "INSERT INTO users (email, password_hash, role_id, is_active, tenant_id, created_at)
-             VALUES (:email, :password_hash, :role_id, 1, :tenant_id, NOW())",
-            [
-                'email'         => $email,
-                'password_hash' => $hash,
-                'role_id'       => $roleId,
-                'tenant_id'     => $tenantId,
-            ]
-        );
+        // Insert user — catch SQLSTATE 23000 (duplicate key) instead of TOCTOU pre-check
+        try {
+            Database::execute(
+                "INSERT INTO users (email, password_hash, role_id, is_active, tenant_id, created_at)
+                 VALUES (:email, :password_hash, :role_id, 1, :tenant_id, NOW())",
+                [
+                    'email'         => $email,
+                    'password_hash' => $hash,
+                    'role_id'       => $roleId,
+                    'tenant_id'     => $tenantId,
+                ]
+            );
+        } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                throw new \RuntimeException('Email already registered', 409);
+            }
+            throw $e;
+        }
 
         $userId = (int) Database::lastInsertId();
 
@@ -153,6 +150,10 @@ final class AuthService
 
         if ($reset === null) {
             throw new \RuntimeException('Invalid or expired token', 400);
+        }
+
+        if (strlen($newPassword) < 8) {
+            throw new \RuntimeException('Password must be at least 8 characters', 422);
         }
 
         $email = $reset['email'];

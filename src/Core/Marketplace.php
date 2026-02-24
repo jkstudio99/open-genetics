@@ -152,7 +152,11 @@ final class Marketplace
             $outDir  = $root . '/modules/' . str_replace('og/', '', $package);
             if (!is_dir($outDir)) mkdir($outDir, 0755, true);
 
-            $outFile = $outDir . '/' . basename($meta['file_url']);
+            $filename = basename($meta['file_url']);
+            if (!preg_match('/^[a-zA-Z0-9_\-]+\.php$/', $filename)) {
+                return ['success' => false, 'message' => "Package filename is not a valid PHP filename."];
+            }
+            $outFile = $outDir . '/' . $filename;
             file_put_contents($outFile, $content);
 
             $actions[] = "Downloaded: {$outFile}";

@@ -77,6 +77,10 @@ final class QueryBuilder
         if ($value === null) {
             $this->wheres[] = "`{$column}` IS NULL";
         } else {
+            static $allowedOps = ['=', '!=', '<>', '<', '>', '<=', '>=', 'LIKE', 'NOT LIKE'];
+            if (!\in_array(strtoupper((string) $operator), $allowedOps, true)) {
+                throw new \InvalidArgumentException("QueryBuilder: invalid operator '{$operator}'");
+            }
             $this->wheres[]   = "`{$column}` {$operator} ?";
             $this->bindings[] = $value;
         }
@@ -132,7 +136,9 @@ final class QueryBuilder
      */
     public function join(string $table, string $first, string $operator, string $second): static
     {
-        $this->joins[] = "INNER JOIN `{$table}` ON {$first} {$operator} {$second}";
+        $op = $operator === '=' ? '=' : throw new \InvalidArgumentException("QueryBuilder: join operator must be '='");
+        // Columns must be simple table.column — backtick each part
+        $this->joins[] = "INNER JOIN `{$table}` ON " . self::quoteColumn($first) . " {$op} " . self::quoteColumn($second);
         return $this;
     }
 
@@ -141,8 +147,16 @@ final class QueryBuilder
      */
     public function leftJoin(string $table, string $first, string $operator, string $second): static
     {
-        $this->joins[] = "LEFT JOIN `{$table}` ON {$first} {$operator} {$second}";
+        $op = $operator === '=' ? '=' : throw new \InvalidArgumentException("QueryBuilder: join operator must be '='");
+        $this->joins[] = "LEFT JOIN `{$table}` ON " . self::quoteColumn($first) . " {$op} " . self::quoteColumn($second);
         return $this;
+    }
+
+    /** Quote a table.column reference safely. */
+    private static function quoteColumn(string $ref): string
+    {
+        $parts = explode('.', $ref, 2);
+        return implode('.', array_map(fn($p) => '`' . str_replace('`', '', trim($p)) . '`', $parts));
     }
 
     // ─── ORDER / LIMIT / OFFSET ────────────────────────────
@@ -206,8 +220,12 @@ final class QueryBuilder
     public function count(): int
     {
         $origSelects  = $this->selects;
-        $this->selects = ['COUNT(*) as aggregate'];
-        $sql = $this->buildSelect(omitOrderLimit: true);
+        // Use COUNT(DISTINCT pk) when JOINs are present to avoid double-counting
+        $countExpr    = empty($this->joins)
+            ? 'COUNT(*) as aggregate'
+            : "COUNT(DISTINCT `{$this->table}`.`id`) as aggregate";
+        $this->selects = [$countExpr];
+        $sql           = $this->buildSelect(omitOrderLimit: true);
         $this->selects = $origSelects;
 
         $row = Database::queryOne($sql, $this->bindings);

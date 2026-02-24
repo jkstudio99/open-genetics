@@ -255,8 +255,10 @@ final class Validator
             if ($count > 0) {
                 return $this->msg($field, 'unique', "{$field} has already been taken.");
             }
-        } catch (\Throwable) {
-            // If DB is unavailable, skip the unique check silently
+        } catch (\Throwable $e) {
+            // DB failure must not silently allow duplicate data through
+            error_log('[OpenGenetics Validator] unique check failed: ' . $e->getMessage());
+            throw $e;
         }
 
         return null;

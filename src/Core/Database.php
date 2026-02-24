@@ -163,6 +163,8 @@ final class Database
      */
     public static function softDelete(string $table, int|string $id, string $idColumn = 'id'): int
     {
+        self::assertIdentifier($table, 'table');
+        self::assertIdentifier($idColumn, 'idColumn');
         return self::execute(
             "UPDATE `{$table}` SET `deleted_at` = NOW() WHERE `{$idColumn}` = ?",
             [$id]
@@ -174,10 +176,20 @@ final class Database
      */
     public static function restore(string $table, int|string $id, string $idColumn = 'id'): int
     {
+        self::assertIdentifier($table, 'table');
+        self::assertIdentifier($idColumn, 'idColumn');
         return self::execute(
             "UPDATE `{$table}` SET `deleted_at` = NULL WHERE `{$idColumn}` = ?",
             [$id]
         );
+    }
+
+    /** Reject any identifier that is not a simple alphanumeric/underscore name. */
+    private static function assertIdentifier(string $value, string $label): void
+    {
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $value)) {
+            throw new \InvalidArgumentException("Database: invalid {$label} name '{$value}'");
+        }
     }
 
     /**
