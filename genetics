@@ -422,79 +422,28 @@ function serve(?string $root): void
 }
 
 // ═══════════════════════════════════════════════════════
-// Command: mutate — Create database tables
+// Command: mutate — Run all migrations + seed RBAC
 // ═══════════════════════════════════════════════════════
 
 function mutate(): void
 {
+    global $projectRoot;
+
     echo "  🔬 Mutating database schema...\n\n";
 
-    $pdo = \OpenGenetics\Core\Database::connect();
+    $migrator = new \OpenGenetics\Core\Migrator($projectRoot);
+    $executed = $migrator->migrate();
 
-    $statements = [
-        'roles' => "CREATE TABLE IF NOT EXISTS `roles` (
-            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            `role_name` VARCHAR(50) NOT NULL UNIQUE,
-            `description` VARCHAR(255) DEFAULT NULL,
-            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-
-        'users' => "CREATE TABLE IF NOT EXISTS `users` (
-            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            `email` VARCHAR(255) NOT NULL UNIQUE,
-            `password_hash` VARCHAR(255) NOT NULL,
-            `role_id` INT UNSIGNED NOT NULL DEFAULT 3,
-            `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-            `tenant_id` VARCHAR(100) DEFAULT NULL,
-            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            INDEX `idx_users_email` (`email`),
-            INDEX `idx_users_role` (`role_id`),
-            INDEX `idx_users_tenant` (`tenant_id`),
-            INDEX `idx_users_active` (`is_active`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-
-        'password_resets' => "CREATE TABLE IF NOT EXISTS `password_resets` (
-            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            `email` VARCHAR(255) NOT NULL,
-            `token` VARCHAR(255) NOT NULL UNIQUE,
-            `expires_at` TIMESTAMP NOT NULL,
-            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX `idx_resets_email` (`email`),
-            INDEX `idx_resets_token` (`token`),
-            INDEX `idx_resets_expires` (`expires_at`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-
-        'audit_logs' => "CREATE TABLE IF NOT EXISTS `audit_logs` (
-            `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            `user_id` INT UNSIGNED DEFAULT NULL,
-            `action` VARCHAR(50) NOT NULL,
-            `entity` VARCHAR(100) NOT NULL,
-            `payload` JSON DEFAULT NULL,
-            `ip_address` VARCHAR(45) DEFAULT NULL,
-            `user_agent` VARCHAR(500) DEFAULT NULL,
-            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            CONSTRAINT `fk_audit_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
-                ON DELETE SET NULL ON UPDATE CASCADE,
-            INDEX `idx_audit_user` (`user_id`),
-            INDEX `idx_audit_action` (`action`),
-            INDEX `idx_audit_entity` (`entity`),
-            INDEX `idx_audit_created` (`created_at`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-    ];
-
-    foreach ($statements as $table => $sql) {
-        try {
-            $pdo->exec($sql);
-            echo "  ✅ Table `{$table}` — created/verified\n";
-        } catch (\PDOException $e) {
-            echo "  ❌ Error ({$table}): " . $e->getMessage() . "\n";
+    if (empty($executed)) {
+        echo "  ℹ️  All migrations already up to date.\n\n";
+    } else {
+        foreach ($executed as $name) {
+            echo "  ✅ Migrated: {$name}\n";
         }
+        echo "\n  🧬 " . count($executed) . " migration(s) executed.\n\n";
     }
 
-    echo "\n  🧬 Mutation complete!\n\n";
+    echo "  🧬 Mutation complete!\n\n";
 
     // Auto-seed after mutation
     seed();
