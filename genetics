@@ -112,6 +112,15 @@ function findProjectRoot(): ?string
             if (isset($json['require']['open-genetics/framework'])) {
                 return $dir;
             }
+            // Project created via composer create-project (IS the framework itself)
+            if (
+                ($json['name'] ?? '') === 'open-genetics/framework' &&
+                ($json['type'] ?? '') === 'project' &&
+                file_exists($dir . '/genetics') &&
+                is_dir($dir . '/vendor')
+            ) {
+                return $dir;
+            }
         }
         // Has vendor/open-genetics (already installed)
         if (is_dir($dir . '/vendor/open-genetics/framework')) {
