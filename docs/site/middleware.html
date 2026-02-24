@@ -415,7 +415,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <main class="doc-content" id="doc-main">
 
 <h2 id="middleware"><a href="#middleware" data-i18n="dh.middleware"># Middleware Pipeline</a></h2>
-    <p data-i18n="dh.middleware.desc">v2.2 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
+    <p data-i18n="dh.middleware.desc">ระบบ Middleware แบบ Chain of Responsibility — ทุก request ผ่าน pipeline
       ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request, Auth/RateLimit ประกาศผ่าน
       <code>#[Middleware]</code> attribute รองรับ <code>#[SkipMiddleware]</code> และ <code>Pipeline::after()</code>
     </p>
@@ -528,7 +528,7 @@ php genetics make:middleware Cache
       </div>
     </div>
 
-    <h3>#[SkipMiddleware] — ยกเว้น Global Middleware <span class="badge-new">NEW v2.2</span></h3>
+    <h3>#[SkipMiddleware] — ยกเว้น Global Middleware</h3>
     <p>ใช้ exclude middleware ที่ register ไว้แบบ global ออกจาก endpoint ใดเป็นการเฉพาะ</p>
     <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Core\SkipMiddleware</span>;
 <span class="kw">use</span> <span class="cl">OpenGenetics\Middleware\CorsMiddleware</span>;
@@ -543,7 +543,7 @@ php genetics make:middleware Cache
     }
 }</code></pre>
 
-    <h3>LogMiddleware — บันทึก Access Log <span class="badge-new">NEW v2.2</span></h3>
+    <h3>LogMiddleware — บันทึก Access Log</h3>
     <p>เขียน access log ไปที่ <code>storage/logs/access-YYYY-MM-DD.log</code> ทุก request รองรับทั้ง global และ per-endpoint</p>
     <pre><code><span class="cm">// ใน public/index.php — log ทุก request</span>
 <span class="cl">Pipeline</span>::<span class="fn">alias</span>(<span class="st">'log'</span>, <span class="cl">LogMiddleware</span>::<span class="kw">class</span>);
@@ -556,7 +556,7 @@ php genetics make:middleware Cache
 [2026-02-24 14:23:01] 127.0.0.1 GET /api/users → 200 (12.4ms)
 [2026-02-24 14:23:05] 127.0.0.1 POST /api/auth/login → 401 (3.1ms)</code></pre>
 
-    <h3>Pipeline::after() — Post-Response Hooks <span class="badge-new">NEW v2.2</span></h3>
+    <h3>Pipeline::after() — Post-Response Hooks</h3>
     <p>Register callbacks ที่รันหลัง response ส่งออก — เหมาะสำหรับ audit log, metrics, cleanup โดยไม่ block response</p>
     <pre><code><span class="cm">// ใน public/index.php</span>
 <span class="cl">Pipeline</span>::<span class="fn">after</span>(<span class="kw">function</span> (?\<span class="cl">Throwable</span> <span class="vr">$error</span>): <span class="kw">void</span> {
@@ -564,7 +564,7 @@ php genetics make:middleware Cache
     <span class="cl">AuditLog</span>::<span class="fn">record</span>(<span class="vr">$_SERVER</span>[<span class="st">'REQUEST_URI'</span>], <span class="vr">$error</span>?-&gt;<span class="fn">getMessage</span>());
 });</code></pre>
 
-    <h3>ErrorHandler::reporter() — Custom Reporter <span class="badge-new">NEW v2.2</span></h3>
+    <h3>ErrorHandler::reporter() — Custom Reporter</h3>
     <p>ต่อ error ไปยัง Sentry, Bugsnag, Slack หรือ service ใดก็ได้ โดยไม่กระทบ HTTP response</p>
     <pre><code><span class="cm">// ใน public/index.php</span>
 <span class="cl">ErrorHandler</span>::<span class="fn">reporter</span>(<span class="kw">function</span> (\<span class="cl">Throwable</span> <span class="vr">$e</span>): <span class="kw">void</span> {
@@ -608,7 +608,7 @@ php genetics make:middleware Cache
           <td><code>log</code></td>
           <td><code>LogMiddleware</code></td>
           <td>—</td>
-          <td>บันทึก access log ลงไฟล์ <span class="badge-new">NEW</span></td>
+          <td>บันทึก access log ลงไฟล์</td>
         </tr>
       </tbody>
     </table>

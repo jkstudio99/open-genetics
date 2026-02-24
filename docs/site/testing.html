@@ -415,7 +415,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <main class="doc-content" id="doc-main">
 
 <h2 id="testing"><a href="#testing" data-i18n="dh.testing"># Testing Framework</a></h2>
-    <p data-i18n="dh.testing.desc">v2.2 — Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
+    <p data-i18n="dh.testing.desc">Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
       test client พร้อม authentication helpers, database seeding และ fluent assertions</p>
 
     <h3>สร้าง Test File</h3>
@@ -457,7 +457,7 @@ php genetics make:test Users
     }
 }</code></pre>
 
-    <h3>Database Seeding <span class="badge-new">NEW v2.2</span></h3>
+    <h3>Database Seeding</h3>
     <pre><code><span class="kw">class</span> <span class="cl">PostsTest</span> <span class="kw">extends</span> <span class="cl">GeneticTestCase</span>
 {
     <span class="kw">protected function</span> <span class="fn">setUp</span>(): <span class="kw">void</span>
@@ -506,7 +506,7 @@ php genetics make:test Users
           <td>ไม่มี authentication token</td>
         </tr>
         <tr>
-          <td><code>seed(array $tableData)</code> <span class="badge-new">NEW v2.2</span></td>
+          <td><code>seed(array $tableData)</code></td>
           <td>Insert rows ก่อน test — ลบอัตโนมัติหลัง tearDown()</td>
         </tr>
       </tbody>

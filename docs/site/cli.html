@@ -451,12 +451,12 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
         </tr>
         <tr>
           <td><code>make:admin &lt;table&gt;</code></td>
-          <td><strong>(v2.0)</strong> สแกน Database Table แล้วสร้าง CRUD Admin API (GET, POST, PUT, DELETE) พร้อม
+          <td>สแกน Database Table แล้วสร้าง CRUD Admin API (GET, POST, PUT, DELETE) พร้อม
             Pagination และ RBAC <br><span class="cm">เช่น: <code>make:admin products</code></span></td>
         </tr>
         <tr>
           <td><code>make:endpoint-ai &lt;name&gt; "&lt;desc&gt;"</code></td>
-          <td><strong>(v2.0)</strong> สร้าง Endpoint จากคำสั่ง NLP โดย AI จะประเมินและใส่โค้ดให้สอดคล้อง (Auth, Search,
+          <td>สร้าง Endpoint จากคำสั่ง NLP โดย AI จะประเมินและใส่โค้ดให้สอดคล้อง (Auth, Search,
             Paginate, Audit)<br><span class="cm">เช่น:
               <code>make:endpoint-ai orders "CRUD with auth, pagination and cache"</code></span></td>
         </tr>
@@ -479,15 +479,15 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
       <tbody>
         <tr>
           <td><code>migrate</code></td>
-          <td><strong>(v2.0)</strong> ทยอยรันไฟล์ Migration ที่ยังไม่เคยถูกรันในฐานข้อมูล</td>
+          <td>ทยอยรันไฟล์ Migration ที่ยังไม่เคยถูกรันในฐานข้อมูล</td>
         </tr>
         <tr>
           <td><code>migrate:rollback</code></td>
-          <td><strong>(v2.0)</strong> ย้อนสถานะ Database กลับไป 1 ชุด (Batch) ล่าสุด</td>
+          <td>ย้อนสถานะ Database กลับไป 1 ชุด (Batch) ล่าสุด</td>
         </tr>
         <tr>
           <td><code>migrate:status</code></td>
-          <td><strong>(v2.0)</strong> แสดงตารางรายชื่อไฟล์ Migration ทั้งหมด พร้อมบอกสถานะ (รันแล้ว/ยังไม่รัน)</td>
+          <td>แสดงตารางรายชื่อไฟล์ Migration ทั้งหมด พร้อมบอกสถานะ (รันแล้ว/ยังไม่รัน)</td>
         </tr>
         <tr>
           <td><code>mutate</code></td>
@@ -517,15 +517,15 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
       <tbody>
         <tr>
           <td><code>cache:clear</code></td>
-          <td><strong>(v2.0)</strong> ล้างข้อมูลใน Cache ทั้งหมดให้ว่างเปล่า (Hard clear)</td>
+          <td>ล้างข้อมูลใน Cache ทั้งหมดให้ว่างเปล่า (Hard clear)</td>
         </tr>
         <tr>
           <td><code>cache:stats</code></td>
-          <td><strong>(v2.0)</strong> แสดงสถิติ Cache (จำนวนไฟล์, Total Size, จำนวนไฟล์หมดอายุ, Tag usage)</td>
+          <td>แสดงสถิติ Cache (จำนวนไฟล์, Total Size, จำนวนไฟล์หมดอายุ, Tag usage)</td>
         </tr>
         <tr>
           <td><code>cache:gc</code></td>
-          <td><strong>(v2.0)</strong> Garbage Collection ตระเวนลบไฟล์ Cache ที่หมดเวลา (Expired TTL) เพื่อคืนพื้นที่
+          <td>Garbage Collection ตระเวนลบไฟล์ Cache ที่หมดเวลา (Expired TTL) เพื่อคืนพื้นที่
             Disk</td>
         </tr>
       </tbody>
@@ -543,20 +543,20 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
       <tbody>
         <tr>
           <td><code>market:list</code></td>
-          <td><strong>(v2.0)</strong> แสดงรายชื่อ Packages ทั้งหมดที่มีในระบบ Registry</td>
+          <td>แสดงรายชื่อ Packages ทั้งหมดที่มีในระบบ Registry</td>
         </tr>
         <tr>
           <td><code>market:search &lt;keyword&gt;</code></td>
-          <td><strong>(v2.0)</strong> ค้นหา Package ด้วยชื่อหรือรายละเอียด</td>
+          <td>ค้นหา Package ด้วยชื่อหรือรายละเอียด</td>
         </tr>
         <tr>
           <td><code>market:install &lt;pkg&gt;</code></td>
-          <td><strong>(v2.0)</strong> ติดตั้ง Package เข้ามายัง <code>modules/</code> ของคุณทันที <br><span
+          <td>ติดตั้ง Package เข้ามายัง <code>modules/</code> ของคุณทันที <br><span
               class="cm">เช่น: <code>market:install og/notifications</code></span></td>
         </tr>
         <tr>
           <td><code>modules:list</code></td>
-          <td><strong>(v2.0)</strong> เช็คดูว่า ณ ปัจจุบันมี Modules ไหนโหลดเข้ามาฝังในระบบแล้วบ้าง</td>
+          <td>เช็คดูว่า ณ ปัจจุบันมี Modules ไหนโหลดเข้ามาฝังในระบบแล้วบ้าง</td>
         </tr>
       </tbody>
     </table>
