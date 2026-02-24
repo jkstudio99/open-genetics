@@ -51,7 +51,7 @@ final class ErrorHandler
      */
     public static function handleException(\Throwable $e): void
     {
-        $code = $e->getCode();
+        $code = (int)$e->getCode();
         $code = ($code >= 400 && $code < 600) ? $code : 500;
 
         // Always write to the daily rotating log file
@@ -105,7 +105,7 @@ final class ErrorHandler
         try {
             $dir   = self::logDirectory();
             $file  = $dir . '/app-' . date('Y-m-d') . '.log';
-            $level = ($e->getCode() >= 400 && $e->getCode() < 500) ? 'WARNING' : 'ERROR';
+            $level = ((int)$e->getCode() >= 400 && (int)$e->getCode() < 500) ? 'WARNING' : 'ERROR';
             $ts    = date('Y-m-d H:i:s');
             $entry = "[{$ts}] {$level} " . $e::class . ": {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}" . PHP_EOL;
             file_put_contents($file, $entry, FILE_APPEND | LOCK_EX);
