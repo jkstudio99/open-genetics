@@ -41,4 +41,10 @@ storage/cache/*
 # Testing
 .phpunit.result.cache
 coverage/
-.vercel
+
+# Deployment & Developer-only
+.vercel/
+.claude/
+
+# CLI legacy folder (use root `genetics` instead)
+/add/
