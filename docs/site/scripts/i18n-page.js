@@ -87,7 +87,31 @@
       en: 'PSR-4 standard namespace structure. Works with Composer autoloader out of the box.'
     },
 
-    // ── NEW v2.2 Features ──
+    'feat.mw.title': { th: 'Middleware Pipeline', en: 'Middleware Pipeline' },
+    'feat.mw.desc': {
+      th: 'Chain of Responsibility pattern — CORS, Auth, RateLimit พร้อม <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">#[Middleware]</code> attribute',
+      en: 'Chain of Responsibility pattern — CORS, Auth, RateLimit with <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">#[Middleware]</code> attribute.'
+    },
+
+    'feat.cache.title': { th: 'Caching Layer', en: 'Caching Layer' },
+    'feat.cache.desc': {
+      th: 'File-based cache พร้อม TTL, namespace isolation และ <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">remember()</code> pattern — ไม่ต้องติดตั้ง Redis',
+      en: 'File-based cache with TTL, namespace isolation and <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">remember()</code> pattern — no Redis needed.'
+    },
+
+    'feat.admin.title': { th: 'Admin Generator', en: 'Admin Generator' },
+    'feat.admin.desc': {
+      th: 'สร้าง CRUD admin API อัตโนมัติจาก DB schema — <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">php genetics make:admin users</code>',
+      en: 'Auto-generate CRUD admin API from DB schema — <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">php genetics make:admin users</code>'
+    },
+
+    'feat.market.title': { th: 'Marketplace', en: 'Marketplace' },
+    'feat.market.desc': {
+      th: 'ติดตั้ง community packages ผ่าน CLI — JWT Refresh, 2FA, File Upload, Notifications พร้อมใช้ทันที',
+      en: 'Install community packages via CLI — JWT Refresh, 2FA, File Upload, Notifications ready to use.'
+    },
+
+    // ── Query Builder & Testing ──
     'feat.qb.title': { th: 'Query Builder', en: 'Query Builder' },
     'feat.qb.desc': {
       th: 'Fluent Query Builder บน PDO — <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">DB::table(\'users\')->where(\'active\',1)->paginate(20)</code> พร้อม prepared statements ทุกคำสั่ง',
@@ -161,8 +185,8 @@
     'doc.title': { th: 'OpenGenetics เอกสาร', en: 'OpenGenetics Documentation' },
     'doc.h1': { th: 'Documentation', en: 'Documentation' },
     'doc.lead': {
-      th: 'Enterprise PHP Micro-Framework v2.2 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework และ Dual-Frontend SDK. ออกแบบมาเพื่อความเร็ว (<50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี',
-      en: 'Enterprise PHP Micro-Framework v2.2 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework and Dual-Frontend SDK. Designed for speed (<50ms), security (OWASP), and great developer experience.'
+      th: 'Enterprise PHP Micro-Framework v2.3 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework, Middleware Pipeline, Caching, Admin Generator และ Dual-Frontend SDK. ออกแบบมาเพื่อความเร็ว (<50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี',
+      en: 'Enterprise PHP Micro-Framework v2.3 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework, Middleware Pipeline, Caching, Admin Generator and Dual-Frontend SDK. Designed for speed (<50ms), security (OWASP), and great developer experience.'
     },
     'doc.philosophy': {
       th: 'ปรัชญา: เล็ก เบา ทรงพลัง — ทุก byte และ millisecond มีค่า',

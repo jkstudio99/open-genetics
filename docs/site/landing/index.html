@@ -1127,7 +1127,7 @@
         style="height:clamp(56px,7vw,84px);filter:drop-shadow(0 0 28px rgba(0,207,255,.35)) drop-shadow(0 0 60px rgba(108,99,255,.2))">
       <h1 id="hero-h1" class="font-extrabold tracking-[-0.03em] text-white mb-5 leading-[1.1] px-2 sm:px-0"
         style="font-size:clamp(32px,8vw,72px)">
-        REST API <span class="grad-text">ใน 5 นาที</span>
+        Enterprise <span class="grad-text">PHP Micro-Framework</span>
       </h1>
       <p id="hero-sub"
         class="text-white/40 max-w-[580px] w-full mx-auto px-4 sm:px-0 mb-10 leading-[1.8] text-[15px] sm:text-[16px] lg:text-[18px]"
@@ -1313,6 +1313,63 @@
               class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">actingAs()</code>, <code
               class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">seed()</code> และ fluent assertions —
             ทดสอบ API ได้ทันทีโดยไม่ต้อง mock</p>
+        </div>
+
+        <div
+          class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+          <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5"
+            style="background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+            </svg>
+          </div>
+          <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.mw.title">Middleware Pipeline</h3>
+          <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.mw.desc">Chain of Responsibility pattern —
+            CORS, Auth, RateLimit พร้อม <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">#[Middleware]</code> attribute</p>
+        </div>
+
+        <div
+          class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+          <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5"
+            style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            </svg>
+          </div>
+          <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.cache.title">Caching Layer</h3>
+          <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.cache.desc">File-based cache พร้อม TTL, namespace isolation และ <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">remember()</code> pattern — ไม่ต้องติดตั้ง Redis</p>
+        </div>
+
+        <div
+          class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+          <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5"
+            style="background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+            </svg>
+          </div>
+          <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.admin.title">Admin Generator</h3>
+          <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.admin.desc">สร้าง CRUD admin API อัตโนมัติจาก DB schema — <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">php genetics make:admin users</code></p>
+        </div>
+
+        <div
+          class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+          <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5"
+            style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+            </svg>
+          </div>
+          <h3 class="text-[16px] font-bold mb-2 text-slate-100" data-i18n="feat.market.title">Marketplace</h3>
+          <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n="feat.market.desc">ติดตั้ง community packages ผ่าน CLI — JWT Refresh, 2FA, File Upload, Notifications พร้อมใช้ทันที</p>
         </div>
 
       </div>
