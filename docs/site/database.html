@@ -380,6 +380,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
     <div class="sb-links">
       <a href="api-reference.html" class="sb-link" data-i18n="ds.api_ref">API Reference</a>
       <a href="database.html" class="sb-link active" data-i18n="ds.database">ฐานข้อมูล</a>
+      <a href="query-builder.html" class="sb-link" data-i18n="ds.query_builder">Query Builder</a>
       <a href="migrations.html" class="sb-link" data-i18n="ds.migrations">Migrations</a>
       <a href="response.html" class="sb-link" data-i18n="ds.response">Response</a>
       <a href="guard.html" class="sb-link" data-i18n="ds.authorization">การกำหนดสิทธิ์</a>
@@ -453,82 +454,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
       </div>
     </div>
 
-    <h2 id="query-builder"><a href="#query-builder"># Query Builder <span class="badge-new">NEW v2.2</span></a></h2>
-    <p>Fluent, chainable query API — เขียน query น้อยลง อ่านง่ายขึ้น โดยยังคง enforce <strong>prepared statements</strong> ทุก query เพื่อป้องกัน SQL Injection</p>
-
-    <h3>Fetch — get() / first() / count()</h3>
-    <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Core\DB</span>;
-
-<span class="cm">// Fetch all rows matching the criteria</span>
-<span class="vr">$users</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
-    -&gt;<span class="fn">select</span>([<span class="st">'id'</span>, <span class="st">'email'</span>, <span class="st">'role_name'</span>])
-    -&gt;<span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)
-    -&gt;<span class="fn">where</span>(<span class="st">'tenant_id'</span>, <span class="vr">$tenantId</span>)
-    -&gt;<span class="fn">orderBy</span>(<span class="st">'created_at'</span>, <span class="st">'DESC'</span>)
-    -&gt;<span class="fn">get</span>();
-
-<span class="cm">// First matching row — returns ?array (null if not found)</span>
-<span class="vr">$user</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'email'</span>, <span class="vr">$email</span>)-&gt;<span class="fn">first</span>();
-
-<span class="cm">// Count rows without fetching them</span>
-<span class="vr">$total</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)-&gt;<span class="fn">count</span>();</code></pre>
-
-    <h3>paginate() — Zero-Config Pagination</h3>
-    <pre><code><span class="cm">// Reads ?page= from $_GET automatically. Returns data + meta in one call.</span>
-<span class="vr">$result</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
-    -&gt;<span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)
-    -&gt;<span class="fn">orderBy</span>(<span class="st">'created_at'</span>, <span class="st">'DESC'</span>)
-    -&gt;<span class="fn">paginate</span>(<span class="nb">20</span>);  <span class="cm">// 20 items per page</span>
-
-<span class="cm">// Send the response — meta is already populated</span>
-<span class="cl">Response</span>::<span class="fn">paginatedFrom</span>(<span class="vr">$result</span>);</code></pre>
-
-    <h3>WHERE Variants</h3>
-    <pre><code><span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'products'</span>)
-    -&gt;<span class="fn">where</span>(<span class="st">'price'</span>, <span class="st">'>='</span>, <span class="nb">100</span>)                    <span class="cm">// operator form</span>
-    -&gt;<span class="fn">whereIn</span>(<span class="st">'status'</span>, [<span class="st">'active'</span>, <span class="st">'pending'</span>])   <span class="cm">// IN (...)</span>
-    -&gt;<span class="fn">whereLike</span>(<span class="st">'name'</span>, <span class="st">'%phone%'</span>)               <span class="cm">// LIKE</span>
-    -&gt;<span class="fn">whereNotNull</span>(<span class="st">'published_at'</span>)               <span class="cm">// IS NOT NULL</span>
-    -&gt;<span class="fn">where</span>(<span class="st">'deleted_at'</span>, <span class="kw">null</span>)                  <span class="cm">// IS NULL</span>
-    -&gt;<span class="fn">get</span>();</code></pre>
-
-    <h3>Insert / Update / Delete</h3>
-    <pre><code><span class="cm">// Insert — returns the new auto-increment ID</span>
-<span class="vr">$id</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">insert</span>([
-    <span class="st">'email'</span>     =&gt; <span class="st">'alice@example.com'</span>,
-    <span class="st">'role_name'</span> =&gt; <span class="st">'EMPLOYEE'</span>,
-]);
-
-<span class="cm">// Update — returns affected row count</span>
-<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
-    -&gt;<span class="fn">where</span>(<span class="st">'id'</span>, <span class="vr">$id</span>)
-    -&gt;<span class="fn">update</span>([<span class="st">'role_name'</span> =&gt; <span class="st">'MANAGER'</span>]);
-
-<span class="cm">// Hard delete matching rows</span>
-<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'sessions'</span>)-&gt;<span class="fn">where</span>(<span class="st">'user_id'</span>, <span class="vr">$id</span>)-&gt;<span class="fn">delete</span>();</code></pre>
-
-    <h3>Soft Delete</h3>
-    <pre><code><span class="cm">// Set deleted_at = NOW()</span>
-<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'id'</span>, <span class="vr">$id</span>)-&gt;<span class="fn">softDelete</span>();
-
-<span class="cm">// Clear deleted_at (restore)</span>
-<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'id'</span>, <span class="vr">$id</span>)-&gt;<span class="fn">restore</span>();
-
-<span class="cm">// Scope out soft-deleted rows</span>
-<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">withoutTrashed</span>()-&gt;<span class="fn">get</span>();
-
-<span class="cm">// Static helper shortcut</span>
-<span class="cl">Database</span>::<span class="fn">softDelete</span>(<span class="st">'users'</span>, <span class="vr">$id</span>);</code></pre>
-
-    <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
-      <div>
-        <p><strong>ยังคง type-safe ครบ:</strong> Query Builder ใช้ <code>Database::query()</code> ด้านใน — ทุก value ผ่าน <code>?</code> placeholder เสมอ ไม่มีความเสี่ยง SQL Injection แม้จะเขียน query แบบ fluent</p>
-      </div>
-    </div>
-
-    <!-- Migrations -->
-
-<div class="page-nav"><a href="api-reference.html" class="nav-prev"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg><div><div class="nav-label" data-i18n="nav.prev">ก่อนหน้า</div><div class="nav-title" data-i18n="ds.api_ref">API Reference</div></div></a><a href="migrations.html" class="nav-next"><div><div class="nav-label" data-i18n="nav.next">ถัดไป</div><div class="nav-title" data-i18n="ds.migrations">Migrations</div></div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></a></div>
+<div class="page-nav"><a href="api-reference.html" class="nav-prev"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg><div><div class="nav-label" data-i18n="nav.prev">ก่อนหน้า</div><div class="nav-title" data-i18n="ds.api_ref">API Reference</div></div></a><a href="query-builder.html" class="nav-next"><div><div class="nav-label" data-i18n="nav.next">ถัดไป</div><div class="nav-title" data-i18n="ds.query_builder">Query Builder</div></div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg></a></div>
 
 <!-- FOOTER -->
 <div style="margin-top:80px;padding:0 0 32px;max-width:820px;margin-left:auto;margin-right:auto">
@@ -679,6 +605,7 @@ const searchData = [
   { title:'Middleware Pipeline', desc:'Middleware Pipeline', href:'middleware.html', icon:'bolt' },
   { title:'API Reference', desc:'API Reference', href:'api-reference.html', icon:'code' },
   { title:'Database', desc:'ฐานข้อมูล', href:'database.html', icon:'db' },
+  { title:'Query Builder', desc:'Query Builder', href:'query-builder.html', icon:'db' },
   { title:'Migrations', desc:'Migrations', href:'migrations.html', icon:'db' },
   { title:'Response', desc:'Response', href:'response.html', icon:'out' },
   { title:'Authorization (Guards)', desc:'การกำหนดสิทธิ์', href:'guard.html', icon:'shield' },

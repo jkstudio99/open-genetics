@@ -2154,6 +2154,142 @@ X-Locale: th</code></pre>
       </div>
     </div>
 
+    <!-- Query Builder v2.3 -->
+    <h2 id="query-builder"><a href="#query-builder" data-i18n="dh.query_builder"># Query Builder <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(108,99,255,.2);color:#a5b4fc;border:1px solid rgba(108,99,255,.3);letter-spacing:.03em;margin-left:8px;vertical-align:middle;line-height:1.6">NEW v2.3</span></a></h2>
+    <p>OpenGenetics Query Builder — API ที่ออกแบบมาเพื่อ <strong>Developer Experience</strong> โดยเฉพาะ ผสมแนวคิดจาก FluentPDO (auto-join shortcuts), CodeIgniter (operator-in-key, <code>when()</code>), และ Pixie (<code>find()</code>, <code>findAll()</code>) แต่มีเอกลักษณ์ของ OpenGenetics เอง</p>
+
+    <h3>3 ระดับการใช้งาน</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg></div>
+        <h4>Static One-Liners</h4>
+        <p><code>DB::find()</code>, <code>DB::insert()</code> — จบบรรทัดเดียว</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg></div>
+        <h4>Fluent Chain</h4>
+        <p><code>where()</code>, <code>when()</code>, <code>search()</code>, <code>sort()</code> — สำหรับ 80% use cases</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg></div>
+        <h4>Advanced Join</h4>
+        <p><code>leftJoin()</code> 3-arg, <code>toSql()</code> debug — สำหรับ query ซับซ้อน</p>
+      </div>
+    </div>
+
+    <h3>where() — Array-based + Operator-in-Key</h3>
+    <p>ส่ง conditions เป็น array ทีเดียว — รองรับ operator ใน key, auto IN(), auto IS NULL</p>
+    <pre><code><span class="cm">// Array-based: ส่งหลาย conditions ทีเดียว</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets'</span>)-&gt;<span class="fn">where</span>([
+    <span class="st">'status'</span>        =&gt; <span class="st">'open'</span>,                        <span class="cm">// = (default)</span>
+    <span class="st">'priority'</span>      =&gt; [<span class="st">'high'</span>, <span class="st">'critical'</span>],           <span class="cm">// auto IN()</span>
+    <span class="st">'created_at &gt;='</span> =&gt; <span class="st">'2025-01-01'</span>,                  <span class="cm">// operator-in-key</span>
+    <span class="st">'deleted_at'</span>    =&gt; <span class="kw">null</span>,                           <span class="cm">// auto IS NULL</span>
+    <span class="st">'email !'</span>       =&gt; <span class="kw">null</span>,                           <span class="cm">// IS NOT NULL</span>
+])-&gt;<span class="fn">get</span>();
+
+<span class="cm">// Operator-in-key แบบ string (ทีละ condition)</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
+    -&gt;<span class="fn">where</span>(<span class="st">'age &gt;='</span>, <span class="nb">18</span>)         <span class="cm">// WHERE age &gt;= 18</span>
+    -&gt;<span class="fn">where</span>(<span class="st">'name !='</span>, <span class="st">'test'</span>)     <span class="cm">// WHERE name != 'test'</span>
+    -&gt;<span class="fn">get</span>();
+
+<span class="cm">// Backward compatible — เดิมยังใช้ได้ 100%</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'status'</span>, <span class="st">'active'</span>)-&gt;<span class="fn">get</span>();
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'age'</span>, <span class="st">'&gt;='</span>, <span class="nb">18</span>)-&gt;<span class="fn">get</span>();</code></pre>
+
+    <h3>when() — Conditional Filter (ไม่ต้อง closure)</h3>
+    <p>Apply filter เมื่อ <code>$condition</code> เป็น truthy เท่านั้น — ข้าม <code>null</code>, <code>''</code>, <code>0</code>, <code>false</code> อัตโนมัติ</p>
+    <pre><code><span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets'</span>)
+    -&gt;<span class="fn">when</span>(<span class="vr">$status</span>,     [<span class="st">'status'</span>   =&gt; <span class="vr">$status</span>])    <span class="cm">// ถ้า $status มีค่า → apply</span>
+    -&gt;<span class="fn">when</span>(<span class="vr">$priority</span>,   [<span class="st">'priority'</span> =&gt; <span class="vr">$priority</span>])  <span class="cm">// ถ้า null → ข้ามไป</span>
+    -&gt;<span class="fn">when</span>(<span class="vr">$dateFrom</span>,   [<span class="st">'created_at &gt;='</span> =&gt; <span class="vr">$dateFrom</span>])
+    -&gt;<span class="fn">get</span>();
+
+<span class="cm">// ใช้ closure ก็ได้ถ้าต้องการ logic ซับซ้อน</span>
+-&gt;<span class="fn">when</span>(<span class="vr">$search</span>, <span class="kw">fn</span>(<span class="vr">$q</span>) =&gt; <span class="vr">$q</span>-&gt;<span class="fn">search</span>([<span class="st">'name'</span>, <span class="st">'email'</span>], <span class="vr">$search</span>))</code></pre>
+
+    <h3>search() — Multi-column LIKE (เอกสิทธิ์ OpenGenetics)</h3>
+    <p>ค้นหาข้ามหลาย column ด้วยคำสั่งเดียว — ข้ามอัตโนมัติเมื่อ <code>$keyword</code> ว่าง</p>
+    <pre><code><span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets'</span>)
+    -&gt;<span class="fn">search</span>([<span class="st">'subject'</span>, <span class="st">'ticket_number'</span>, <span class="st">'description'</span>], <span class="vr">$keyword</span>)
+    <span class="cm">// → WHERE (subject LIKE '%keyword%' OR ticket_number LIKE '%keyword%' OR description LIKE '%keyword%')</span>
+    -&gt;<span class="fn">get</span>();</code></pre>
+
+    <h3>sort() — Prefix Notation (เอกสิทธิ์ OpenGenetics)</h3>
+    <pre><code><span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets'</span>)
+    -&gt;<span class="fn">sort</span>(<span class="st">'-created_at'</span>)              <span class="cm">// ORDER BY created_at DESC</span>
+    -&gt;<span class="fn">sort</span>(<span class="st">'name'</span>)                     <span class="cm">// ORDER BY name ASC</span>
+    -&gt;<span class="fn">sort</span>(<span class="st">'-priority'</span>, <span class="st">'-created_at'</span>) <span class="cm">// ORDER BY priority DESC, created_at DESC</span></code></pre>
+
+    <h3>leftJoin() — 3-arg Shortcut</h3>
+    <pre><code><span class="cm">// ใหม่: 3 args — ลด = ออก (เพราะ join ใช้ = เสมอ)</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets AS t'</span>)
+    -&gt;<span class="fn">leftJoin</span>(<span class="st">'categories AS c'</span>, <span class="st">'c.id'</span>, <span class="st">'t.category_id'</span>)
+    -&gt;<span class="fn">leftJoin</span>(<span class="st">'users AS u'</span>, <span class="st">'u.id'</span>, <span class="st">'t.reporter_id'</span>)
+    -&gt;<span class="fn">get</span>();
+
+<span class="cm">// เดิม 4 args ยังใช้ได้</span>
+-&gt;<span class="fn">leftJoin</span>(<span class="st">'categories'</span>, <span class="st">'tickets.category_id'</span>, <span class="st">'='</span>, <span class="st">'categories.id'</span>)</code></pre>
+
+    <h3>find() / findAll() — Instance Shortcuts</h3>
+    <pre><code><span class="cm">// find by primary key → single row or null</span>
+<span class="vr">$user</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">find</span>(<span class="nb">3</span>);
+
+<span class="cm">// findAll by column → array of rows</span>
+<span class="vr">$admins</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">findAll</span>(<span class="st">'role_name'</span>, <span class="st">'ADMIN'</span>);</code></pre>
+
+    <h3>Static One-Liners — DB class</h3>
+    <pre><code><span class="cm">// READ</span>
+<span class="vr">$user</span>  = <span class="cl">DB</span>::<span class="fn">find</span>(<span class="st">'users'</span>, <span class="nb">3</span>);                          <span class="cm">// SELECT * WHERE id = 3</span>
+<span class="vr">$user</span>  = <span class="cl">DB</span>::<span class="fn">find</span>(<span class="st">'users'</span>, <span class="nb">3</span>, [<span class="st">'id'</span>, <span class="st">'email'</span>]);          <span class="cm">// SELECT id, email WHERE id = 3</span>
+<span class="vr">$users</span> = <span class="cl">DB</span>::<span class="fn">findAll</span>(<span class="st">'users'</span>, [<span class="st">'is_active'</span> =&gt; <span class="nb">1</span>]);        <span class="cm">// SELECT * WHERE is_active = 1</span>
+<span class="vr">$email</span> = <span class="cl">DB</span>::<span class="fn">value</span>(<span class="st">'users'</span>, <span class="st">'email'</span>, [<span class="st">'id'</span> =&gt; <span class="nb">3</span>]);         <span class="cm">// single column value</span>
+<span class="vr">$total</span> = <span class="cl">DB</span>::<span class="fn">count</span>(<span class="st">'users'</span>, [<span class="st">'is_active'</span> =&gt; <span class="nb">1</span>]);          <span class="cm">// COUNT</span>
+<span class="vr">$has</span>   = <span class="cl">DB</span>::<span class="fn">exists</span>(<span class="st">'users'</span>, [<span class="st">'email'</span> =&gt; <span class="st">'j@test.com'</span>]);  <span class="cm">// bool</span>
+
+<span class="cm">// WRITE</span>
+<span class="vr">$id</span>    = <span class="cl">DB</span>::<span class="fn">insert</span>(<span class="st">'users'</span>, [<span class="st">'name'</span> =&gt; <span class="st">'Jo'</span>, <span class="st">'email'</span> =&gt; <span class="st">'j@test.com'</span>]);
+<span class="cl">DB</span>::<span class="fn">update</span>(<span class="st">'users'</span>, [<span class="st">'name'</span> =&gt; <span class="st">'New'</span>], [<span class="st">'id'</span> =&gt; <span class="nb">3</span>]);
+<span class="cl">DB</span>::<span class="fn">delete</span>(<span class="st">'users'</span>, [<span class="st">'id'</span> =&gt; <span class="nb">3</span>]);
+<span class="cl">DB</span>::<span class="fn">softDelete</span>(<span class="st">'users'</span>, [<span class="st">'id'</span> =&gt; <span class="nb">3</span>]);</code></pre>
+
+    <h3>toSql() / getBindings() — Debug</h3>
+    <pre><code><span class="vr">$q</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets'</span>)
+    -&gt;<span class="fn">where</span>([<span class="st">'status'</span> =&gt; <span class="st">'open'</span>, <span class="st">'priority &gt;='</span> =&gt; <span class="nb">2</span>])
+    -&gt;<span class="fn">sort</span>(<span class="st">'-created_at'</span>);
+
+<span class="nb">var_dump</span>(<span class="vr">$q</span>-&gt;<span class="fn">toSql</span>());        <span class="cm">// SELECT * FROM `tickets` WHERE `status` = ? AND `priority` >= ? ORDER BY `created_at` DESC</span>
+<span class="nb">var_dump</span>(<span class="vr">$q</span>-&gt;<span class="fn">getBindings</span>());  <span class="cm">// ['open', 2]</span></code></pre>
+
+    <h3>Before / After: Tickets Endpoint</h3>
+    <pre><code><span class="cm">// ❌ BEFORE — Raw SQL ~40 บรรทัด</span>
+<span class="vr">$where</span> = [<span class="st">'t.deleted_at IS NULL'</span>];
+<span class="kw">if</span> (!<span class="nb">empty</span>(<span class="vr">$_GET</span>[<span class="st">'status'</span>]))   { <span class="vr">$where</span>[] = <span class="st">'t.status = ?'</span>; <span class="vr">$params</span>[] = <span class="vr">$_GET</span>[<span class="st">'status'</span>]; }
+<span class="kw">if</span> (!<span class="nb">empty</span>(<span class="vr">$_GET</span>[<span class="st">'priority'</span>])) { <span class="vr">$where</span>[] = <span class="st">'t.priority = ?'</span>; <span class="vr">$params</span>[] = <span class="vr">$_GET</span>[<span class="st">'priority'</span>]; }
+<span class="kw">if</span> (!<span class="nb">empty</span>(<span class="vr">$_GET</span>[<span class="st">'search'</span>]))   { <span class="vr">$where</span>[] = <span class="st">'(t.subject LIKE ? OR t.ticket_number LIKE ?)'</span>; ... }
+<span class="cm">// ... 30+ more lines</span>
+
+<span class="cm">// ✅ AFTER — OpenGenetics Query Builder ~15 บรรทัด</span>
+<span class="vr">$result</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'tickets AS t'</span>)
+    -&gt;<span class="fn">select</span>(<span class="st">'t.*'</span>, <span class="st">'c.name AS category_name'</span>, <span class="st">'u.email AS reporter_email'</span>)
+    -&gt;<span class="fn">leftJoin</span>(<span class="st">'categories AS c'</span>, <span class="st">'c.id'</span>, <span class="st">'t.category_id'</span>)
+    -&gt;<span class="fn">leftJoin</span>(<span class="st">'users AS u'</span>, <span class="st">'u.id'</span>, <span class="st">'t.reporter_id'</span>)
+    -&gt;<span class="fn">where</span>([<span class="st">'t.deleted_at'</span> =&gt; <span class="kw">null</span>])
+    -&gt;<span class="fn">when</span>(<span class="vr">$user</span>[<span class="st">'role_name'</span>] === <span class="st">'EMPLOYEE'</span>, [<span class="st">'t.reporter_id'</span> =&gt; <span class="vr">$user</span>[<span class="st">'id'</span>]])
+    -&gt;<span class="fn">when</span>(<span class="vr">$status</span>,     [<span class="st">'t.status'</span>   =&gt; <span class="vr">$status</span>])
+    -&gt;<span class="fn">when</span>(<span class="vr">$priority</span>,   [<span class="st">'t.priority'</span> =&gt; <span class="vr">$priority</span>])
+    -&gt;<span class="fn">when</span>(<span class="vr">$dateFrom</span>,   [<span class="st">'t.created_at &gt;='</span> =&gt; <span class="vr">$dateFrom</span>])
+    -&gt;<span class="fn">search</span>([<span class="st">'t.subject'</span>, <span class="st">'t.ticket_number'</span>], <span class="vr">$search</span>)
+    -&gt;<span class="fn">sort</span>(<span class="vr">$sortExpr</span>)
+    -&gt;<span class="fn">paginate</span>(<span class="vr">$perPage</span>, <span class="vr">$page</span>);</code></pre>
+
+    <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+      <div>
+        <p><strong>Zero Breaking Changes:</strong> ทุก method เดิมยังใช้ได้ 100% — <code>where('col', 'val')</code>, <code>leftJoin(4 args)</code>, <code>select(array)</code>, <code>orderBy()</code> ฯลฯ ไม่มีอะไรแตก</p>
+      </div>
+    </div>
+
     <!-- Migrations -->
     <h2 id="migrations"><a href="#migrations" data-i18n="dh.migrations"># Database Migrations</a></h2>
     <p data-i18n="dh.migrations.desc">v2.0 — ระบบ version-tracked migrations สามารถ rollback แต่ละ batch ได้ ต่างจาก
@@ -3213,7 +3349,7 @@ php genetics market:install og/notifications</code></pre>
     <p data-i18n="dh.openapi.phpdoc.desc">คุณสามารถใช้ PHPDoc บน class ของ endpoint เพื่อเพิ่มคำอธิบายใน API Spec:</p>
     <pre><code><span class="cm">/**
  * User Profile
- * 
+ *
  * Retrieves the profile of the currently logged-in user.
  */</span>
 <span class="kw">class</span> <span class="cl">ProfileEndpoint</span>
