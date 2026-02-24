@@ -31,7 +31,7 @@
     // ── Features ──
     'feat.title': { th: 'คุณสมบัติ', en: 'Features' },
     'feat.heading': { th: 'ทุกอย่างที่ต้องการ<span class="grad-text2"> อยู่ในกล่องเดียว</span>', en: 'Everything you need<span class="grad-text2"> in one box</span>' },
-    'feat.subtitle': { th: 'ไม่ต้องติดตั้ง package เพิ่ม — Auth, RBAC, Query Builder, Testing พร้อมทันที', en: 'No extra packages — Auth, RBAC, Query Builder, and Testing ready out of the box.' },
+    'feat.subtitle': { th: 'ไม่ต้องติดตั้ง package เพิ่ม — Auth, RBAC, Query Builder, Middleware, Cache, Testing พร้อมทันที', en: 'No extra packages — Auth, RBAC, Query Builder, Middleware, Cache, and Testing ready out of the box.' },
 
     'feat.speed.title': { th: 'รวดเร็ว < 50ms', en: 'Fast < 50ms' },
     'feat.speed.desc': {
