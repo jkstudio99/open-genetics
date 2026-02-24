@@ -178,15 +178,15 @@
     'dl.btn.docs': { th: 'อ่าน Documentation', en: 'Read Documentation' },
 
     // ── Footer ──
-    'footer.text': { th: 'Enterprise PHP Micro-Framework', en: 'Enterprise PHP Micro-Framework' },
+    'footer.text': { th: 'PHP Micro-Framework', en: 'PHP Micro-Framework' },
     'footer.license': { th: 'MIT License — ฟรีและ Open Source', en: 'MIT License — Free & Open Source' },
 
     // ═══ Docs Page ═══
     'doc.title': { th: 'OpenGenetics เอกสาร', en: 'OpenGenetics Documentation' },
     'doc.h1': { th: 'Documentation', en: 'Documentation' },
     'doc.lead': {
-      th: 'Enterprise PHP Micro-Framework v2.3 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework, Middleware Pipeline, Caching, Admin Generator และ Dual-Frontend SDK. ออกแบบมาเพื่อความเร็ว (<50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี',
-      en: 'Enterprise PHP Micro-Framework v2.3 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework, Middleware Pipeline, Caching, Admin Generator and Dual-Frontend SDK. Designed for speed (<50ms), security (OWASP), and great developer experience.'
+      th: 'PHP Micro-Framework v2.3 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework, Middleware Pipeline, Caching, Admin Generator และ Dual-Frontend SDK. ออกแบบมาเพื่อความเร็ว (<50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี',
+      en: 'PHP Micro-Framework v2.3 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework, Middleware Pipeline, Caching, Admin Generator and Dual-Frontend SDK. Designed for speed (<50ms), security (OWASP), and great developer experience.'
     },
     'doc.philosophy': {
       th: 'ปรัชญา: เล็ก เบา ทรงพลัง — ทุก byte และ millisecond มีค่า',
