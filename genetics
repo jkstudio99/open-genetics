@@ -30,7 +30,7 @@ $projectRoot = findProjectRoot();
 // Banner
 echo "\n";
 echo "  ╔═══════════════════════════════════════════╗\n";
-echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.2.0    ║\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.3.0    ║\n";
 echo "  ║  Enterprise PHP Micro-Framework            ║\n";
 echo "  ╚═══════════════════════════════════════════╝\n";
 echo "\n";
@@ -50,7 +50,7 @@ if ($command === 'help' || $command === '--help' || $command === '-h') {
 }
 
 if ($command === '--version' || $command === '-v') {
-    echo "  OpenGenetics Framework v2.2.0\n\n";
+    echo "  OpenGenetics Framework v2.3.0\n\n";
     exit(0);
 }
 
@@ -1140,7 +1140,7 @@ function cliModulesList(string $root): void
 
 function help(): void
 {
-    echo "\n  \033[1;36mOpenGenetics Framework v2.2.0\033[0m\n";
+    echo "\n  \033[1;36mOpenGenetics Framework v2.3.0\033[0m\n";
     echo "  Enterprise PHP Micro-Framework built for Developer Experience.\n\n";
 
     echo "  \033[33m🚀 Quick Start\033[0m\n";

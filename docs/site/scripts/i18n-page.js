@@ -149,7 +149,7 @@
 
     // ── Download CTA ──
     'dl.title': { th: 'พร้อมสร้าง API<span class="grad-text2"> ชิ้นแรกแล้วหรือยัง?</span>', en: 'Ready to build<span class="grad-text2"> your first API?</span>' },
-    'dl.subtitle': { th: 'v2.2.0 — ฟรีและ Open Source (MIT License)<br>หนึ่งคำสั่ง สร้าง API ที่มี Auth, RBAC และ Database พร้อมใช้ทันที', en: 'v2.2.0 — Free and Open Source (MIT License)<br>One command. Auth, RBAC, and Database ready instantly.' },
+    'dl.subtitle': { th: 'v2.3.0 — ฟรีและ Open Source (MIT License)<br>หนึ่งคำสั่ง สร้าง API ที่มี Auth, RBAC และ Database พร้อมใช้ทันที', en: 'v2.3.0 — Free and Open Source (MIT License)<br>One command. Auth, RBAC, and Database ready instantly.' },
     'dl.btn.github': { th: 'เริ่มต้นบน GitHub', en: 'Get Started on GitHub' },
     'dl.btn.docs': { th: 'อ่าน Documentation', en: 'Read Documentation' },
 

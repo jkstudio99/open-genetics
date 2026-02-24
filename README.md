@@ -8,24 +8,24 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP 8.1+"></a>
     <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL">
-    <img src="https://img.shields.io/badge/version-2.2.0-6c63ff.svg" alt="v2.2.0">
+    <img src="https://img.shields.io/badge/version-2.3.0-6c63ff.svg" alt="v2.3.0">
   </p>
 </div>
 
 ---
 
-## ✨ What's New in v2.2
+## ✨ What's New in v2.3
 
-| Feature | Description |
-| ------- | ----------- |
-| 🗃️ **Query Builder** | `DB::table('users')->where('active',1)->paginate(20)` — fluent builder on PDO with prepared statements |
-| ✅ **Guard::check()** | Soft auth check — returns `bool` instead of throwing, perfect for optional-auth endpoints |
-| 🏷️ **Cache::namespace()** | Isolate cache key spaces between modules — `Cache::namespace('shop')->get('products')` |
-| 🧪 **Testing: seed()** | `$this->seed(['users' => [...]])` — seed test data within transaction rollback |
-| ⏩ **Pipeline::after()** | Post-response hooks for async side effects like audit logging |
-| 🚫 **#[SkipMiddleware]** | `#[SkipMiddleware(CorsMiddleware::class)]` — exclude routes from global middleware |
-| 📝 **LogMiddleware** | Built-in request/response logging middleware |
-| 🔌 **ErrorHandler::reporter()** | `ErrorHandler::reporter(callable)` — hook for Sentry/Bugsnag integration |
+| Feature                         | Description                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 🗃️ **Query Builder**            | `DB::table('users')->where('active',1)->paginate(20)` — fluent builder on PDO with prepared statements |
+| ✅ **Guard::check()**           | Soft auth check — returns `bool` instead of throwing, perfect for optional-auth endpoints              |
+| 🏷️ **Cache::namespace()**       | Isolate cache key spaces between modules — `Cache::namespace('shop')->get('products')`                 |
+| 🧪 **Testing: seed()**          | `$this->seed(['users' => [...]])` — seed test data within transaction rollback                         |
+| ⏩ **Pipeline::after()**        | Post-response hooks for async side effects like audit logging                                          |
+| 🚫 **#[SkipMiddleware]**        | `#[SkipMiddleware(CorsMiddleware::class)]` — exclude routes from global middleware                     |
+| 📝 **LogMiddleware**            | Built-in request/response logging middleware                                                           |
+| 🔌 **ErrorHandler::reporter()** | `ErrorHandler::reporter(callable)` — hook for Sentry/Bugsnag integration                               |
 
 ---
 

@@ -461,7 +461,7 @@ header('Content-Type: text/html; charset=utf-8');
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-mono"
         style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)">
         <span class="text-indigo-400">Framework</span>
-        <span class="text-white/40">v2.2.0</span>
+        <span class="text-white/40">v2.3.0</span>
       </div>
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-mono"
         style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)">

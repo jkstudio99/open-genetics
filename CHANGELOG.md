@@ -3,7 +3,27 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.2.0.html).
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.3.0] - 2026-02-24
+
+### Added — Enhanced Query Builder (v2.3 DX Update)
+
+- `where(array)` — array-based conditions with operator-in-key, auto IN(), auto IS NULL
+- `when()` — conditional filter (array or closure), auto-skip on falsy
+- `search()` — multi-column LIKE with auto-skip on empty keyword
+- `sort()` — prefix notation (`-col` = DESC, `col` = ASC)
+- `leftJoin()` — 3-arg shortcut overload (table, first, second)
+- `find()` / `findAll()` — instance shortcuts on QueryBuilder
+- `toSql()` / `getBindings()` — debug helpers
+- `DB` static one-liners: `find`, `findAll`, `value`, `insert`, `update`, `delete`, `softDelete`, `exists`, `count`
+- 44 PHPUnit tests, 73 assertions for Query Builder
+
+### Changed
+
+- CLI bumped to v2.3.0
+- Documentation: new `query-builder.html` page (27 pages total)
+- All version references bumped to v2.3.0
 
 ## [2.1.0] - 2026-02-23
 
@@ -79,9 +99,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.2.0
 
 - `Router` v2.0 — integrated Pipeline, removed hard-coded CORS (now CorsMiddleware)
 - `index.php` v2.0 — registers global middleware via Pipeline
-- CLI upgraded to v2.2.0 with **25 total commands**
+- CLI upgraded with **25 total commands**
 - Docs: 19 generated pages (added `middleware.html`, `migrations.html`, `testing.html`)
-- Landing page: bumped to v2.2.0
+- Landing page updated
 
 ## [1.0.0] - 2024-01-01
 

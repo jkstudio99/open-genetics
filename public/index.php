@@ -78,7 +78,7 @@ if ($relativePath === '/api/docs' || $relativePath === '/api/docs/') {
     }
     $specUrl     = $publicBase . '/openapi.json';
     $appName     = Env::get('APP_NAME', 'OpenGenetics API');
-    $appVersion  = '2.2.0';
+    $appVersion  = '2.3.0';
     http_response_code(200);
     header('Content-Type: text/html; charset=utf-8');
     echo <<<HTML
