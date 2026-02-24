@@ -123,6 +123,55 @@ abstract class GeneticTestCase extends \PHPUnit\Framework\TestCase
         return $this;
     }
 
+    // ─── Database Helpers ────────────────────────
+
+    /**
+     * Insert test rows into one or more tables, then delete them after the test.
+     *
+     * $this->seed([
+     *     'users' => [
+     *         ['email' => 'alice@test.io', 'role_name' => 'ADMIN', 'password_hash' => '...'],
+     *         ['email' => 'bob@test.io',   'role_name' => 'EMPLOYEE', 'password_hash' => '...'],
+     *     ],
+     * ]);
+     */
+    protected function seed(array $tableData): static
+    {
+        foreach ($tableData as $table => $rows) {
+            foreach ($rows as $row) {
+                $cols   = array_keys($row);
+                $colStr = implode(', ', array_map(fn($c) => "`{$c}`", $cols));
+                $phs    = implode(', ', array_fill(0, \count($cols), '?'));
+                Database::execute(
+                    "INSERT INTO `{$table}` ({$colStr}) VALUES ({$phs})",
+                    array_values($row)
+                );
+                $this->seededTables[] = $table;
+            }
+        }
+        return $this;
+    }
+
+    /** @var array<string> Tables that received seeded rows this test */
+    private array $seededTables = [];
+
+    /**
+     * Clean up any rows seeded during the test.
+     * Override tearDown in your test to call this, or let GeneticTestCase handle it.
+     */
+    protected function tearDown(): void
+    {
+        foreach (array_unique($this->seededTables) as $table) {
+            try {
+                Database::execute("DELETE FROM `{$table}` WHERE 1");
+            } catch (\Throwable) {
+                // Best-effort cleanup
+            }
+        }
+        $this->seededTables = [];
+        parent::tearDown();
+    }
+
     // ─── Assertions ─────────────────────────────
 
     /**
@@ -201,7 +250,7 @@ abstract class GeneticTestCase extends \PHPUnit\Framework\TestCase
         curl_setopt($ch, CURLOPT_HTTPHEADER, $curlHeaders);
 
         // Body
-        if (!empty($body) && in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
+        if (!empty($body) && \in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         }
 

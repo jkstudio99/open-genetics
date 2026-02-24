@@ -12,6 +12,11 @@ use PDOException;
  *
  * Thread-safe PDO wrapper using Prepared Statements only.
  * Prevents SQL Injection at the DNA level of the framework.
+ *
+ * Quick helpers:
+ *   Database::paginate($sql, $countSql, $params, $page, $perPage)
+ *   Database::softDelete($table, $id)
+ *   Database::table($table)  → QueryBuilder (fluent API)
  */
 final class Database
 {
@@ -114,6 +119,76 @@ final class Database
         $stmt = self::connect()->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchColumn() !== false;
+    }
+
+    /**
+     * Paginate raw SQL — runs data query + count query, returns data + meta.
+     *
+     * @param string $sql      Main SELECT query (no LIMIT/OFFSET)
+     * @param string $countSql COUNT(*) version of the same query
+     * @param array  $params   Shared parameters for both queries
+     * @return array{data: array, meta: array}
+     */
+    public static function paginate(
+        string $sql,
+        string $countSql,
+        array  $params   = [],
+        int    $page     = 1,
+        int    $perPage  = 20
+    ): array {
+        $page    = max(1, $page);
+        $perPage = max(1, min(200, $perPage));
+        $offset  = ($page - 1) * $perPage;
+
+        $total      = (int) (self::queryOne($countSql, $params)['total'] ?? 0);
+        $data       = self::query($sql . " LIMIT {$perPage} OFFSET {$offset}", $params);
+        $totalPages = (int) ceil($total / $perPage);
+
+        return [
+            'data' => $data,
+            'meta' => [
+                'total'       => $total,
+                'page'        => $page,
+                'per_page'    => $perPage,
+                'total_pages' => $totalPages,
+                'last_page'   => $totalPages,
+                'has_more'    => $page < $totalPages,
+            ],
+        ];
+    }
+
+    /**
+     * Soft-delete a row by setting deleted_at = NOW().
+     * Requires a `deleted_at` column on the table.
+     */
+    public static function softDelete(string $table, int|string $id, string $idColumn = 'id'): int
+    {
+        return self::execute(
+            "UPDATE `{$table}` SET `deleted_at` = NOW() WHERE `{$idColumn}` = ?",
+            [$id]
+        );
+    }
+
+    /**
+     * Restore a soft-deleted row (sets deleted_at = NULL).
+     */
+    public static function restore(string $table, int|string $id, string $idColumn = 'id'): int
+    {
+        return self::execute(
+            "UPDATE `{$table}` SET `deleted_at` = NULL WHERE `{$idColumn}` = ?",
+            [$id]
+        );
+    }
+
+    /**
+     * Start a fluent QueryBuilder for the given table.
+     * Alias for DB::table() — both work.
+     *
+     * Database::table('users')->where('active', 1)->paginate(20)
+     */
+    public static function table(string $table): QueryBuilder
+    {
+        return new QueryBuilder($table);
     }
 
     /**

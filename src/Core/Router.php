@@ -80,6 +80,14 @@ final class Router
         $handler = strtolower($method);
 
         if (!method_exists($className, $handler)) {
+            // Build Allow header with supported methods for this endpoint
+            $supported = [];
+            foreach (['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as $m) {
+                if (method_exists($className, strtolower($m))) {
+                    $supported[] = $m;
+                }
+            }
+            header('Allow: ' . implode(', ', $supported));
             Response::json(['error' => "Method {$method} not allowed"], 405);
             return;
         }
@@ -100,7 +108,7 @@ final class Router
                 try {
                     // Pass $params as second argument if method accepts it
                     $ref = new \ReflectionMethod($className, $handler);
-                    if (count($ref->getParameters()) >= 2) {
+                    if (\count($ref->getParameters()) >= 2) {
                         $className::$handler($body, $params);
                     } else {
                         $className::$handler($body);
@@ -121,7 +129,8 @@ final class Router
     }
 
     /**
-     * Collect middleware for an endpoint: global + class-level #[Middleware] attributes.
+     * Collect middleware for an endpoint: global + class-level #[Middleware] attributes,
+     * minus any classes listed in #[SkipMiddleware].
      *
      * @return array<string> Resolved middleware class names
      */
@@ -130,18 +139,33 @@ final class Router
         // Start with global middleware
         $stack = Pipeline::getGlobal();
 
-        // Parse #[Middleware] attributes from the endpoint class (PHP 8.1+)
         try {
             $reflection = new \ReflectionClass($className);
-            $attributes = $reflection->getAttributes(Middleware::class);
 
-            foreach ($attributes as $attr) {
+            // Collect #[SkipMiddleware] exclusions first
+            $skip = [];
+            foreach ($reflection->getAttributes(SkipMiddleware::class) as $attr) {
+                foreach ($attr->newInstance()->middleware as $skipped) {
+                    $skip[] = $skipped;
+                }
+            }
+
+            // Remove skipped middleware from the global stack
+            if (!empty($skip)) {
+                $stack = array_values(array_filter(
+                    $stack,
+                    fn($m) => !in_array($m, $skip, true)
+                ));
+            }
+
+            // Add #[Middleware] attributes from the endpoint class
+            foreach ($reflection->getAttributes(Middleware::class) as $attr) {
                 $instance = $attr->newInstance();
                 foreach ($instance->middleware as $name) {
                     $stack[] = Pipeline::resolve($name);
                 }
             }
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             // Ignore — class without attributes
         }
 
@@ -162,7 +186,7 @@ final class Router
         // Remove the project base path (e.g., /open-genetics)
         $projectBase = parse_url(Env::get('APP_URL', ''), PHP_URL_PATH) ?? '';
         if ($projectBase && str_starts_with($uri, $projectBase)) {
-            $uri = substr($uri, strlen($projectBase));
+            $uri = substr($uri, \strlen($projectBase));
         }
 
         // Remove leading /public/api/ or /api/ prefix
@@ -341,7 +365,7 @@ final class Router
         $raw = file_get_contents('php://input');
         if (!empty($raw)) {
             $decoded = json_decode($raw, true);
-            if (is_array($decoded)) {
+            if (\is_array($decoded)) {
                 return $decoded;
             }
         }

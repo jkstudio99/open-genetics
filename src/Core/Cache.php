@@ -59,7 +59,7 @@ final class Cache
         return self::dir() . '/' . $hash . '.cache';
     }
 
-    // ── Tag fluent interface ──────────────────────────────
+    // ── Tag / Namespace fluent interface ─────────────────
 
     /**
      * Start a tag-scoped operation.
@@ -70,6 +70,19 @@ final class Cache
         $instance = new static();
         $instance->instanceTag = $tag;
         return $instance;
+    }
+
+    /**
+     * Alias for tag() — namespace-style key prefixing.
+     * Prevents collisions across modules/tenants.
+     *
+     * Cache::namespace('tenant:42')->put('settings', $data, 600);
+     * Cache::namespace('tenant:42')->get('settings');
+     * Cache::namespace('tenant:42')->flush();
+     */
+    public static function namespace(string $prefix): static
+    {
+        return static::tag($prefix);
     }
 
     private function taggedKey(string $key): string
@@ -243,7 +256,7 @@ final class Cache
     public static function stats(): array
     {
         $files  = glob(self::dir() . '/*.cache') ?: [];
-        $total  = count($files);
+        $total  = \count($files);
         $size   = 0;
         $tags   = [];
         $expired = 0;

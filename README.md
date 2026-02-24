@@ -2,15 +2,30 @@
   <img src="public/images/logo/open-genetics-logo-white.svg" alt="OpenGenetics Logo" width="200" />
   <br/>
   <h1>OpenGenetics Framework</h1>
-  <p><strong>Enterprise PHP Micro-Framework v2.0</strong> &mdash; <em>10 production features built-in. No config bloat. Just PHP.</em></p>
+  <p><strong>Enterprise PHP Micro-Framework v2.2</strong> &mdash; <em>Production-ready features built-in. No config bloat. Just PHP.</em></p>
 
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.1%2B-8892BF.svg?logo=php&logoColor=white" alt="PHP 8.1+"></a>
     <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1.svg?logo=mysql&logoColor=white" alt="MySQL">
-    <img src="https://img.shields.io/badge/version-2.1.0-6c63ff.svg" alt="v2.1.0">
+    <img src="https://img.shields.io/badge/version-2.2.0-6c63ff.svg" alt="v2.2.0">
   </p>
 </div>
+
+---
+
+## ✨ What's New in v2.2
+
+| Feature | Description |
+| ------- | ----------- |
+| 🗃️ **Query Builder** | `DB::table('users')->where('active',1)->paginate(20)` — fluent builder on PDO with prepared statements |
+| ✅ **Guard::check()** | Soft auth check — returns `bool` instead of throwing, perfect for optional-auth endpoints |
+| 🏷️ **Cache::namespace()** | Isolate cache key spaces between modules — `Cache::namespace('shop')->get('products')` |
+| 🧪 **Testing: seed()** | `$this->seed(['users' => [...]])` — seed test data within transaction rollback |
+| ⏩ **Pipeline::after()** | Post-response hooks for async side effects like audit logging |
+| 🚫 **#[SkipMiddleware]** | `#[SkipMiddleware(CorsMiddleware::class)]` — exclude routes from global middleware |
+| 📝 **LogMiddleware** | Built-in request/response logging middleware |
+| 🔌 **ErrorHandler::reporter()** | `ErrorHandler::reporter(callable)` — hook for Sentry/Bugsnag integration |
 
 ---
 
@@ -62,16 +77,17 @@ Drop a file in `api/` — it's instantly a route. No registration needed.
 ```php
 // api/products.php  →  GET/POST /api/products
 
-use OpenGenetics\Core\{Database, Response, Cache};
+use OpenGenetics\Core\{Response, Cache};
+use OpenGenetics\Core\DB;
 
 #[\OpenGenetics\Core\Middleware('auth', 'rate:60,60')]
 class Products
 {
     public static function get(array $body): void
     {
-        // Cache for 5 minutes
+        // Query Builder with caching
         $products = Cache::remember('products:all', 300, fn() =>
-            Database::query("SELECT * FROM products WHERE active = 1")
+            DB::table('products')->where('active', 1)->paginate(20)
         );
         Response::success($products);
     }
@@ -92,7 +108,7 @@ php genetics make:endpoint-ai products "CRUD with auth, search, pagination and c
 
 ---
 
-## 🖥️ CLI — 25 Commands
+## 🖥️ CLI — 25+ Commands
 
 ```
 Database:    mutate, seed, status, serve
@@ -115,40 +131,62 @@ my-api/
 ├── api/                    # File-based routing (1 file = 1 endpoint)
 │   └── auth/               # Auth routes (login, register, logout)
 ├── src/Core/               # Framework core (PSR-4, PHP 8.1+)
-│   ├── Cache.php           # Caching layer (v2.0)
-│   ├── FieldSelector.php   # GraphQL-lite sparse fieldsets (v2.0)
-│   ├── Pulse.php           # Server-Sent Events (v2.0)
-│   ├── ModuleLoader.php    # Plugin system (v2.0)
-│   ├── AdminGenerator.php  # Admin endpoint scaffolder (v2.0)
-│   ├── EndpointAI.php      # AI endpoint generator (v2.0)
-│   ├── Marketplace.php     # Package registry (v2.0)
-│   ├── Pipeline.php        # Middleware pipeline (v2.0)
-│   ├── Migrator.php        # DB migrations (v2.0)
+│   ├── QueryBuilder.php    # Fluent Query Builder (v2.2)
+│   ├── Cache.php           # Caching layer with namespace support (v2.2)
+│   ├── FieldSelector.php   # GraphQL-lite sparse fieldsets
+│   ├── Pulse.php           # Server-Sent Events
+│   ├── ModuleLoader.php    # Plugin system
+│   ├── AdminGenerator.php  # Admin endpoint scaffolder
+│   ├── EndpointAI.php      # AI endpoint generator
+│   ├── Marketplace.php     # Package registry
+│   ├── Pipeline.php        # Middleware pipeline with Pipeline::after()
+│   ├── Migrator.php        # DB migrations
 │   ├── Database.php        # PDO Singleton
 │   ├── Router.php          # File-based router
 │   └── Response.php        # JSON response helpers
-├── src/Auth/               # JWT + Guard RBAC
-├── src/Testing/            # GeneticTestCase + TestResponse (v2.0)
-├── src/Middleware/         # Auth, CORS, RateLimit (v2.0)
-├── database/migrations/    # Versioned migration files (v2.0)
+├── src/Auth/               # JWT + Guard RBAC (Guard::check() v2.2)
+├── src/Testing/            # GeneticTestCase + TestResponse + seed()
+├── src/Middleware/         # Auth, CORS, RateLimit, LogMiddleware
+├── database/migrations/    # Versioned migration files
 ├── modules/                # Genetic Modules (plugins)
 ├── storage/cache/          # File cache store
 ├── sdk/                    # Frontend SDK (React + Vanilla JS)
 ├── locales/                # i18n dictionaries (en.json, th.json)
-├── genetics            # CLI tool
+├── genetics                # CLI tool
 ├── public/                 # Web root (index.php)
 └── .env                    # Environment config
 ```
 
 ---
 
-## 🔥 v2.0 Feature Highlights
+## 🔥 Feature Highlights
+
+### Query Builder (v2.2)
+
+```php
+$users = DB::table('users')
+    ->select(['id', 'email', 'role_name'])
+    ->where('is_active', 1)
+    ->where('tenant_id', $tenantId)
+    ->orderBy('created_at', 'DESC')
+    ->paginate(20);
+```
 
 ### Middleware Pipeline
 
 ```php
 #[Middleware('auth:ADMIN', 'rate:10,60')]
 class AdminProducts { ... }
+```
+
+### Guard::check() — Optional Auth (v2.2)
+
+```php
+if (Guard::check()) {
+    $user = Guard::user(); // personalized response
+} else {
+    // public response
+}
 ```
 
 ### Database Migrations
@@ -165,6 +203,7 @@ php genetics make:migration add_image_to_products
 class ProductsTest extends GeneticTestCase {
     public function testList(): void {
         $this->actingAsAdmin();
+        $this->seed(['products' => [['name' => 'Test', 'active' => 1]]]);
         $this->get('/api/products')->assertOk()->assertPaginated();
     }
 }

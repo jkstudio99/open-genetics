@@ -1147,6 +1147,21 @@
     [data-theme="light"] [class*="bg-white/"] {
       background: transparent !important
     }
+
+    /* NEW feature badge */
+    .badge-new {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      letter-spacing: .05em;
+      vertical-align: middle;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
   </style>
 </head>
 
@@ -1417,9 +1432,9 @@
     <!-- Overview -->
     <section id="overview">
       <h1>OpenGenetics <em data-i18n="doc.h1">Documentation</em></h1>
-      <p class="lead" data-i18n="doc.lead">Enterprise PHP Micro-Framework &mdash; JWT Auth, Genetic RBAC, i18n, Audit
-        Trail, Dual-Frontend SDK.<br>
-        ออกแบบมาเพื่อความเร็ว (&lt;50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี</p>
+      <p class="lead" data-i18n="doc.lead">Enterprise PHP Micro-Framework — <strong>v2.2.0</strong><br>
+        JWT Auth · Genetic RBAC · Query Builder · i18n · Audit Trail · Testing DX · Dual-Frontend SDK<br>
+        ออกแบบมาเพื่อความเร็ว (&lt;50ms), ความปลอดภัย (OWASP), และ Developer Experience ที่ดีที่สุด</p>
 
       <div class="card-grid">
         <div class="card">
@@ -1429,7 +1444,7 @@
                 d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
             </svg></div>
           <h4>&lt; 50ms Response</h4>
-          <p>No ORM, PDO Singleton, static cache</p>
+          <p>PDO Singleton, File-based routing, static cache — ไม่มี ORM overhead</p>
         </div>
         <div class="card">
           <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
@@ -1438,7 +1453,7 @@
                 d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg></div>
           <h4>JWT + Bcrypt</h4>
-          <p>HS256 auth, 12-round hashing</p>
+          <p>HS256 auth, Bcrypt 12 รอบ, password reset + token expiry</p>
         </div>
         <div class="card">
           <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
@@ -1447,7 +1462,16 @@
                 d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
             </svg></div>
           <h4>Genetic RBAC</h4>
-          <p>Admin / HR / Employee guards</p>
+          <p>Admin / Manager / Employee guards — <code>Guard::requireRole()</code> เพียงบรรทัดเดียว</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+            </svg></div>
+          <h4>Query Builder <span class="badge-new">NEW</span></h4>
+          <p>Fluent API บน PDO — <code>DB::table()->where()->paginate()</code> พร้อม prepared statements</p>
         </div>
         <div class="card">
           <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
@@ -1456,7 +1480,7 @@
                 d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
             </svg></div>
           <h4>i18n Engine</h4>
-          <p>Thai/English instant switching</p>
+          <p>Thai/English instant switching — Lazy load เฉพาะเมื่อมีคำขอ ประหยัด ~0.5ms</p>
         </div>
         <div class="card">
           <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
@@ -1465,7 +1489,7 @@
                 d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg></div>
           <h4>Dual SDK</h4>
-          <p>React Hook + Vanilla JS</p>
+          <p>React Hook + Vanilla JS — auth, RBAC, i18n และ API client ในไฟล์เดียว</p>
         </div>
         <div class="card">
           <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
@@ -1474,7 +1498,16 @@
                 d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
             </svg></div>
           <h4>Audit Trail</h4>
-          <p>Non-blocking auto-logging</p>
+          <p>บันทึก CREATE/UPDATE/DELETE/LOGIN อัตโนมัติแบบ Non-blocking — ค้นหาตาม user ได้</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+            </svg></div>
+          <h4>Testing Framework <span class="badge-new">NEW</span></h4>
+          <p>HTTP test client พร้อม <code>actingAs()</code>, <code>seed()</code> และ fluent assertions</p>
         </div>
       </div>
 
@@ -1484,8 +1517,10 @@
               d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
           </svg></span>
         <div>
-          <p><strong>Philosophy:</strong> <em>เล็ก เบา ทรงพลัง</em> &mdash; Small, Light, Powerful. ทุก byte และ
-            millisecond มีค่า</p>
+          <p><strong>v2.2.0 What's New:</strong> Query Builder (<code>DB::table()->paginate()</code>), Database Seeding
+            (<code>seed()</code>), <code>Guard::check()</code>, <code>Cache::namespace()</code>, <code>Response::paginatedFrom()</code>,
+            <code>#[SkipMiddleware]</code>, <code>LogMiddleware</code>, <code>Pipeline::after()</code>,
+            <code>ErrorHandler::reporter()</code> — <a href="#query-builder">ดู Query Builder</a></p>
         </div>
       </div>
     </section>
@@ -1525,27 +1560,26 @@
       </tbody>
     </table>
 
-    <h3 data-i18n="dh.steps">เริ่มต้นด้วย Composer</h3>
-    <p data-i18n="install.desc">5 ขั้นตอน — เหมือนติดตั้ง Laravel</p>
+    <h3 data-i18n="dh.steps">เริ่มต้นใน 4 คำสั่ง</h3>
+    <p data-i18n="install.desc">วิธีแนะนำ — <code>composer create-project</code> สร้างโปรเจกต์พร้อมใช้งานทันที ไม่ต้องตั้งค่า PATH</p>
 
-    <h4 data-i18n="install.step1">1. ดาวน์โหลดหรือ Clone</h4>
+    <h4 data-i18n="install.step1">1. สร้างโปรเจกต์</h4>
     <pre><code><span class="fn">composer</span> create-project open-genetics/framework my-api
 <span class="fn">cd</span> my-api</code></pre>
 
-    <h4 data-i18n="install.step2">2. ติดตั้ง Dependencies</h4>
-    <pre><code><span class="fn">composer</span> install</code></pre>
-
-    <h4 data-i18n="install.step3">3. ตั้งค่า Environment</h4>
-    <p data-i18n="install.step3_desc">สร้างฐานข้อมูลใน phpMyAdmin แล้วแก้ไขไฟล์ <code>.env</code></p>
+    <h4 data-i18n="install.step3">2. ตั้งค่า Environment</h4>
+    <p data-i18n="install.step3_desc">สร้างฐานข้อมูลใน phpMyAdmin แล้วแก้ไขค่า <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASS</code> และ <code>JWT_SECRET</code></p>
     <pre><code><span class="fn">cp</span> .env.example .env</code></pre>
 
-    <h4 data-i18n="install.step4">4. Genetic Scaffolding</h4>
-    <p data-i18n="install.step4_desc">สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ</p>
+    <h4 data-i18n="install.step4">3. Bootstrap ระบบ</h4>
+    <p data-i18n="install.step4_desc">สร้างตาราง + Seed RBAC roles + Admin user อัตโนมัติ — ใช้เวลา &lt;2 วินาที</p>
     <pre><code><span class="fn">php genetics</span> mutate</code></pre>
 
-    <h4 data-i18n="install.step5">5. เริ่มสร้าง API</h4>
-    <p data-i18n="install.step5_desc">เขียน API ได้ทันที — ไม่ต้องประกาศ route</p>
-    <pre><code><span class="fn">php genetics</span> serve</code></pre>
+    <h4 data-i18n="install.step5">4. เริ่ม Dev Server</h4>
+    <p data-i18n="install.step5_desc">สร้างไฟล์ใน <code>api/</code> แล้วได้ endpoint ทันที — ไม่ต้องประกาศ route</p>
+    <pre><code><span class="fn">php genetics</span> serve
+<span class="cm"># → Dev server รันที่ http://127.0.0.1:8080</span>
+<span class="cm"># → สร้าง api/hello.php แล้ว GET /api/hello พร้อมใช้ทันที</span></code></pre>
 
     <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
           viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -1553,9 +1587,28 @@
         </svg></span>
       <div>
         <p data-i18n-html="install.default_admin"><strong>Default Admin:</strong> <code>admin@opengenetics.io</code> /
-          <code>password</code> &mdash;
-          เปลี่ยนรหัสผ่านทันทีหลัง deploy
+          <code>password</code> &mdash; เปลี่ยนรหัสผ่านทันทีหลัง deploy ด้วย <code>php genetics make:user</code>
         </p>
+      </div>
+    </div>
+
+    <h3>Global Installer (ตัวเลือกสำหรับ Power Users)</h3>
+    <p>ถ้าสร้างโปรเจกต์ OpenGenetics บ่อยๆ ติดตั้ง <code>genetics</code> CLI แบบ global เพื่อใช้คำสั่ง <code>genetics new</code> จากทุกที่</p>
+    <pre><code><span class="cm"># ติดตั้ง CLI แบบ global (ต้องเพิ่ม ~/.composer/vendor/bin ใน PATH)</span>
+<span class="fn">composer</span> global require open-genetics/framework
+
+<span class="cm"># สร้างโปรเจกต์ใหม่จากทุกที่</span>
+<span class="fn">genetics</span> new my-project
+<span class="fn">cd</span> my-project</code></pre>
+
+    <div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg></span>
+      <div>
+        <p><strong>แนะนำ:</strong> ใช้ <code>composer create-project</code> สำหรับผู้เริ่มต้นและ XAMPP environment
+          ใช้ <code>composer global require</code> เมื่อต้องสร้างโปรเจกต์ใหม่บ่อยและตั้งค่า PATH ไว้แล้ว</p>
       </div>
     </div>
 
@@ -1729,12 +1782,12 @@ JSON Output</code></pre>
 
     <!-- Middleware Pipeline -->
     <h2 id="middleware"><a href="#middleware" data-i18n="dh.middleware"># Middleware Pipeline</a></h2>
-    <p data-i18n="dh.middleware.desc">v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
-      ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request และ Auth/RateLimit ประกาศผ่าน
-      <code>#[Middleware]</code> attribute
+    <p data-i18n="dh.middleware.desc">v2.2 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
+      ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request, Auth/RateLimit ประกาศผ่าน
+      <code>#[Middleware]</code> attribute รองรับ <code>#[SkipMiddleware]</code> และ <code>Pipeline::after()</code>
     </p>
 
-    <h3>Request Lifecycle v2.0</h3>
+    <h3>Request Lifecycle</h3>
     <pre><code>HTTP Request
     ↓
 Apache .htaccess  →  public/index.php
@@ -1842,6 +1895,91 @@ php genetics make:middleware Cache
       </div>
     </div>
 
+    <h3>#[SkipMiddleware] — ยกเว้น Global Middleware <span class="badge-new">NEW v2.2</span></h3>
+    <p>ใช้ exclude middleware ที่ register ไว้แบบ global ออกจาก endpoint ใดเป็นการเฉพาะ</p>
+    <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Core\SkipMiddleware</span>;
+<span class="kw">use</span> <span class="cl">OpenGenetics\Middleware\CorsMiddleware</span>;
+
+<span class="cm">// Webhook endpoint ที่ไม่ต้องการ CORS headers</span>
+#[<span class="cl">SkipMiddleware</span>(<span class="cl">CorsMiddleware</span>::<span class="kw">class</span>)]
+<span class="kw">class</span> <span class="cl">WebhookStripe</span>
+{
+    <span class="kw">public static function</span> <span class="fn">post</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span>
+    {
+        <span class="cm">// process Stripe webhook...</span>
+    }
+}</code></pre>
+
+    <h3>LogMiddleware — บันทึก Access Log <span class="badge-new">NEW v2.2</span></h3>
+    <p>เขียน access log ไปที่ <code>storage/logs/access-YYYY-MM-DD.log</code> ทุก request รองรับทั้ง global และ per-endpoint</p>
+    <pre><code><span class="cm">// ใน public/index.php — log ทุก request</span>
+<span class="cl">Pipeline</span>::<span class="fn">alias</span>(<span class="st">'log'</span>, <span class="cl">LogMiddleware</span>::<span class="kw">class</span>);
+<span class="cl">Pipeline</span>::<span class="fn">addGlobal</span>(<span class="cl">LogMiddleware</span>::<span class="kw">class</span>);
+
+<span class="cm">// หรือเฉพาะ endpoint ที่ต้องการ</span>
+#[<span class="cl">Middleware</span>(<span class="st">'log'</span>)]
+<span class="kw">class</span> <span class="cl">AdminUsers</span> { ... }</code></pre>
+    <pre><code><span class="cm"># ตัวอย่าง access log: storage/logs/access-2026-02-24.log</span>
+[2026-02-24 14:23:01] 127.0.0.1 GET /api/users → 200 (12.4ms)
+[2026-02-24 14:23:05] 127.0.0.1 POST /api/auth/login → 401 (3.1ms)</code></pre>
+
+    <h3>Pipeline::after() — Post-Response Hooks <span class="badge-new">NEW v2.2</span></h3>
+    <p>Register callbacks ที่รันหลัง response ส่งออก — เหมาะสำหรับ audit log, metrics, cleanup โดยไม่ block response</p>
+    <pre><code><span class="cm">// ใน public/index.php</span>
+<span class="cl">Pipeline</span>::<span class="fn">after</span>(<span class="kw">function</span> (?\<span class="cl">Throwable</span> <span class="vr">$error</span>): <span class="kw">void</span> {
+    <span class="cm">// ถ้า $error !== null แสดงว่า request ล้มเหลว</span>
+    <span class="cl">AuditLog</span>::<span class="fn">record</span>(<span class="vr">$_SERVER</span>[<span class="st">'REQUEST_URI'</span>], <span class="vr">$error</span>?-&gt;<span class="fn">getMessage</span>());
+});</code></pre>
+
+    <h3>ErrorHandler::reporter() — Custom Reporter <span class="badge-new">NEW v2.2</span></h3>
+    <p>ต่อ error ไปยัง Sentry, Bugsnag, Slack หรือ service ใดก็ได้ โดยไม่กระทบ HTTP response</p>
+    <pre><code><span class="cm">// ใน public/index.php</span>
+<span class="cl">ErrorHandler</span>::<span class="fn">reporter</span>(<span class="kw">function</span> (\<span class="cl">Throwable</span> <span class="vr">$e</span>): <span class="kw">void</span> {
+    <span class="cm">// Send to Sentry, Slack, etc.</span>
+    <span class="cl">Sentry</span>::<span class="fn">captureException</span>(<span class="vr">$e</span>);
+});
+
+<span class="cm">// Log file: storage/logs/app-2026-02-24.log (auto-created)</span>
+<span class="cm">// [2026-02-24 14:23:05] ERROR RuntimeException: User not found in .../api/users/{id}.php:22</span></code></pre>
+
+    <h3>Middleware ทั้งหมดที่มีใน Core</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Alias</th>
+          <th>Class</th>
+          <th>Params</th>
+          <th>การใช้งาน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>cors</code></td>
+          <td><code>CorsMiddleware</code></td>
+          <td>—</td>
+          <td>CORS headers + preflight (global)</td>
+        </tr>
+        <tr>
+          <td><code>auth</code></td>
+          <td><code>AuthMiddleware</code></td>
+          <td><code>role1,role2</code></td>
+          <td>ตรวจ JWT + role อาจระบุหรือไม่ก็ได้</td>
+        </tr>
+        <tr>
+          <td><code>rate</code></td>
+          <td><code>RateLimitMiddleware</code></td>
+          <td><code>max,window</code></td>
+          <td>จำกัด request ต่อ IP (default 60/60s)</td>
+        </tr>
+        <tr>
+          <td><code>log</code></td>
+          <td><code>LogMiddleware</code></td>
+          <td>—</td>
+          <td>บันทึก access log ลงไฟล์ <span class="badge-new">NEW</span></td>
+        </tr>
+      </tbody>
+    </table>
+
     <!-- API Reference -->
     <h2 id="api-reference"><a href="#api-reference" data-i18n="dh.api_ref"># API Reference</a></h2>
     <h3 data-i18n="dh.auth_endpoints">Authentication Endpoints</h3>
@@ -1904,8 +2042,9 @@ X-Locale: th</code></pre>
 
     <!-- Database -->
     <h2 id="database"><a href="#database" data-i18n="dh.database"># Database</a></h2>
-    <p data-i18n="dh.database.desc">PDO Singleton &mdash; <code>EMULATE_PREPARES=false</code> (real prepared statements)
-      ป้องกัน SQL Injection โดยค่าเริ่มต้น</p>
+    <p data-i18n="dh.database.desc">v2.2 — เข้าถึงฐานข้อมูลได้ 2 วิธี: <strong>Query Builder</strong> (<code>DB::table()</code>) สำหรับ
+      dynamic queries ที่อ่านง่าย และ <strong>Raw SQL</strong> (<code>Database::query()</code>) สำหรับ queries ที่ซับซ้อน
+      — ทั้งคู่ใช้ PDO prepared statements ป้องกัน SQL Injection โดยค่าเริ่มต้น</p>
 
     <h3>query() &mdash; Fetch All</h3>
     <pre><code><span class="vr">$users</span> = <span class="cl">Database</span>::<span class="fn">query</span>(
@@ -1939,6 +2078,79 @@ X-Locale: th</code></pre>
       <div>
         <p><strong>LIMIT/OFFSET:</strong> ใช้ <code>intval()</code> guard เพราะ MySQL ไม่รองรับ named params ใน LIMIT
           เมื่อ <code>EMULATE_PREPARES=false</code></p>
+      </div>
+    </div>
+
+    <h2 id="query-builder"><a href="#query-builder"># Query Builder <span class="badge-new">NEW v2.2</span></a></h2>
+    <p>Fluent, chainable query API — เขียน query น้อยลง อ่านง่ายขึ้น โดยยังคง enforce <strong>prepared statements</strong> ทุก query เพื่อป้องกัน SQL Injection</p>
+
+    <h3>Fetch — get() / first() / count()</h3>
+    <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Core\DB</span>;
+
+<span class="cm">// Fetch all rows matching the criteria</span>
+<span class="vr">$users</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
+    -&gt;<span class="fn">select</span>([<span class="st">'id'</span>, <span class="st">'email'</span>, <span class="st">'role_name'</span>])
+    -&gt;<span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)
+    -&gt;<span class="fn">where</span>(<span class="st">'tenant_id'</span>, <span class="vr">$tenantId</span>)
+    -&gt;<span class="fn">orderBy</span>(<span class="st">'created_at'</span>, <span class="st">'DESC'</span>)
+    -&gt;<span class="fn">get</span>();
+
+<span class="cm">// First matching row — returns ?array (null if not found)</span>
+<span class="vr">$user</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'email'</span>, <span class="vr">$email</span>)-&gt;<span class="fn">first</span>();
+
+<span class="cm">// Count rows without fetching them</span>
+<span class="vr">$total</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)-&gt;<span class="fn">count</span>();</code></pre>
+
+    <h3>paginate() — Zero-Config Pagination</h3>
+    <pre><code><span class="cm">// Reads ?page= from $_GET automatically. Returns data + meta in one call.</span>
+<span class="vr">$result</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
+    -&gt;<span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)
+    -&gt;<span class="fn">orderBy</span>(<span class="st">'created_at'</span>, <span class="st">'DESC'</span>)
+    -&gt;<span class="fn">paginate</span>(<span class="nb">20</span>);  <span class="cm">// 20 items per page</span>
+
+<span class="cm">// Send the response — meta is already populated</span>
+<span class="cl">Response</span>::<span class="fn">paginatedFrom</span>(<span class="vr">$result</span>);</code></pre>
+
+    <h3>WHERE Variants</h3>
+    <pre><code><span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'products'</span>)
+    -&gt;<span class="fn">where</span>(<span class="st">'price'</span>, <span class="st">'>='</span>, <span class="nb">100</span>)                    <span class="cm">// operator form</span>
+    -&gt;<span class="fn">whereIn</span>(<span class="st">'status'</span>, [<span class="st">'active'</span>, <span class="st">'pending'</span>])   <span class="cm">// IN (...)</span>
+    -&gt;<span class="fn">whereLike</span>(<span class="st">'name'</span>, <span class="st">'%phone%'</span>)               <span class="cm">// LIKE</span>
+    -&gt;<span class="fn">whereNotNull</span>(<span class="st">'published_at'</span>)               <span class="cm">// IS NOT NULL</span>
+    -&gt;<span class="fn">where</span>(<span class="st">'deleted_at'</span>, <span class="kw">null</span>)                  <span class="cm">// IS NULL</span>
+    -&gt;<span class="fn">get</span>();</code></pre>
+
+    <h3>Insert / Update / Delete</h3>
+    <pre><code><span class="cm">// Insert — returns the new auto-increment ID</span>
+<span class="vr">$id</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">insert</span>([
+    <span class="st">'email'</span>     =&gt; <span class="st">'alice@example.com'</span>,
+    <span class="st">'role_name'</span> =&gt; <span class="st">'EMPLOYEE'</span>,
+]);
+
+<span class="cm">// Update — returns affected row count</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
+    -&gt;<span class="fn">where</span>(<span class="st">'id'</span>, <span class="vr">$id</span>)
+    -&gt;<span class="fn">update</span>([<span class="st">'role_name'</span> =&gt; <span class="st">'MANAGER'</span>]);
+
+<span class="cm">// Hard delete matching rows</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'sessions'</span>)-&gt;<span class="fn">where</span>(<span class="st">'user_id'</span>, <span class="vr">$id</span>)-&gt;<span class="fn">delete</span>();</code></pre>
+
+    <h3>Soft Delete</h3>
+    <pre><code><span class="cm">// Set deleted_at = NOW()</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'id'</span>, <span class="vr">$id</span>)-&gt;<span class="fn">softDelete</span>();
+
+<span class="cm">// Clear deleted_at (restore)</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">where</span>(<span class="st">'id'</span>, <span class="vr">$id</span>)-&gt;<span class="fn">restore</span>();
+
+<span class="cm">// Scope out soft-deleted rows</span>
+<span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-&gt;<span class="fn">withoutTrashed</span>()-&gt;<span class="fn">get</span>();
+
+<span class="cm">// Static helper shortcut</span>
+<span class="cl">Database</span>::<span class="fn">softDelete</span>(<span class="st">'users'</span>, <span class="vr">$id</span>);</code></pre>
+
+    <div class="tip"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+      <div>
+        <p><strong>ยังคง type-safe ครบ:</strong> Query Builder ใช้ <code>Database::query()</code> ด้านใน — ทุก value ผ่าน <code>?</code> placeholder เสมอ ไม่มีความเสี่ยง SQL Injection แม้จะเขียน query แบบ fluent</p>
       </div>
     </div>
 
@@ -2002,8 +2214,16 @@ php genetics make:migration add_image_to_equipment</code></pre>
 <span class="cl">Response</span>::<span class="fn">error</span>(<span class="st">'Validation failed'</span>, <span class="nb">422</span>, [<span class="st">'email'</span> => <span class="st">'Required'</span>]);
 <span class="cm">// {"success":false,"message":"Validation failed","errors":{...}}</span>
 
+<span class="cm">// error() พร้อม machine-readable error code (v2.2+)</span>
+<span class="cl">Response</span>::<span class="fn">error</span>(<span class="st">'User not found'</span>, <span class="nb">404</span>, code: <span class="st">'ERR_USER_NOT_FOUND'</span>);
+<span class="cm">// {"success":false,"message":"User not found","code":"ERR_USER_NOT_FOUND"}</span>
+
 <span class="cl">Response</span>::<span class="fn">paginated</span>(<span class="vr">$rows</span>, total: <span class="nb">100</span>, page: <span class="nb">1</span>, perPage: <span class="nb">20</span>);
-<span class="cm">// {"success":true,"data":[...],"meta":{"total":100,"page":1,"per_page":20,"last_page":5}}</span></code></pre>
+<span class="cm">// {"success":true,"data":[...],"meta":{"total":100,"page":1,"per_page":20,"last_page":5}}</span>
+
+<span class="cm">// paginatedFrom() — ใช้กับ DB::table()->paginate() โดยตรง (v2.2+)</span>
+<span class="vr">$result</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-><span class="fn">where</span>(<span class="st">'active'</span>, <span class="nb">1</span>)-><span class="fn">paginate</span>(<span class="nb">20</span>);
+<span class="cl">Response</span>::<span class="fn">paginatedFrom</span>(<span class="vr">$result</span>); <span class="cm">// จัดการ data/meta ให้อัตโนมัติ</span></code></pre>
 
     <table>
       <thead>
@@ -2020,14 +2240,19 @@ php genetics make:migration add_image_to_equipment</code></pre>
           <td>ส่งข้อมูลสำเร็จ</td>
         </tr>
         <tr>
-          <td><code>error($msg, $code, $errors)</code></td>
+          <td><code>error($msg, $status, $errors, $code)</code></td>
           <td>400–500</td>
-          <td>ส่ง error พร้อม details</td>
+          <td>ส่ง error พร้อม details และ optional error code</td>
         </tr>
         <tr>
           <td><code>paginated($rows, $total, $page, $perPage)</code></td>
           <td>200</td>
           <td>ส่งข้อมูลแบบ pagination</td>
+        </tr>
+        <tr>
+          <td><code>paginatedFrom($result)</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>200</td>
+          <td>Shorthand สำหรับ QueryBuilder::paginate() result</td>
         </tr>
         <tr>
           <td><code>noContent()</code></td>
@@ -2037,10 +2262,23 @@ php genetics make:migration add_image_to_equipment</code></pre>
       </tbody>
     </table>
 
+    <div class="info"><span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg></span>
+      <div>
+        <p><strong>Machine-readable error codes:</strong> ใช้ <code>code:</code> named parameter ใน <code>error()</code>
+          เพื่อส่ง error code ที่ frontend สามารถ match ได้แม่นยำกว่า HTTP status — เหมาะสำหรับ i18n error messages และ
+          retry logic</p>
+      </div>
+    </div>
+
     <!-- Guard / RBAC -->
     <h2 id="guard"><a href="#guard" data-i18n="dh.authorization"># Guard / RBAC</a></h2>
-    <p data-i18n="dh.guard.desc">Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — throw
-      <code>RuntimeException</code> พร้อม HTTP status อัตโนมัติ
+    <p data-i18n="dh.guard.desc">Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — ใช้ <code>requireAuth()</code> /
+      <code>requireRole()</code> แบบ strict (throw 401/403) หรือ <code>Guard::check()</code> แบบ soft
+      (คืนค่า <code>bool</code>) สำหรับ endpoint ที่ auth เป็น optional
     </p>
     <pre><code><span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
 
@@ -2060,8 +2298,51 @@ php genetics make:migration add_image_to_equipment</code></pre>
 <span class="cm">// ตรวจสอบ role โดยไม่ throw</span>
 <span class="kw">if</span> (<span class="cl">Guard</span>::<span class="fn">hasRole</span>(<span class="cl">Guard</span>::<span class="vr">ADMIN</span>)) {
     <span class="cm">// admin-only logic</span>
+}
+
+<span class="cm">// check() — ตรวจสอบว่า login อยู่หรือไม่ โดยไม่ throw (v2.2+)</span>
+<span class="kw">if</span> (<span class="cl">Guard</span>::<span class="fn">check</span>()) {
+    <span class="vr">$user</span> = <span class="cl">Guard</span>::<span class="fn">user</span>();    <span class="cm">// safe ใช้ใน optional-auth endpoints</span>
+} <span class="kw">else</span> {
+    <span class="cm">// ไม่ได้ login — แสดง public data</span>
 }</code></pre>
 
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Guard::requireAuth()</code></td>
+          <td>บังคับ login — throw 401 ถ้าไม่มี token</td>
+        </tr>
+        <tr>
+          <td><code>Guard::requireRole($role)</code></td>
+          <td>บังคับ role — throw 403 ถ้าสิทธิ์ไม่เพียงพอ</td>
+        </tr>
+        <tr>
+          <td><code>Guard::check()</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>คืนค่า <code>bool</code> — ไม่ throw exception เหมาะสำหรับ optional auth</td>
+        </tr>
+        <tr>
+          <td><code>Guard::user()</code></td>
+          <td>ดึง payload ของ user จาก JWT</td>
+        </tr>
+        <tr>
+          <td><code>Guard::hasRole($role)</code></td>
+          <td>ตรวจสอบ role โดยไม่ throw — คืนค่า bool</td>
+        </tr>
+        <tr>
+          <td><code>Guard::id()</code></td>
+          <td>ดึง user ID จาก JWT</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Role Constants</h3>
     <table>
       <thead>
         <tr>
@@ -2166,8 +2447,8 @@ php genetics make:migration add_image_to_equipment</code></pre>
 
     <!-- Testing Framework -->
     <h2 id="testing"><a href="#testing" data-i18n="dh.testing"># Testing Framework</a></h2>
-    <p data-i18n="dh.testing.desc">v2.0 — Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
-      test client พร้อม authentication helpers และ fluent assertions</p>
+    <p data-i18n="dh.testing.desc">v2.2 — Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
+      test client พร้อม authentication helpers, database seeding และ fluent assertions</p>
 
     <h3>สร้าง Test File</h3>
     <pre><code><span class="cm"># Scaffold test class</span>
@@ -2208,6 +2489,33 @@ php genetics make:test Users
     }
 }</code></pre>
 
+    <h3>Database Seeding <span class="badge-new">NEW v2.2</span></h3>
+    <pre><code><span class="kw">class</span> <span class="cl">PostsTest</span> <span class="kw">extends</span> <span class="cl">GeneticTestCase</span>
+{
+    <span class="kw">protected function</span> <span class="fn">setUp</span>(): <span class="kw">void</span>
+    {
+        <span class="kw">parent</span>::<span class="fn">setUp</span>();
+
+        <span class="cm">// Insert rows ก่อน test — ลบอัตโนมัติหลัง tearDown()</span>
+        <span class="vr">$this</span>-><span class="fn">seed</span>([
+            <span class="st">'users'</span> => [
+                [<span class="st">'id'</span> => <span class="nb">99</span>, <span class="st">'email'</span> => <span class="st">'seed@test.io'</span>, <span class="st">'role_id'</span> => <span class="nb">1</span>],
+            ],
+            <span class="st">'posts'</span> => [
+                [<span class="st">'id'</span> => <span class="nb">1</span>, <span class="st">'user_id'</span> => <span class="nb">99</span>, <span class="st">'title'</span> => <span class="st">'Hello World'</span>],
+                [<span class="st">'id'</span> => <span class="nb">2</span>, <span class="st">'user_id'</span> => <span class="nb">99</span>, <span class="st">'title'</span> => <span class="st">'Second Post'</span>],
+            ],
+        ]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">testListPosts</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-><span class="fn">actingAsAdmin</span>();
+        <span class="vr">$this</span>-><span class="fn">get</span>(<span class="st">'/api/posts'</span>)-><span class="fn">assertOk</span>()-><span class="fn">assertPaginated</span>();
+    }
+    <span class="cm">// หลัง test: seeded rows ถูกลบอัตโนมัติจาก tearDown()</span>
+}</code></pre>
+
     <h3>Authentication Helpers</h3>
     <table>
       <thead>
@@ -2228,6 +2536,10 @@ php genetics make:test Users
         <tr>
           <td><code>asGuest()</code></td>
           <td>ไม่มี authentication token</td>
+        </tr>
+        <tr>
+          <td><code>seed(array $tableData)</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>Insert rows ก่อน test — ลบอัตโนมัติหลัง tearDown()</td>
         </tr>
       </tbody>
     </table>
@@ -2296,8 +2608,8 @@ vendor/bin/phpunit --testdox</code></pre>
 
     <!-- Cache -->
     <h2 id="cache"><a href="#cache" data-i18n="dh.cache"># Caching Layer</a></h2>
-    <p data-i18n="dh.cache.desc">v2.0 — File-based cache พร้อม TTL, tag-based invalidation และ <code>remember()</code>
-      pattern — ไม่ต้องติดตั้ง Redis หรือ Memcached</p>
+    <p data-i18n="dh.cache.desc">v2.2 — File-based cache พร้อม TTL, tag-based invalidation, <code>remember()</code> pattern
+      และ <code>Cache::namespace()</code> สำหรับแยก key space ระหว่าง module — ไม่ต้องติดตั้ง Redis หรือ Memcached</p>
 
     <h3>การใช้งานพื้นฐาน</h3>
     <pre><code><span class="cm">// เก็บ cache 5 นาที</span>
@@ -2314,6 +2626,17 @@ vendor/bin/phpunit --testdox</code></pre>
 <span class="cm">// Tag-based flush</span>
 <span class="cl">Cache</span>::<span class="fn">tag</span>(<span class="st">'products'</span>)-><span class="fn">put</span>(<span class="st">'list'</span>, <span class="vr">$data</span>, <span class="nb">300</span>);
 <span class="cl">Cache</span>::<span class="fn">flush</span>(<span class="st">'products'</span>); <span class="cm">// ลบทุก entry ที่ tag=products</span></code></pre>
+
+    <h3>Namespace Prefix <span class="badge-new">NEW v2.2</span></h3>
+    <pre><code><span class="cm">// namespace() — เพิ่ม prefix เพื่อแยก cache key ระหว่าง modules</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'users'</span>)-><span class="fn">put</span>(<span class="st">'list'</span>, <span class="vr">$data</span>, <span class="nb">300</span>);   <span class="cm">// key = "users:list"</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'users'</span>)-><span class="fn">get</span>(<span class="st">'list'</span>);               <span class="cm">// ดึง key "users:list"</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'users'</span>)-><span class="fn">flush</span>();                    <span class="cm">// flush ทุก key ใน namespace</span>
+
+<span class="cm">// เทียบเท่ากับ tag() แต่อ่านง่ายกว่าสำหรับ module isolation</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'products'</span>)-><span class="fn">remember</span>(<span class="st">'featured'</span>, <span class="nb">600</span>, <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'products'</span>)-><span class="fn">where</span>(<span class="st">'featured'</span>, <span class="nb">1</span>)-><span class="fn">get</span>();
+});</code></pre>
 
     <h3>API Reference</h3>
     <table>
@@ -2335,6 +2658,10 @@ vendor/bin/phpunit --testdox</code></pre>
         <tr>
           <td><code>Cache::remember(key, ttl, fn)</code></td>
           <td>ดึง/คำนวณ+เก็บ ถ้าไม่พบ</td>
+        </tr>
+        <tr>
+          <td><code>Cache::namespace(prefix)</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>สร้าง namespaced cache instance เพื่อป้องกัน key collision</td>
         </tr>
         <tr>
           <td><code>Cache::forget(key)</code></td>
@@ -2704,9 +3031,9 @@ php genetics market:install og/notifications</code></pre>
 
     <!-- CLI -->
     <h2 id="cli"><a href="#cli" data-i18n="dh.cli"># CLI — Genetics Tool</a></h2>
-    <p data-i18n="dh.cli.desc">Genetics CLI คือหัวใจสำคัญของ Developer Experience (DX) ใน OpenGenetics v2.0
-      ออกแบบมาเพื่อลดงานซ้ำซ้อน ทั้งการวางโครงสร้างไฟล์แบบ Auto-wiring, การจัดการ Database Migration และระบบ AI
-      Scaffolding ที่ช่วยย่นเวลาการเขียนโค้ดซ้ำๆ ให้เหลือเพียงเสี้ยววินาที</p>
+    <p data-i18n="dh.cli.desc">Genetics CLI คือหัวใจของ Developer Experience ใน OpenGenetics — 25+ คำสั่งที่ลดงานซ้ำซ้อน
+      ตั้งแต่ Scaffold endpoint, จัดการ Migration ไปจนถึง AI-assisted code generation
+      ที่สร้าง endpoint พร้อม auth และ cache ในเสี้ยววินาที</p>
 
     <h3>🛠️ ภาพรวมคำสั่ง (Command Overview)</h3>
     <pre><code><span class="cm">// เรียกดูคำสั่งทั้งหมดที่มีในระบบ</span>

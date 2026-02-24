@@ -30,7 +30,7 @@ $projectRoot = findProjectRoot();
 // Banner
 echo "\n";
 echo "  ╔═══════════════════════════════════════════╗\n";
-echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.1.0    ║\n";
+echo "  ║  🧬 OpenGenetics — Genetic CLI  v2.2.0    ║\n";
 echo "  ║  Enterprise PHP Micro-Framework            ║\n";
 echo "  ╚═══════════════════════════════════════════╝\n";
 echo "\n";
@@ -50,7 +50,7 @@ if ($command === 'help' || $command === '--help' || $command === '-h') {
 }
 
 if ($command === '--version' || $command === '-v') {
-    echo "  OpenGenetics Framework v2.1.0\n\n";
+    echo "  OpenGenetics Framework v2.2.0\n\n";
     exit(0);
 }
 
@@ -69,27 +69,27 @@ if (!$projectRoot) {
 bootstrapProject($projectRoot);
 
 match ($command) {
-    'mutate'            => mutate(),
-    'seed'              => seed(),
-    'status'            => status(),
-    'migrate'           => cliMigrate($projectRoot),
-    'migrate:rollback'  => cliMigrateRollback($projectRoot),
-    'migrate:status'    => cliMigrateStatus($projectRoot),
-    'make:endpoint'     => makeEndpoint($projectRoot, $argv[2] ?? null),
-    'make:middleware'   => makeMiddleware($projectRoot, $argv[2] ?? null),
-    'make:migration'    => cliMakeMigration($projectRoot, $argv[2] ?? null),
-    'make:test'         => cliMakeTest($projectRoot, $argv[2] ?? null),
-    'make:admin'        => cliMakeAdmin($projectRoot, $argv[2] ?? null),
-    'make:endpoint-ai'  => cliMakeEndpointAI($projectRoot, $argv[2] ?? null, $argv[3] ?? ''),
-    'cache:clear'       => cliCacheClear($projectRoot),
-    'cache:stats'       => cliCacheStats($projectRoot),
-    'cache:gc'          => cliCacheGc($projectRoot),
-    'market:list'       => cliMarketList($projectRoot, $argv[2] ?? null),
-    'market:search'     => cliMarketSearch($argv[2] ?? null),
-    'market:install'    => cliMarketInstall($projectRoot, $argv[2] ?? null),
-    'modules:list'      => cliModulesList($projectRoot),
-    'docs:generate'     => generateDocs($projectRoot),
-    default             => unknownCommand($command),
+    'mutate' => mutate(),
+    'seed' => seed(),
+    'status' => status(),
+    'migrate' => cliMigrate($projectRoot),
+    'migrate:rollback' => cliMigrateRollback($projectRoot),
+    'migrate:status' => cliMigrateStatus($projectRoot),
+    'make:endpoint' => makeEndpoint($projectRoot, $argv[2] ?? null),
+    'make:middleware' => makeMiddleware($projectRoot, $argv[2] ?? null),
+    'make:migration' => cliMakeMigration($projectRoot, $argv[2] ?? null),
+    'make:test' => cliMakeTest($projectRoot, $argv[2] ?? null),
+    'make:admin' => cliMakeAdmin($projectRoot, $argv[2] ?? null),
+    'make:endpoint-ai' => cliMakeEndpointAI($projectRoot, $argv[2] ?? null, $argv[3] ?? ''),
+    'cache:clear' => cliCacheClear($projectRoot),
+    'cache:stats' => cliCacheStats($projectRoot),
+    'cache:gc' => cliCacheGc($projectRoot),
+    'market:list' => cliMarketList($projectRoot, $argv[2] ?? null),
+    'market:search' => cliMarketSearch($argv[2] ?? null),
+    'market:install' => cliMarketInstall($projectRoot, $argv[2] ?? null),
+    'modules:list' => cliModulesList($projectRoot),
+    'docs:generate' => generateDocs($projectRoot),
+    default => unknownCommand($command),
 };
 
 // ═══════════════════════════════════════════════════════
@@ -118,7 +118,8 @@ function findProjectRoot(): ?string
             return $dir;
         }
         $parent = dirname($dir);
-        if ($parent === $dir) break;
+        if ($parent === $dir)
+            break;
         $dir = $parent;
     }
 
@@ -194,8 +195,12 @@ function newProject(?string $name): void
     } else {
         echo "  📁 Copying project skeleton...\n";
         copyDirectory($skeletonDir, $targetDir, [
-            'vendor', '.git', '.DS_Store', '.env',
-            'node_modules', 'bin',
+            'vendor',
+            '.git',
+            '.DS_Store',
+            '.env',
+            'node_modules',
+            'bin',
         ]);
     }
 
@@ -245,8 +250,10 @@ function copyDirectory(string $src, string $dst, array $exclude = []): void
 
     $items = scandir($src);
     foreach ($items as $item) {
-        if ($item === '.' || $item === '..') continue;
-        if (in_array($item, $exclude, true)) continue;
+        if ($item === '.' || $item === '..')
+            continue;
+        if (in_array($item, $exclude, true))
+            continue;
 
         $srcPath = $src . '/' . $item;
         $dstPath = $dst . '/' . $item;
@@ -263,9 +270,19 @@ function createProjectFromScratch(string $dir, string $name): void
 {
     // Create directory structure
     $dirs = [
-        '', 'api', 'api/auth', 'src', 'src/Auth', 'src/Audit',
-        'src/Core', 'src/I18n', 'public', 'public/styles',
-        'locales', 'sdk', 'bin',
+        '',
+        'api',
+        'api/auth',
+        'src',
+        'src/Auth',
+        'src/Audit',
+        'src/Core',
+        'src/I18n',
+        'public',
+        'public/styles',
+        'locales',
+        'sdk',
+        'bin',
     ];
 
     foreach ($dirs as $d) {
@@ -287,8 +304,8 @@ function createProjectFromScratch(string $dir, string $name): void
         ],
         'scripts' => [
             'mutate' => 'php genetics mutate',
-            'seed'   => 'php genetics seed',
-            'serve'  => 'php genetics serve',
+            'seed' => 'php genetics seed',
+            'serve' => 'php genetics serve',
         ],
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
@@ -506,7 +523,7 @@ function seed(): void
 
     // Seed admin user
     $adminEmail = 'admin@opengenetics.io';
-    $adminPass  = password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]);
+    $adminPass = password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]);
 
     try {
         $existing = \OpenGenetics\Core\Database::query(
@@ -747,7 +764,7 @@ function cliMigrateRollback(string $root): void
 {
     echo "  ⏪ Rolling back last migration batch...\n\n";
 
-    $migrator   = new \OpenGenetics\Core\Migrator($root);
+    $migrator = new \OpenGenetics\Core\Migrator($root);
     $rolledBack = $migrator->rollback();
 
     if (empty($rolledBack)) {
@@ -783,7 +800,8 @@ function cliMigrateStatus(string $root): void
 
     foreach ($statuses as $s) {
         $icon = $s['status'] === 'Ran' ? '✅' : '⏳';
-        printf("  %s %-48s %-10s %-8s %s\n",
+        printf(
+            "  %s %-48s %-10s %-8s %s\n",
             $icon,
             $s['name'],
             $s['status'],
@@ -808,7 +826,7 @@ function cliMakeMigration(string $root, ?string $name): void
     }
 
     $migrator = new \OpenGenetics\Core\Migrator($root);
-    $path     = $migrator->createMigration($name);
+    $path = $migrator->createMigration($name);
     $basename = basename($path);
 
     echo "  ✅ Created migration: database/migrations/{$basename}\n\n";
@@ -888,9 +906,9 @@ function cliCacheStats(string $root): void
     $stats = \OpenGenetics\Core\Cache::stats();
     echo "  📊 Cache Stats\n";
     echo "  " . str_repeat('─', 40) . "\n";
-    printf("  %-20s %s\n", 'Total entries:',  $stats['entries']);
+    printf("  %-20s %s\n", 'Total entries:', $stats['entries']);
     printf("  %-20s %s\n", 'Expired entries:', $stats['expired']);
-    printf("  %-20s %s KB\n", 'Disk size:',   $stats['size_kb']);
+    printf("  %-20s %s KB\n", 'Disk size:', $stats['size_kb']);
     echo "\n  Tags:\n";
     foreach ($stats['tags'] as $tag => $count) {
         echo "    {$tag}: {$count} entries\n";
@@ -919,7 +937,7 @@ function cliMakeAdmin(string $root, ?string $table): void
 
     bootstrapProject($root);
     $path = \OpenGenetics\Core\AdminGenerator::scaffoldApiEndpoint($root, $table);
-    $rel  = str_replace($root . '/', '', $path);
+    $rel = str_replace($root . '/', '', $path);
     echo "  ✅ Admin endpoint: {$rel}\n";
     echo "  🔐 Protected by: ADMIN role middleware\n";
     echo "  📋 Methods: GET (paginated), POST, PUT, DELETE\n\n";
@@ -948,7 +966,7 @@ function cliMakeEndpointAI(string $root, ?string $name, string $description): vo
     echo "\n";
 
     $path = \OpenGenetics\Core\EndpointAI::scaffold($name, $description, [], $root);
-    $rel  = str_replace($root . '/', '', $path);
+    $rel = str_replace($root . '/', '', $path);
     echo "  ✅ Created: {$rel}\n\n";
 }
 
@@ -969,10 +987,11 @@ function cliMarketList(string $root, ?string $type): void
     printf("  %-30s %-10s %-12s %s\n", 'Name', 'Version', 'Type', 'Description');
     echo "  " . str_repeat('─', 80) . "\n";
     foreach ($packages as $p) {
-        printf("  %-30s %-10s %-12s %s\n",
-            $p['name']    ?? '—',
+        printf(
+            "  %-30s %-10s %-12s %s\n",
+            $p['name'] ?? '—',
             $p['version'] ?? '—',
-            $p['type']    ?? '—',
+            $p['type'] ?? '—',
             mb_strimwidth($p['description'] ?? '', 0, 40, '...')
         );
     }
@@ -1046,8 +1065,10 @@ function cliModulesList(string $root): void
     echo "  🧩 Registered Modules\n\n";
     foreach ($modules as $m) {
         echo "  📦 {$m['name']} v{$m['version']}\n";
-        if ($m['middleware']) echo "     Middleware: " . implode(', ', $m['middleware']) . "\n";
-        if ($m['commands'])   echo "     Commands:   " . implode(', ', $m['commands']) . "\n";
+        if ($m['middleware'])
+            echo "     Middleware: " . implode(', ', $m['middleware']) . "\n";
+        if ($m['commands'])
+            echo "     Commands:   " . implode(', ', $m['commands']) . "\n";
         echo "\n";
     }
 }

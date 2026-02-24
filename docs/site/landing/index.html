@@ -909,6 +909,21 @@
       color: #4f46e5 !important
     }
 
+    /* Feature NEW badge */
+    .feat-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      line-height: 1.6;
+      vertical-align: middle;
+    }
+
     /* Hero copy button — subtle in light */
     [data-theme="light"] #hero-copy {
       color: #94a3b8 !important
@@ -1105,22 +1120,22 @@
         class="inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[13px] font-medium text-indigo-300 mb-9 transition-all ease-out-expo duration-600"
         style="background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);backdrop-filter:blur(8px)">
         <span class="w-1.5 h-1.5 rounded-full bg-[#00cfff] dot-pulse"></span>
-        v2.1.0 — Stable Release
+        v2.2.0 — Query Builder &amp; Testing DX
       </div>
       <img id="hero-logo" src="../images/logo/open-genetics-logo-white.svg" alt="OpenGenetics"
         class="mx-auto mb-8 block w-auto float-anim"
         style="height:clamp(56px,7vw,84px);filter:drop-shadow(0 0 28px rgba(0,207,255,.35)) drop-shadow(0 0 60px rgba(108,99,255,.2))">
       <h1 id="hero-h1" class="font-extrabold tracking-[-0.03em] text-white mb-5 leading-[1.1] px-2 sm:px-0"
         style="font-size:clamp(32px,8vw,72px)">
-        PHP <span class="grad-text">Micro-Framework</span>
+        REST API <span class="grad-text">ใน 5 นาที</span>
       </h1>
       <p id="hero-sub"
         class="text-white/40 max-w-[580px] w-full mx-auto px-4 sm:px-0 mb-10 leading-[1.8] text-[15px] sm:text-[16px] lg:text-[18px]"
         data-i18n="hero.subtitle">
-        เฟรมเวิร์ค PHP ที่มาพร้อม <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong
-          class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">i18n</strong> และ
-        <strong class="text-white/70 font-medium">Genetic SDK</strong> ให้คุณสร้าง REST API ที่ปลอดภัย เร็ว และขยายได้ —
-        บน XAMPP
+        PHP Micro-Framework ที่มาพร้อม <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong
+          class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">Query Builder</strong>
+        และ <strong class="text-white/70 font-medium">Genetic SDK</strong> — ทุกอย่างพร้อมตั้งแต่คำสั่งแรก
+        ไม่ต้องเขียน boilerplate อีกต่อไป
       </p>
       <!-- CTA — Elysia-style: pill button + translucent install cmd + stroke copy icon -->
       <div id="hero-btns"
@@ -1148,7 +1163,7 @@
       </div>
       <!-- Scroll hint with arrow -->
       <div id="hero-scroll" class="mt-12 flex items-center justify-center gap-2">
-        <p class="text-white/20 text-sm" data-i18n="hero.scroll">See why developers love OpenGenetics</p>
+        <p class="text-white/20 text-sm" data-i18n="hero.scroll">ทำไมนักพัฒนาถึงเลือก OpenGenetics</p>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2"
           stroke="currentColor" class="text-white/20 animate-bounce">
           <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -1164,8 +1179,8 @@
         <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3"
           data-i18n="feat.title">คุณสมบัติ</p>
         <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)"
-          data-i18n-html="feat.heading">พร้อมใช้งาน<span class="grad-text2"> ตั้งแต่วันแรก</span></h2>
-        <p class="text-base text-white/38" data-i18n="feat.subtitle">ไม่ต้องตั้งค่าซับซ้อน — ทุกอย่างอยู่ในกล่องเดียว
+          data-i18n-html="feat.heading">ทุกอย่างที่ต้องการ<span class="grad-text2"> อยู่ในกล่องเดียว</span></h2>
+        <p class="text-base text-white/38" data-i18n="feat.subtitle">ไม่ต้องติดตั้ง package เพิ่ม — Auth, RBAC, Query Builder, Testing พร้อมทันที
         </p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -1261,6 +1276,45 @@
             อัตโนมัติแบบ Non-blocking — ติดตาม CREATE, UPDATE, DELETE, LOGIN ได้ทันที</p>
         </div>
 
+        <div
+          class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+          <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5"
+            style="background:rgba(108,99,255,.15);color:#818cf8;border:1px solid rgba(108,99,255,.22)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+            </svg>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <h3 class="text-[16px] font-bold text-slate-100" data-i18n="feat.qb.title">Query Builder</h3>
+            <span class="feat-badge">NEW</span>
+          </div>
+          <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n-html="feat.qb.desc">Fluent Query Builder บน PDO — <code
+              class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">DB::table('users')->where('active',1)->paginate(20)</code>
+            พร้อม prepared statements ทุกคำสั่ง</p>
+        </div>
+
+        <div
+          class="feat-card rounded-2xl p-7 relative overflow-hidden border border-white/[0.06] bg-white/[0.025] hover:bg-indigo-500/[0.04] hover:border-indigo-500/20 hover:scale-105 hover:shadow-xl hover:z-10 transition-all ease-out-expo duration-600">
+          <div class="w-12 h-12 rounded-[13px] flex items-center justify-center mb-5"
+            style="background:rgba(0,207,255,.1);color:#00cfff;border:1px solid rgba(0,207,255,.2)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+            </svg>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <h3 class="text-[16px] font-bold text-slate-100" data-i18n="feat.test.title">Testing Framework</h3>
+            <span class="feat-badge">NEW</span>
+          </div>
+          <p class="text-[14px] text-white/42 leading-[1.7]" data-i18n-html="feat.test.desc">HTTP test client พร้อม <code
+              class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">actingAs()</code>, <code
+              class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">seed()</code> และ fluent assertions —
+            ทดสอบ API ได้ทันทีโดยไม่ต้อง mock</p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1273,8 +1327,8 @@
         <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3"
           data-i18n="code.title">ตัวอย่างโค้ด</p>
         <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)"
-          data-i18n-html="code.heading">เขียนน้อย <span class="grad-text2">ได้มาก</span></h2>
-        <p class="text-base text-white/38" data-i18n="code.subtitle">API พร้อมใช้งานใน 10 บรรทัด — ไม่ต้องประกาศ route
+          data-i18n-html="code.heading">โค้ดที่อ่านง่าย <span class="grad-text2">ผลลัพธ์ที่ทรงพลัง</span></h2>
+        <p class="text-base text-white/38" data-i18n="code.subtitle">สร้างไฟล์ → ได้ endpoint ทันที — ไม่มี routing config, ไม่มี boilerplate
         </p>
       </div>
       <div class="max-w-[860px] mx-auto reveal">
@@ -1292,7 +1346,7 @@
           <button
             class="code-tab px-6 py-2.5 rounded-t-xl text-[13px] font-semibold cursor-pointer font-sans transition-all"
             onclick="switchTab(this,'tab-db')"
-            style="background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.07);border-bottom:none">Database</button>
+            style="background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.07);border-bottom:none">Query Builder</button>
         </div>
         <div
           class="code-block rounded-b-2xl rounded-tr-2xl overflow-x-auto font-mono text-[13px] leading-[2.05] text-slate-200"
@@ -1325,23 +1379,21 @@
 <span class="cl">Response</span>::<span class="fn">success</span>(<span class="vr">$users</span>);</pre>
           </div>
           <div id="tab-db" class="code-panel">
-            <pre><span class="cm">// PDO Singleton — real prepared statements</span>
-<span class="kw">use</span> OpenGenetics\Core\<span class="cl">Database</span>;
+            <pre><span class="cm">// Query Builder — fluent API, prepared statements ทุกคำสั่ง</span>
+<span class="kw">use</span> OpenGenetics\Core\{<span class="cl">DB</span>, <span class="cl">Response</span>};
+<span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
 
-<span class="cm">// Query (fetch all)</span>
-<span class="vr">$rows</span> = <span class="cl">Database</span>::<span class="fn">query</span>(
-    <span class="st">"SELECT * FROM users WHERE role_id = :role"</span>,
-    [<span class="st">'role'</span> => <span class="nb">2</span>]
-);
+<span class="cm">// GET /api/users — paginated, filtered, sorted</span>
+<span class="cl">Guard</span>::<span class="fn">requireAuth</span>();
+<span class="vr">$result</span> = <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
+    -><span class="fn">select</span>([<span class="st">'id'</span>, <span class="st">'email'</span>, <span class="st">'role_name'</span>, <span class="st">'created_at'</span>])
+    -><span class="fn">where</span>(<span class="st">'is_active'</span>, <span class="nb">1</span>)
+    -><span class="fn">where</span>(<span class="st">'tenant_id'</span>, <span class="cl">Guard</span>::<span class="fn">user</span>()[<span class="st">'tenant_id'</span>])
+    -><span class="fn">orderBy</span>(<span class="st">'created_at'</span>, <span class="st">'DESC'</span>)
+    -><span class="fn">paginate</span>(<span class="nb">20</span>); <span class="cm">// page từ ?page= อัตโนมัติ</span>
 
-<span class="cm">// Execute (insert/update/delete)</span>
-<span class="cl">Database</span>::<span class="fn">execute</span>(
-    <span class="st">"UPDATE users SET is_active = :a WHERE id = :id"</span>,
-    [<span class="st">'a'</span> => <span class="nb">0</span>, <span class="st">'id'</span> => <span class="nb">5</span>]
-);
-
-<span class="cm">// Transaction</span>
-<span class="cl">Database</span>::<span class="fn">transaction</span>(<span class="kw">fn</span>() => <span class="fn">doWork</span>());</pre>
+<span class="cl">Response</span>::<span class="fn">paginatedFrom</span>(<span class="vr">$result</span>);
+<span class="cm">// → {"success":true,"data":[...],"meta":{"total":...,"last_page":...}}</span></pre>
           </div>
         </div>
       </div>
@@ -1355,8 +1407,8 @@
         <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3"
           data-i18n="cmp.title">เปรียบเทียบ</p>
         <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)"
-          data-i18n-html="cmp.heading">ทำไมต้อง <span class="grad-text2">OpenGenetics</span></h2>
-        <p class="text-base text-white/38" data-i18n="cmp.subtitle">เทียบกับ framework ยอดนิยมสำหรับ REST API</p>
+          data-i18n-html="cmp.heading">ทำไมไม่ใช้ <span class="grad-text2">Laravel หรือ Slim?</span></h2>
+        <p class="text-base text-white/38" data-i18n="cmp.subtitle">คำตอบอยู่ในตารางเดียว — ทุก feature พร้อมโดยไม่ต้องติดตั้ง package เพิ่ม</p>
       </div>
       <div class="max-w-[860px] mx-auto reveal overflow-hidden rounded-2xl"
         style="border:1px solid rgba(255,255,255,.065)">
@@ -1455,6 +1507,22 @@
               </td>
             </tr>
             <tr class="hover:bg-indigo-500/[0.04] transition-colors">
+              <td class="px-5 py-3 text-white/62" style="border-bottom:1px solid rgba(255,255,255,.04)">Query Builder</td>
+              <td class="px-5 py-3 text-center font-semibold text-emerald-400"
+                style="background:rgba(108,99,255,.04);border-bottom:1px solid rgba(255,255,255,.04)"><svg
+                  xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                  stroke-width="2.5" stroke="currentColor" class="inline-block">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg></td>
+              <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="border-bottom:1px solid rgba(255,255,255,.04)"><svg
+                  xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                  stroke-width="2.5" stroke="currentColor" class="inline-block">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg></td>
+              <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Plugin</td>
+              <td class="px-5 py-3 text-center text-white/20" style="border-bottom:1px solid rgba(255,255,255,.04)">Plugin</td>
+            </tr>
+            <tr class="hover:bg-indigo-500/[0.04] transition-colors">
               <td class="px-5 py-3 text-white/62">Frontend SDK</td>
               <td class="px-5 py-3 text-center font-semibold text-emerald-400" style="background:rgba(108,99,255,.04)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
@@ -1480,8 +1548,8 @@
         <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3"
           data-i18n="req.title">ความต้องการ</p>
         <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)"
-          data-i18n-html="req.heading">System <span class="grad-text2">Requirements</span></h2>
-        <p class="text-base text-white/38" data-i18n="req.subtitle">ใช้งานได้บน XAMPP ทันที — ไม่ต้องติดตั้งเพิ่ม</p>
+          data-i18n-html="req.heading">ทำงานได้บน <span class="grad-text2">XAMPP ทันที</span></h2>
+        <p class="text-base text-white/38" data-i18n="req.subtitle">ไม่ต้องติดตั้ง Redis, Docker หรือ Nginx — PHP 8.1 + MySQL + Composer ก็พอ</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 max-w-[860px] mx-auto">
         <div
@@ -1561,8 +1629,8 @@
         <p class="section-label text-[11px] font-bold tracking-[.12em] uppercase text-indigo-400 mb-3"
           data-i18n="qs.title">เริ่มต้นใช้งาน</p>
         <h2 class="font-extrabold tracking-[-0.025em] text-white mb-3" style="font-size:clamp(26px,3.5vw,42px)"
-          data-i18n-html="qs.heading">เริ่มต้นด้วย<span class="grad-text2"> Composer</span></h2>
-        <p class="text-base text-white/38" data-i18n="qs.subtitle">5 ขั้นตอน — เหมือนติดตั้ง Laravel</p>
+          data-i18n-html="qs.heading">จาก Terminal สู่ <span class="grad-text2">API พร้อมใช้</span></h2>
+        <p class="text-base text-white/38" data-i18n="qs.subtitle">4 คำสั่ง — API ที่มี Auth, RBAC และ Database พร้อมทดสอบ</p>
       </div>
       <div class="max-w-[740px] mx-auto flex flex-col gap-3">
 
@@ -1699,20 +1767,18 @@
     <div class="relative z-10 max-w-[680px] mx-auto reveal">
       <h2 class="font-extrabold tracking-[-0.025em] text-white mb-4" style="font-size:clamp(30px,4.5vw,52px)"
         data-i18n="dl.title">
-        เริ่มต้นกับ <span class="grad-text2">OpenGenetics</span>
+        พร้อมสร้าง API <span class="grad-text2">ชิ้นแรกแล้วหรือยัง?</span>
       </h2>
-      <p class="text-[17px] text-white/42 mb-10" data-i18n="dl.subtitle">เวอร์ชัน 1.0.0 พร้อมใช้งาน — ฟรีและ Open Source
-        (MIT License)</p>
+      <p class="text-[17px] text-white/42 mb-10" data-i18n="dl.subtitle">v2.2.0 — ฟรีและ Open Source (MIT License)<br>
+        หนึ่งคำสั่ง สร้าง API ที่มี Auth, RBAC และ Database พร้อมใช้ทันที</p>
       <div class="flex gap-3 justify-center flex-wrap items-center">
         <a href="https://github.com/jkstudio99/open-genetics" target="_blank"
           class="inline-flex items-center gap-2 text-white font-semibold bg-indigo-500 px-6 py-3 rounded-full shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-110 transition-all ease-out-expo duration-300"
           data-i18n="dl.btn.github">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-            stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
           </svg>
-          ดาวน์โหลดจาก GitHub
+          เริ่มต้นบน GitHub
         </a>
         <a href="/overview.html" id="cta-docs-btn"
           class="inline-flex items-center gap-2 text-white/70 font-semibold px-6 py-3 rounded-full border border-white/10 bg-white/[0.04] hover:text-white hover:border-indigo-500/30 hover:bg-indigo-500/10 hover:scale-105 transition-all ease-out-expo duration-300 backdrop-blur-sm"
@@ -1722,7 +1788,7 @@
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
           </svg>
-          อ่านคู่มือฉบับเต็ม
+          อ่าน Documentation
         </a>
       </div>
     </div>
@@ -2039,25 +2105,26 @@
       num: n => `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">${n}</text></svg>`,
     };
     const searchData = [
-      { title: 'Features', desc: 'JWT Auth, RBAC, i18n, SDK — ทุกอย่างพร้อมใช้งาน', href: '#features', icon: siSvg.bolt },
-      { title: 'Speed < 50ms', desc: 'Micro-framework ที่เบาที่สุด PDO Singleton File-based Routing', href: '#features', icon: siSvg.bolt },
-      { title: 'JWT Authentication', desc: 'ระบบยืนยันตัวตน HS256 Bcrypt firebase/php-jwt', href: '#features', icon: siSvg.lock },
-      { title: 'RBAC 3 ระดับ', desc: 'Guard ควบคุมสิทธิ์ Admin Manager Employee', href: '#features', icon: siSvg.shield },
-      { title: 'i18n Engine', desc: 'สลับภาษา Thai English X-Locale header', href: '#features', icon: siSvg.globe },
-      { title: 'Dual SDK', desc: 'React Hook Vanilla JS SDK auth RBAC i18n API calls', href: '#features', icon: siSvg.cube },
-      { title: 'Audit Trail', desc: 'บันทึก log ทุก action CREATE UPDATE DELETE LOGIN', href: '#features', icon: siSvg.clip },
-      { title: 'Code Examples', desc: 'Auth API, RBAC Guard, Database operations', href: '#code-examples', icon: siSvg.code },
-      { title: 'Comparison', desc: 'เปรียบเทียบ OpenGenetics vs Laravel Slim Lumen', href: '#comparison', icon: siSvg.chart },
-      { title: 'System Requirements', desc: 'PHP 8.1+ MySQL 5.7+ Composer Apache XAMPP', href: '#requirements', icon: siSvg.cog },
-      { title: 'Quick Start — Installation', desc: 'composer create-project open-genetics/framework', href: '#quickstart', icon: siSvg.rocket },
+      { title: 'Features', desc: 'JWT Auth, RBAC, Query Builder, i18n, Testing, SDK — ทุกอย่างพร้อมใช้งาน', href: '#features', icon: siSvg.bolt },
+      { title: 'Speed < 50ms', desc: 'Micro-framework ที่เบาที่สุด PDO Singleton File-based Routing ไม่มี ORM', href: '#features', icon: siSvg.bolt },
+      { title: 'JWT Authentication', desc: 'ระบบยืนยันตัวตน HS256 Bcrypt 12 รอบ firebase/php-jwt', href: '#features', icon: siSvg.lock },
+      { title: 'RBAC 3 ระดับ', desc: 'Guard ควบคุมสิทธิ์ Admin Manager Employee Guard::requireRole Guard::check', href: '#features', icon: siSvg.shield },
+      { title: 'Query Builder — NEW v2.2', desc: 'DB::table()->where()->paginate() fluent API prepared statements ทุกคำสั่ง', href: '#features', icon: siSvg.cube },
+      { title: 'Testing Framework — NEW v2.2', desc: 'GeneticTestCase actingAs seed assertOk assertPaginated HTTP test client', href: '#features', icon: siSvg.clip },
+      { title: 'i18n Engine', desc: 'สลับภาษา Thai English instant X-Locale header lang param lazy load', href: '#features', icon: siSvg.globe },
+      { title: 'Dual SDK', desc: 'React Hook Vanilla JS SDK auth RBAC i18n API calls ไฟล์เดียว', href: '#features', icon: siSvg.cube },
+      { title: 'Audit Trail', desc: 'บันทึก log ทุก action CREATE UPDATE DELETE LOGIN Non-blocking', href: '#features', icon: siSvg.clip },
+      { title: 'Code Examples', desc: 'Auth API, RBAC Guard, Query Builder paginate paginatedFrom', href: '#code', icon: siSvg.code },
+      { title: 'Comparison', desc: 'เปรียบเทียบ OpenGenetics vs Laravel Slim Lumen Query Builder built-in', href: '#comparison', icon: siSvg.chart },
+      { title: 'System Requirements', desc: 'PHP 8.1+ MySQL 5.7+ Composer 2+ Apache XAMPP mod_rewrite', href: '#requirements', icon: siSvg.cog },
+      { title: 'Quick Start — Installation', desc: 'composer create-project open-genetics/framework my-api 4 คำสั่ง', href: '#quickstart', icon: siSvg.rocket },
       { title: 'Step 1: สร้างโปรเจกต์', desc: 'composer create-project open-genetics/framework my-api', href: '#quickstart', icon: siSvg.num(1) },
-      { title: 'Step 2: Dependencies', desc: 'composer install', href: '#quickstart', icon: siSvg.num(2) },
-      { title: 'Step 3: Environment', desc: 'cp .env.example .env DB_HOST DB_NAME', href: '#quickstart', icon: siSvg.num(3) },
-      { title: 'Step 4: Scaffolding', desc: 'php genetics mutate — สร้างตาราง Seed RBAC', href: '#quickstart', icon: siSvg.num(4) },
-      { title: 'Step 5: Serve', desc: 'php genetics serve — dev server 127.0.0.1:8080', href: '#quickstart', icon: siSvg.num(5) },
+      { title: 'Step 2: Environment', desc: 'cp .env.example .env แก้ไข DB_NAME DB_PASS JWT_SECRET', href: '#quickstart', icon: siSvg.num(2) },
+      { title: 'Step 3: Bootstrap', desc: 'php genetics mutate — สร้างตาราง Seed RBAC Admin user อัตโนมัติ', href: '#quickstart', icon: siSvg.num(3) },
+      { title: 'Step 4: Dev Server', desc: 'php genetics serve — dev server 127.0.0.1:8080', href: '#quickstart', icon: siSvg.num(4) },
       { title: 'Documentation', desc: 'อ่านคู่มือฉบับเต็ม — API Reference, CLI, Deployment', href: '../docs/index.html', icon: siSvg.book },
-      { title: 'OpenAPI Generator', desc: 'ระบบสร้าง OpenAPI 3.0 (Swagger) อัตโนมัติจากไฟล์ในโฟลเดอร์ api/ และ PHPDoc comments', href: '../docs/openapi.html', icon: siSvg.code },
-      { title: 'GitHub Repository', desc: 'open-genetics/framework — MIT License', href: 'https://github.com/jkstudio99/open-genetics', icon: siSvg.git },
+      { title: 'OpenAPI Generator', desc: 'สร้าง OpenAPI 3.0 Swagger อัตโนมัติจาก api/ directory', href: '../docs/openapi.html', icon: siSvg.code },
+      { title: 'GitHub Repository', desc: 'open-genetics/framework — MIT License v2.2.0', href: 'https://github.com/jkstudio99/open-genetics', icon: siSvg.git },
     ];
 
     function openSearch() {

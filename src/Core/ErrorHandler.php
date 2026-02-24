@@ -10,9 +10,19 @@ namespace OpenGenetics\Core;
  * Catches all uncaught exceptions and PHP errors, returning
  * clean JSON responses instead of raw PHP error output.
  * In production (APP_DEBUG=false), sensitive details are hidden.
+ *
+ * Features:
+ *  - File-based daily rotating logs: storage/logs/app-YYYY-MM-DD.log
+ *  - Custom reporter hook: ErrorHandler::reporter(fn($e) => ...)
  */
 final class ErrorHandler
 {
+    /** @var callable|null Custom error reporter (e.g. Sentry, Bugsnag) */
+    private static $reporter = null;
+
+    /** @var string Resolved log directory (auto-created on first write) */
+    private static string $logDir = '';
+
     /**
      * Register the global error and exception handlers.
      */
@@ -24,12 +34,38 @@ final class ErrorHandler
     }
 
     /**
+     * Register a custom error reporter callback.
+     * Called for every exception alongside file logging.
+     *
+     * ErrorHandler::reporter(function (\Throwable $e): void {
+     *     // e.g., send to Sentry, Bugsnag, Slack
+     * });
+     */
+    public static function reporter(callable $callback): void
+    {
+        self::$reporter = $callback;
+    }
+
+    /**
      * Handle uncaught exceptions.
      */
     public static function handleException(\Throwable $e): void
     {
         $code = $e->getCode();
         $code = ($code >= 400 && $code < 600) ? $code : 500;
+
+        // Always write to the daily rotating log file
+        self::writeLog($e);
+
+        // Fire custom reporter — must never crash the HTTP response
+        if (self::$reporter !== null) {
+            try {
+                $reporter = self::$reporter;
+                $reporter($e);
+            } catch (\Throwable) {
+                // Silently swallow reporter failures
+            }
+        }
 
         $payload = [
             'success' => false,
@@ -38,7 +74,7 @@ final class ErrorHandler
 
         if (Env::isDebug()) {
             $payload['debug'] = [
-                'exception' => get_class($e),
+                'exception' => $e::class,
                 'file'      => $e->getFile(),
                 'line'      => $e->getLine(),
                 'trace'     => array_slice(
@@ -52,15 +88,42 @@ final class ErrorHandler
             ];
         }
 
-        // Log to error_log in production
-        if (!Env::isDebug()) {
-            error_log("[OpenGenetics] {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}");
-        }
-
         http_response_code($code);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($payload, JSON_UNESCAPED_UNICODE);
         exit;
+    }
+
+    // ─── File Logging ──────────────────────────────────────
+
+    /**
+     * Append an exception entry to the daily log file.
+     * Path: storage/logs/app-2026-02-24.log
+     */
+    private static function writeLog(\Throwable $e): void
+    {
+        try {
+            $dir   = self::logDirectory();
+            $file  = $dir . '/app-' . date('Y-m-d') . '.log';
+            $level = ($e->getCode() >= 400 && $e->getCode() < 500) ? 'WARNING' : 'ERROR';
+            $ts    = date('Y-m-d H:i:s');
+            $entry = "[{$ts}] {$level} " . $e::class . ": {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}" . PHP_EOL;
+            file_put_contents($file, $entry, FILE_APPEND | LOCK_EX);
+        } catch (\Throwable) {
+            // File logging must never break the HTTP response
+            error_log("[OpenGenetics] {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}");
+        }
+    }
+
+    private static function logDirectory(): string
+    {
+        if (self::$logDir === '') {
+            self::$logDir = dirname(__DIR__, 2) . '/storage/logs';
+        }
+        if (!is_dir(self::$logDir)) {
+            mkdir(self::$logDir, 0755, true);
+        }
+        return self::$logDir;
     }
 
     /**

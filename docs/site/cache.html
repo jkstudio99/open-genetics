@@ -414,8 +414,8 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <main class="doc-content" id="doc-main">
 
 <h2 id="cache"><a href="#cache" data-i18n="dh.cache"># Caching Layer</a></h2>
-    <p data-i18n="dh.cache.desc">v2.0 — File-based cache พร้อม TTL, tag-based invalidation และ <code>remember()</code>
-      pattern — ไม่ต้องติดตั้ง Redis หรือ Memcached</p>
+    <p data-i18n="dh.cache.desc">v2.2 — File-based cache พร้อม TTL, tag-based invalidation, <code>remember()</code> pattern
+      และ <code>Cache::namespace()</code> สำหรับแยก key space ระหว่าง module — ไม่ต้องติดตั้ง Redis หรือ Memcached</p>
 
     <h3>การใช้งานพื้นฐาน</h3>
     <pre><code><span class="cm">// เก็บ cache 5 นาที</span>
@@ -432,6 +432,17 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <span class="cm">// Tag-based flush</span>
 <span class="cl">Cache</span>::<span class="fn">tag</span>(<span class="st">'products'</span>)-><span class="fn">put</span>(<span class="st">'list'</span>, <span class="vr">$data</span>, <span class="nb">300</span>);
 <span class="cl">Cache</span>::<span class="fn">flush</span>(<span class="st">'products'</span>); <span class="cm">// ลบทุก entry ที่ tag=products</span></code></pre>
+
+    <h3>Namespace Prefix <span class="badge-new">NEW v2.2</span></h3>
+    <pre><code><span class="cm">// namespace() — เพิ่ม prefix เพื่อแยก cache key ระหว่าง modules</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'users'</span>)-><span class="fn">put</span>(<span class="st">'list'</span>, <span class="vr">$data</span>, <span class="nb">300</span>);   <span class="cm">// key = "users:list"</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'users'</span>)-><span class="fn">get</span>(<span class="st">'list'</span>);               <span class="cm">// ดึง key "users:list"</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'users'</span>)-><span class="fn">flush</span>();                    <span class="cm">// flush ทุก key ใน namespace</span>
+
+<span class="cm">// เทียบเท่ากับ tag() แต่อ่านง่ายกว่าสำหรับ module isolation</span>
+<span class="cl">Cache</span>::<span class="fn">namespace</span>(<span class="st">'products'</span>)-><span class="fn">remember</span>(<span class="st">'featured'</span>, <span class="nb">600</span>, <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="cl">DB</span>::<span class="fn">table</span>(<span class="st">'products'</span>)-><span class="fn">where</span>(<span class="st">'featured'</span>, <span class="nb">1</span>)-><span class="fn">get</span>();
+});</code></pre>
 
     <h3>API Reference</h3>
     <table>
@@ -453,6 +464,10 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
         <tr>
           <td><code>Cache::remember(key, ttl, fn)</code></td>
           <td>ดึง/คำนวณ+เก็บ ถ้าไม่พบ</td>
+        </tr>
+        <tr>
+          <td><code>Cache::namespace(prefix)</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>สร้าง namespaced cache instance เพื่อป้องกัน key collision</td>
         </tr>
         <tr>
           <td><code>Cache::forget(key)</code></td>

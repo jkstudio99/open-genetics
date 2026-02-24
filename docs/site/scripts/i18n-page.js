@@ -22,16 +22,16 @@
 
     // ── Hero ──
     'hero.subtitle': {
-      th: 'เฟรมเวิร์ค PHP ที่มาพร้อม <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">i18n</strong> และ <strong class="text-white/70 font-medium">Genetic SDK</strong> ให้คุณสร้าง REST API ที่ปลอดภัย เร็ว และขยายได้ — บน XAMPP',
-      en: 'A PHP framework with built-in <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">i18n</strong> and <strong class="text-white/70 font-medium">Genetic SDK</strong>. Build secure, fast, and scalable REST APIs — on XAMPP.'
+      th: 'PHP Micro-Framework ที่มาพร้อม <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">Query Builder</strong> และ <strong class="text-white/70 font-medium">Genetic SDK</strong> — ทุกอย่างพร้อมตั้งแต่คำสั่งแรก ไม่ต้องเขียน boilerplate อีกต่อไป',
+      en: 'PHP Micro-Framework with built-in <strong class="text-white/70 font-medium">JWT Auth</strong>, <strong class="text-white/70 font-medium">RBAC</strong>, <strong class="text-white/70 font-medium">Query Builder</strong> and <strong class="text-white/70 font-medium">Genetic SDK</strong> — everything ready from the first command. No more boilerplate.'
     },
     'hero.btn.start': { th: 'เริ่มต้นใช้งาน', en: 'Get Started' },
     'hero.btn.docs': { th: 'อ่านคู่มือ', en: 'Read Docs' },
 
     // ── Features ──
     'feat.title': { th: 'คุณสมบัติ', en: 'Features' },
-    'feat.heading': { th: 'พร้อมใช้งาน<span class="grad-text2"> ตั้งแต่วันแรก</span>', en: 'Ready to use<span class="grad-text2"> from day one</span>' },
-    'feat.subtitle': { th: 'พร้อมใช้งานตั้งแต่วันแรก ไม่ต้องตั้งค่าซับซ้อน', en: 'Ready to use from day one — no complex configuration needed.' },
+    'feat.heading': { th: 'ทุกอย่างที่ต้องการ<span class="grad-text2"> อยู่ในกล่องเดียว</span>', en: 'Everything you need<span class="grad-text2"> in one box</span>' },
+    'feat.subtitle': { th: 'ไม่ต้องติดตั้ง package เพิ่ม — Auth, RBAC, Query Builder, Testing พร้อมทันที', en: 'No extra packages — Auth, RBAC, Query Builder, and Testing ready out of the box.' },
 
     'feat.speed.title': { th: 'รวดเร็ว < 50ms', en: 'Fast < 50ms' },
     'feat.speed.desc': {
@@ -47,26 +47,26 @@
 
     'feat.rbac.title': { th: 'RBAC 3 ระดับ', en: '3-Level RBAC' },
     'feat.rbac.desc': {
-      th: 'Guard ควบคุมสิทธิ์ Admin, HR, Employee ในระดับ DNA ของทุก API request — เพียงบรรทัดเดียว',
-      en: 'Guard controls Admin, HR, Employee access at the DNA level of every API request — in a single line.'
+      th: 'Guard ควบคุมสิทธิ์ Admin, Manager, Employee ในระดับ DNA ของทุก API request — เพียงบรรทัดเดียว',
+      en: 'Guard controls Admin, Manager, Employee access at the DNA level of every API request — in a single line.'
     },
 
-    'feat.i18n.title': { th: 'หลายภาษา (i18n)', en: 'Multi-language (i18n)' },
+    'feat.i18n.title': { th: 'i18n Engine', en: 'i18n Engine' },
     'feat.i18n.desc': {
-      th: 'รองรับ Thai/English ด้วย JSON dictionaries สลับภาษาผ่าน HTTP Header แบบ real-time ไม่ต้องรีโหลด',
-      en: 'Thai/English support with JSON dictionaries. Switch languages via HTTP Header in real-time without reload.'
+      th: 'สลับภาษา Thai/English ทันทีผ่าน X-Locale header หรือ ?lang= param — Lazy load ประหยัด ~0.5ms',
+      en: 'Switch Thai/English instantly via X-Locale header or ?lang= param — lazy load saves ~0.5ms.'
     },
 
-    'feat.sdk.title': { th: 'Genetic SDK', en: 'Genetic SDK' },
+    'feat.sdk.title': { th: 'Dual SDK', en: 'Dual SDK' },
     'feat.sdk.desc': {
-      th: 'SDK สำเร็จรูปสำหรับ Vanilla JS และ React Hook — Login, i18n, Theme Switching ด้วยโค้ดบรรทัดเดียว',
-      en: 'Ready-made SDK for Vanilla JS and React Hook — Login, i18n, Theme Switching in a single line of code.'
+      th: 'React Hook + Vanilla JS SDK พร้อมใช้งาน — ครอบคลุม auth, RBAC, i18n และ API calls ในไฟล์เดียว',
+      en: 'Ready-made React Hook + Vanilla JS SDK — covers auth, RBAC, i18n and API calls in a single file.'
     },
 
     'feat.audit.title': { th: 'Audit Trail', en: 'Audit Trail' },
     'feat.audit.desc': {
-      th: 'บันทึก Log กิจกรรมอัตโนมัติ CREATE/UPDATE/DELETE แบบ Non-blocking — ไม่กระทบประสิทธิภาพ',
-      en: 'Auto-log all CREATE/UPDATE/DELETE activities in non-blocking mode — zero performance impact.'
+      th: 'บันทึก log ทุก action อัตโนมัติแบบ Non-blocking — ติดตาม CREATE, UPDATE, DELETE, LOGIN ได้ทันที',
+      en: 'Auto-log every action non-blocking — track CREATE, UPDATE, DELETE, LOGIN instantly.'
     },
 
     'feat.route.title': { th: 'File-based Routing', en: 'File-based Routing' },
@@ -87,15 +87,28 @@
       en: 'PSR-4 standard namespace structure. Works with Composer autoloader out of the box.'
     },
 
+    // ── NEW v2.2 Features ──
+    'feat.qb.title': { th: 'Query Builder', en: 'Query Builder' },
+    'feat.qb.desc': {
+      th: 'Fluent Query Builder บน PDO — <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">DB::table(\'users\')->where(\'active\',1)->paginate(20)</code> พร้อม prepared statements ทุกคำสั่ง',
+      en: 'Fluent Query Builder on PDO — <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">DB::table(\'users\')->where(\'active\',1)->paginate(20)</code> with prepared statements on every query.'
+    },
+
+    'feat.test.title': { th: 'Testing Framework', en: 'Testing Framework' },
+    'feat.test.desc': {
+      th: 'HTTP test client พร้อม <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">actingAs()</code>, <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">seed()</code> และ fluent assertions — ทดสอบ API ได้ทันทีโดยไม่ต้อง mock',
+      en: 'HTTP test client with <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">actingAs()</code>, <code class="text-indigo-300 bg-indigo-500/10 px-1 rounded text-xs">seed()</code> and fluent assertions — test APIs instantly without mocking.'
+    },
+
     // ── Code Examples ──
     'code.title': { th: 'ตัวอย่างโค้ด', en: 'Code Examples' },
-    'code.heading': { th: 'เขียนน้อย <span class="grad-text2">ได้มาก</span>', en: 'Write less <span class="grad-text2">do more</span>' },
-    'code.subtitle': { th: 'API พร้อมใช้งานใน 10 บรรทัด — ไม่ต้องประกาศ route', en: 'API ready in 10 lines — no route declaration needed.' },
+    'code.heading': { th: 'โค้ดที่อ่านง่าย<span class="grad-text2"> ผลลัพธ์ที่ทรงพลัง</span>', en: 'Clean Code<span class="grad-text2"> Powerful Results</span>' },
+    'code.subtitle': { th: 'สร้างไฟล์ → ได้ endpoint ทันที — ไม่มี routing config, ไม่มี boilerplate', en: 'Create a file → get an endpoint instantly — no routing config, no boilerplate.' },
 
     // ── Comparison ──
     'cmp.title': { th: 'เปรียบเทียบ', en: 'Comparison' },
-    'cmp.heading': { th: 'ทำไมต้อง <span class="grad-text2">OpenGenetics</span>', en: 'Why <span class="grad-text2">OpenGenetics</span>' },
-    'cmp.subtitle': { th: 'เทียบกับ framework ยอดนิยมสำหรับ REST API', en: 'Compared with popular REST API frameworks' },
+    'cmp.heading': { th: 'ทำไมไม่ใช้<span class="grad-text2"> Laravel หรือ Slim?</span>', en: 'Why not<span class="grad-text2"> Laravel or Slim?</span>' },
+    'cmp.subtitle': { th: 'คำตอบอยู่ในตารางเดียว — ทุก feature พร้อมโดยไม่ต้องติดตั้ง package เพิ่ม', en: 'One table answers it all — every feature ready without installing extra packages.' },
     'cmp.feature': { th: 'คุณสมบัติ', en: 'Feature' },
     'cmp.jwt': { th: 'JWT Auth ในตัว', en: 'Built-in JWT Auth' },
     'cmp.rbac': { th: 'RBAC ในตัว', en: 'Built-in RBAC' },
@@ -111,9 +124,9 @@
     'cmp.optional': { th: '1 (optional)', en: '1 (optional)' },
 
     // ── Requirements ──
-    'req.title': { th: 'ความต้องการของระบบ', en: 'System Requirements' },
-    'req.heading': { th: 'System <span class="grad-text2">Requirements</span>', en: 'System <span class="grad-text2">Requirements</span>' },
-    'req.subtitle': { th: 'ใช้งานได้บน XAMPP ทันที — ไม่ต้องติดตั้งเพิ่ม', en: 'Works on XAMPP instantly — no extra installation needed.' },
+    'req.title': { th: 'ความต้องการ', en: 'Requirements' },
+    'req.heading': { th: 'ทำงานได้บน<span class="grad-text2"> XAMPP ทันที</span>', en: 'Runs on<span class="grad-text2"> XAMPP Instantly</span>' },
+    'req.subtitle': { th: 'ไม่ต้องติดตั้ง Redis, Docker หรือ Nginx — PHP 8.1 + MySQL + Composer ก็พอ', en: 'No Redis, Docker, or Nginx — PHP 8.1 + MySQL + Composer is all you need.' },
     'req.php.detail': { th: 'รองรับ PHP 8.1, 8.2, 8.3', en: 'Supports PHP 8.1, 8.2, 8.3' },
     'req.mysql.detail': { th: 'หรือ MariaDB 10.3+', en: 'or MariaDB 10.3+' },
     'req.apache.label': { th: 'XAMPP / Apache', en: 'XAMPP / Apache' },
@@ -122,23 +135,23 @@
 
     // ── Quick Start ──
     'qs.title': { th: 'เริ่มต้นใช้งาน', en: 'Quick Start' },
-    'qs.heading': { th: 'เริ่มต้นด้วย<span class="grad-text2"> Composer</span>', en: 'Get started with<span class="grad-text2"> Composer</span>' },
-    'qs.subtitle': { th: '5 ขั้นตอน — เหมือนติดตั้ง Laravel', en: '5 steps — just like installing Laravel' },
-    'qs.step1': { th: 'ดาวน์โหลดหรือ Clone', en: 'Download or Clone' },
+    'qs.heading': { th: 'จาก Terminal สู่<span class="grad-text2"> API พร้อมใช้</span>', en: 'From Terminal to<span class="grad-text2"> Ready API</span>' },
+    'qs.subtitle': { th: '5 ขั้นตอน — API ที่มี Auth, RBAC และ Database พร้อมทดสอบ', en: '5 steps — API with Auth, RBAC, and Database ready to test.' },
+    'qs.step1': { th: 'สร้างโปรเจกต์', en: 'Create Project' },
     'qs.step2': { th: 'ติดตั้ง Dependencies', en: 'Install Dependencies' },
     'qs.step3': { th: 'ตั้งค่า Environment', en: 'Configure Environment' },
-    'qs.step3.desc': { th: 'สร้างฐานข้อมูลใน phpMyAdmin แล้วแก้ไข .env', en: 'Create a database in phpMyAdmin, then edit .env' },
+    'qs.step3.desc': { th: 'สร้างฐานข้อมูลใน phpMyAdmin แล้วแก้ไข .env: DB_HOST, DB_NAME, DB_PASS', en: 'Create a database in phpMyAdmin then edit .env: DB_HOST, DB_NAME, DB_PASS' },
     'qs.step4': { th: 'Genetic Scaffolding', en: 'Genetic Scaffolding' },
-    'qs.step4.desc': { th: 'สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ', en: 'Auto-create tables + Seed RBAC + Admin user' },
+    'qs.step4.desc': { th: 'สร้างตาราง + Seed RBAC + Admin user อัตโนมัติ — Default: admin@opengenetics.io / password', en: 'Auto-create tables + Seed RBAC + Admin user — Default: admin@opengenetics.io / password' },
     'qs.step5': { th: 'เริ่มสร้าง API', en: 'Start Building APIs' },
     'qs.step5.code': { th: 'สร้างไฟล์ api/your-endpoint.php', en: 'Create file api/your-endpoint.php' },
-    'qs.step5.desc': { th: 'เขียน API ได้ทันที — ไม่ต้องประกาศ route', en: 'Write APIs instantly — no route declaration needed' },
+    'qs.step5.desc': { th: 'เปิด dev server ที่ http://127.0.0.1:8080 — สร้างไฟล์ api/your-endpoint.php ได้ทันที', en: 'Start dev server at http://127.0.0.1:8080 — create api/your-endpoint.php and start building.' },
 
     // ── Download CTA ──
-    'dl.title': { th: 'ดาวน์โหลด OpenGenetics', en: 'Download OpenGenetics' },
-    'dl.subtitle': { th: 'เวอร์ชัน 1.0.0 พร้อมใช้งาน — ฟรีและ Open Source (MIT License)', en: 'Version 1.0.0 ready — Free and Open Source (MIT License)' },
-    'dl.btn.github': { th: 'ดาวน์โหลดจาก GitHub', en: 'Download from GitHub' },
-    'dl.btn.docs': { th: 'อ่านคู่มือฉบับเต็ม', en: 'Read Full Docs' },
+    'dl.title': { th: 'พร้อมสร้าง API<span class="grad-text2"> ชิ้นแรกแล้วหรือยัง?</span>', en: 'Ready to build<span class="grad-text2"> your first API?</span>' },
+    'dl.subtitle': { th: 'v2.2.0 — ฟรีและ Open Source (MIT License)<br>หนึ่งคำสั่ง สร้าง API ที่มี Auth, RBAC และ Database พร้อมใช้ทันที', en: 'v2.2.0 — Free and Open Source (MIT License)<br>One command. Auth, RBAC, and Database ready instantly.' },
+    'dl.btn.github': { th: 'เริ่มต้นบน GitHub', en: 'Get Started on GitHub' },
+    'dl.btn.docs': { th: 'อ่าน Documentation', en: 'Read Documentation' },
 
     // ── Footer ──
     'footer.text': { th: 'Enterprise PHP Micro-Framework', en: 'Enterprise PHP Micro-Framework' },
@@ -148,8 +161,8 @@
     'doc.title': { th: 'OpenGenetics เอกสาร', en: 'OpenGenetics Documentation' },
     'doc.h1': { th: 'Documentation', en: 'Documentation' },
     'doc.lead': {
-      th: 'Enterprise PHP Micro-Framework — JWT Auth, Genetic RBAC, i18n, Audit Trail, Dual-Frontend SDK. ออกแบบมาเพื่อความเร็ว (<50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี',
-      en: 'Enterprise PHP Micro-Framework — JWT Auth, Genetic RBAC, i18n, Audit Trail, Dual-Frontend SDK. Designed for speed (<50ms), security (OWASP), and great developer experience.'
+      th: 'Enterprise PHP Micro-Framework v2.2 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework และ Dual-Frontend SDK. ออกแบบมาเพื่อความเร็ว (<50ms), ความปลอดภัย (OWASP), และประสบการณ์นักพัฒนาที่ดี',
+      en: 'Enterprise PHP Micro-Framework v2.2 — JWT Auth, Genetic RBAC, Query Builder, i18n, Audit Trail, Testing Framework and Dual-Frontend SDK. Designed for speed (<50ms), security (OWASP), and great developer experience.'
     },
     'doc.philosophy': {
       th: 'ปรัชญา: เล็ก เบา ทรงพลัง — ทุก byte และ millisecond มีค่า',
@@ -164,7 +177,7 @@
     // TOC
     'toc.title': { th: 'สารบัญ', en: 'On this page' },
     // Hero scroll
-    'hero.scroll': { th: 'ดูว่าทำไมนักพัฒนาถึงชอบ OpenGenetics', en: 'See why developers love OpenGenetics' },
+    'hero.scroll': { th: 'ทำไมนักพัฒนาถึงเลือก OpenGenetics', en: 'Why developers choose OpenGenetics' },
     // Docs page navigation
     'nav.prev': { th: 'ก่อนหน้า', en: 'Previous' },
     'nav.next': { th: 'ถัดไป', en: 'Next' },
@@ -222,8 +235,8 @@
     'dh.audit': { th: '# Audit Trail', en: '# Audit Trail' },
     'dh.middleware': { th: '# Middleware Pipeline', en: '# Middleware Pipeline' },
     'dh.middleware.desc': {
-      th: 'v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline ก่อนถึง endpoint',
-      en: 'v2.0 — Middleware system with Chain of Responsibility pattern. Every request passes through a pipeline before reaching the endpoint.'
+      th: 'v2.2 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline ก่อนถึง endpoint รองรับ #[SkipMiddleware] และ Pipeline::after()',
+      en: 'v2.2 — Middleware system with Chain of Responsibility pattern. Every request passes through a pipeline before reaching the endpoint. Supports #[SkipMiddleware] and Pipeline::after().'
     },
     'dh.migrations': { th: '# Database Migrations', en: '# Database Migrations' },
     'dh.migrations.desc': {
@@ -232,8 +245,8 @@
     },
     'dh.testing': { th: '# Testing Framework', en: '# Testing Framework' },
     'dh.testing.desc': {
-      th: 'v2.0 — Testing Framework ที่รันผ่าน PHPUnit — GeneticTestCase ให้ HTTP test client พร้อม authentication helpers',
-      en: 'v2.0 — Testing Framework built on PHPUnit — GeneticTestCase provides an HTTP test client with authentication helpers and fluent assertions.'
+      th: 'v2.2 — Testing Framework ที่รันผ่าน PHPUnit — GeneticTestCase ให้ HTTP test client พร้อม actingAs(), seed() และ fluent assertions',
+      en: 'v2.2 — Testing Framework built on PHPUnit — GeneticTestCase provides an HTTP test client with actingAs(), seed() and fluent assertions.'
     },
     'dh.sdk': { th: '# Genetic SDK', en: '# Genetic SDK' },
     'dh.api_ref': { th: '# API Reference', en: '# API Reference' },
@@ -287,12 +300,12 @@
       en: 'OpenGenetics uses <strong>File-based Routing</strong> — URL paths map directly to file paths in <code>api/</code>. No route registry needed.'
     },
     'dh.database.desc': {
-      th: 'PDO Singleton — <code>EMULATE_PREPARES=false</code> (real prepared statements) ป้องกัน SQL Injection โดยค่าเริ่มต้น',
-      en: 'PDO Singleton — <code>EMULATE_PREPARES=false</code> (real prepared statements) prevents SQL Injection by default.'
+      th: 'v2.2 — เข้าถึงฐานข้อมูลได้ 2 วิธี: <strong>Query Builder</strong> (<code>DB::table()</code>) สำหรับ dynamic queries ที่อ่านง่าย และ <strong>Raw SQL</strong> (<code>Database::query()</code>) สำหรับ queries ที่ซับซ้อน — ทั้งคู่ใช้ PDO prepared statements ป้องกัน SQL Injection โดยค่าเริ่มต้น',
+      en: 'v2.2 — Two ways to query: <strong>Query Builder</strong> (<code>DB::table()</code>) for readable dynamic queries, and <strong>Raw SQL</strong> (<code>Database::query()</code>) for complex operations — both use PDO prepared statements to prevent SQL Injection by default.'
     },
     'dh.guard.desc': {
-      th: 'Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — throw <code>RuntimeException</code> พร้อม HTTP status อัตโนมัติ',
-      en: 'Guard validates JWT token and role before entering an endpoint — throws <code>RuntimeException</code> with HTTP status automatically.'
+      th: 'Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — ใช้ <code>requireAuth()</code> / <code>requireRole()</code> แบบ strict (throw 401/403) หรือ <code>Guard::check()</code> แบบ soft (คืนค่า <code>bool</code>) สำหรับ endpoint ที่ auth เป็น optional',
+      en: 'Guard validates JWT token and role before entering an endpoint — use <code>requireAuth()</code> / <code>requireRole()</code> for strict enforcement (throws 401/403), or <code>Guard::check()</code> for soft auth that returns <code>bool</code> for optional-auth endpoints.'
     },
     'dh.i18n.desc': {
       th: 'สลับภาษาทันทีผ่าน <code>X-Locale</code> header หรือ <code>?lang=</code> param',
@@ -303,8 +316,12 @@
       en: 'Frontend SDK ready for both React Hook and Vanilla JS — covers auth, RBAC, i18n and API calls.'
     },
     'dh.cli.desc': {
-      th: 'เครื่องมือ command-line สำหรับ scaffold, migrate และ manage โปรเจกต์',
-      en: 'Command-line tool for scaffolding, migrating and managing your project.'
+      th: 'Genetics CLI คือหัวใจของ Developer Experience ใน OpenGenetics — 25+ คำสั่งที่ลดงานซ้ำซ้อน ตั้งแต่ Scaffold endpoint, จัดการ Migration ไปจนถึง AI-assisted code generation ที่สร้าง endpoint พร้อม auth และ cache ในเสี้ยววินาที',
+      en: 'The Genetics CLI is the heart of OpenGenetics DX — 25+ commands that eliminate boilerplate: scaffold endpoints, manage migrations, and generate production-ready code with auth and caching in seconds.'
+    },
+    'dh.cache.desc': {
+      th: 'v2.2 — File-based cache พร้อม TTL, tag-based invalidation, <code>remember()</code> pattern และ <code>Cache::namespace()</code> สำหรับแยก key space ระหว่าง module — ไม่ต้องติดตั้ง Redis หรือ Memcached',
+      en: 'v2.2 — File-based cache with TTL, tag-based invalidation, <code>remember()</code> pattern, and <code>Cache::namespace()</code> to isolate key spaces between modules — no Redis or Memcached required.'
     },
   };
 

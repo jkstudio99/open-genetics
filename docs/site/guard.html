@@ -414,8 +414,9 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <main class="doc-content" id="doc-main">
 
 <h2 id="guard"><a href="#guard" data-i18n="dh.authorization"># Guard / RBAC</a></h2>
-    <p data-i18n="dh.guard.desc">Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — throw
-      <code>RuntimeException</code> พร้อม HTTP status อัตโนมัติ
+    <p data-i18n="dh.guard.desc">Guard ตรวจสอบ JWT token และ role ก่อนเข้า endpoint — ใช้ <code>requireAuth()</code> /
+      <code>requireRole()</code> แบบ strict (throw 401/403) หรือ <code>Guard::check()</code> แบบ soft
+      (คืนค่า <code>bool</code>) สำหรับ endpoint ที่ auth เป็น optional
     </p>
     <pre><code><span class="kw">use</span> OpenGenetics\Auth\<span class="cl">Guard</span>;
 
@@ -435,8 +436,51 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <span class="cm">// ตรวจสอบ role โดยไม่ throw</span>
 <span class="kw">if</span> (<span class="cl">Guard</span>::<span class="fn">hasRole</span>(<span class="cl">Guard</span>::<span class="vr">ADMIN</span>)) {
     <span class="cm">// admin-only logic</span>
+}
+
+<span class="cm">// check() — ตรวจสอบว่า login อยู่หรือไม่ โดยไม่ throw (v2.2+)</span>
+<span class="kw">if</span> (<span class="cl">Guard</span>::<span class="fn">check</span>()) {
+    <span class="vr">$user</span> = <span class="cl">Guard</span>::<span class="fn">user</span>();    <span class="cm">// safe ใช้ใน optional-auth endpoints</span>
+} <span class="kw">else</span> {
+    <span class="cm">// ไม่ได้ login — แสดง public data</span>
 }</code></pre>
 
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Guard::requireAuth()</code></td>
+          <td>บังคับ login — throw 401 ถ้าไม่มี token</td>
+        </tr>
+        <tr>
+          <td><code>Guard::requireRole($role)</code></td>
+          <td>บังคับ role — throw 403 ถ้าสิทธิ์ไม่เพียงพอ</td>
+        </tr>
+        <tr>
+          <td><code>Guard::check()</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>คืนค่า <code>bool</code> — ไม่ throw exception เหมาะสำหรับ optional auth</td>
+        </tr>
+        <tr>
+          <td><code>Guard::user()</code></td>
+          <td>ดึง payload ของ user จาก JWT</td>
+        </tr>
+        <tr>
+          <td><code>Guard::hasRole($role)</code></td>
+          <td>ตรวจสอบ role โดยไม่ throw — คืนค่า bool</td>
+        </tr>
+        <tr>
+          <td><code>Guard::id()</code></td>
+          <td>ดึง user ID จาก JWT</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Role Constants</h3>
     <table>
       <thead>
         <tr>

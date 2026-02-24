@@ -414,8 +414,8 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <main class="doc-content" id="doc-main">
 
 <h2 id="testing"><a href="#testing" data-i18n="dh.testing"># Testing Framework</a></h2>
-    <p data-i18n="dh.testing.desc">v2.0 — Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
-      test client พร้อม authentication helpers และ fluent assertions</p>
+    <p data-i18n="dh.testing.desc">v2.2 — Testing Framework ที่รันผ่าน PHPUnit — <code>GeneticTestCase</code> ให้ HTTP
+      test client พร้อม authentication helpers, database seeding และ fluent assertions</p>
 
     <h3>สร้าง Test File</h3>
     <pre><code><span class="cm"># Scaffold test class</span>
@@ -456,6 +456,33 @@ php genetics make:test Users
     }
 }</code></pre>
 
+    <h3>Database Seeding <span class="badge-new">NEW v2.2</span></h3>
+    <pre><code><span class="kw">class</span> <span class="cl">PostsTest</span> <span class="kw">extends</span> <span class="cl">GeneticTestCase</span>
+{
+    <span class="kw">protected function</span> <span class="fn">setUp</span>(): <span class="kw">void</span>
+    {
+        <span class="kw">parent</span>::<span class="fn">setUp</span>();
+
+        <span class="cm">// Insert rows ก่อน test — ลบอัตโนมัติหลัง tearDown()</span>
+        <span class="vr">$this</span>-><span class="fn">seed</span>([
+            <span class="st">'users'</span> => [
+                [<span class="st">'id'</span> => <span class="nb">99</span>, <span class="st">'email'</span> => <span class="st">'seed@test.io'</span>, <span class="st">'role_id'</span> => <span class="nb">1</span>],
+            ],
+            <span class="st">'posts'</span> => [
+                [<span class="st">'id'</span> => <span class="nb">1</span>, <span class="st">'user_id'</span> => <span class="nb">99</span>, <span class="st">'title'</span> => <span class="st">'Hello World'</span>],
+                [<span class="st">'id'</span> => <span class="nb">2</span>, <span class="st">'user_id'</span> => <span class="nb">99</span>, <span class="st">'title'</span> => <span class="st">'Second Post'</span>],
+            ],
+        ]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">testListPosts</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-><span class="fn">actingAsAdmin</span>();
+        <span class="vr">$this</span>-><span class="fn">get</span>(<span class="st">'/api/posts'</span>)-><span class="fn">assertOk</span>()-><span class="fn">assertPaginated</span>();
+    }
+    <span class="cm">// หลัง test: seeded rows ถูกลบอัตโนมัติจาก tearDown()</span>
+}</code></pre>
+
     <h3>Authentication Helpers</h3>
     <table>
       <thead>
@@ -476,6 +503,10 @@ php genetics make:test Users
         <tr>
           <td><code>asGuest()</code></td>
           <td>ไม่มี authentication token</td>
+        </tr>
+        <tr>
+          <td><code>seed(array $tableData)</code> <span class="badge-new">NEW v2.2</span></td>
+          <td>Insert rows ก่อน test — ลบอัตโนมัติหลัง tearDown()</td>
         </tr>
       </tbody>
     </table>

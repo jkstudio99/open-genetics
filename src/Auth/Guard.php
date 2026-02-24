@@ -61,7 +61,7 @@ final class Guard
 
         $userRole = strtoupper($user['role_name'] ?? '');
 
-        if (!in_array($userRole, array_map('strtoupper', $allowedRoles), true)) {
+        if (!\in_array($userRole, array_map('strtoupper', $allowedRoles), true)) {
             Response::error('Insufficient permissions', 403);
         }
 
@@ -111,5 +111,21 @@ final class Guard
     {
         $user = self::user();
         return $user['tenant_id'] ?? null;
+    }
+
+    /**
+     * Non-throwing authentication check.
+     * Returns true if a valid JWT is present; false otherwise.
+     *
+     * Use this when you want optional auth (e.g., public endpoints
+     * that enrich the response for logged-in users).
+     *
+     * if (Guard::check()) {
+     *     $user = Guard::user(); // safe to call after check()
+     * }
+     */
+    public static function check(): bool
+    {
+        return self::user() !== null;
     }
 }

@@ -414,12 +414,12 @@ pre::-webkit-scrollbar-thumb{background:rgba(108,99,255,.4);border-radius:4px}
 <main class="doc-content" id="doc-main">
 
 <h2 id="middleware"><a href="#middleware" data-i18n="dh.middleware"># Middleware Pipeline</a></h2>
-    <p data-i18n="dh.middleware.desc">v2.0 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
-      ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request และ Auth/RateLimit ประกาศผ่าน
-      <code>#[Middleware]</code> attribute
+    <p data-i18n="dh.middleware.desc">v2.2 — ระบบ Middleware แบบ Chain of Responsibility ทุก request ผ่าน pipeline
+      ก่อนถึง endpoint โดย CORS เป็น global middleware ที่รันทุก request, Auth/RateLimit ประกาศผ่าน
+      <code>#[Middleware]</code> attribute รองรับ <code>#[SkipMiddleware]</code> และ <code>Pipeline::after()</code>
     </p>
 
-    <h3>Request Lifecycle v2.0</h3>
+    <h3>Request Lifecycle</h3>
     <pre><code>HTTP Request
     ↓
 Apache .htaccess  →  public/index.php
@@ -526,6 +526,91 @@ php genetics make:middleware Cache
         </p>
       </div>
     </div>
+
+    <h3>#[SkipMiddleware] — ยกเว้น Global Middleware <span class="badge-new">NEW v2.2</span></h3>
+    <p>ใช้ exclude middleware ที่ register ไว้แบบ global ออกจาก endpoint ใดเป็นการเฉพาะ</p>
+    <pre><code><span class="kw">use</span> <span class="cl">OpenGenetics\Core\SkipMiddleware</span>;
+<span class="kw">use</span> <span class="cl">OpenGenetics\Middleware\CorsMiddleware</span>;
+
+<span class="cm">// Webhook endpoint ที่ไม่ต้องการ CORS headers</span>
+#[<span class="cl">SkipMiddleware</span>(<span class="cl">CorsMiddleware</span>::<span class="kw">class</span>)]
+<span class="kw">class</span> <span class="cl">WebhookStripe</span>
+{
+    <span class="kw">public static function</span> <span class="fn">post</span>(<span class="kw">array</span> <span class="vr">$body</span>): <span class="kw">void</span>
+    {
+        <span class="cm">// process Stripe webhook...</span>
+    }
+}</code></pre>
+
+    <h3>LogMiddleware — บันทึก Access Log <span class="badge-new">NEW v2.2</span></h3>
+    <p>เขียน access log ไปที่ <code>storage/logs/access-YYYY-MM-DD.log</code> ทุก request รองรับทั้ง global และ per-endpoint</p>
+    <pre><code><span class="cm">// ใน public/index.php — log ทุก request</span>
+<span class="cl">Pipeline</span>::<span class="fn">alias</span>(<span class="st">'log'</span>, <span class="cl">LogMiddleware</span>::<span class="kw">class</span>);
+<span class="cl">Pipeline</span>::<span class="fn">addGlobal</span>(<span class="cl">LogMiddleware</span>::<span class="kw">class</span>);
+
+<span class="cm">// หรือเฉพาะ endpoint ที่ต้องการ</span>
+#[<span class="cl">Middleware</span>(<span class="st">'log'</span>)]
+<span class="kw">class</span> <span class="cl">AdminUsers</span> { ... }</code></pre>
+    <pre><code><span class="cm"># ตัวอย่าง access log: storage/logs/access-2026-02-24.log</span>
+[2026-02-24 14:23:01] 127.0.0.1 GET /api/users → 200 (12.4ms)
+[2026-02-24 14:23:05] 127.0.0.1 POST /api/auth/login → 401 (3.1ms)</code></pre>
+
+    <h3>Pipeline::after() — Post-Response Hooks <span class="badge-new">NEW v2.2</span></h3>
+    <p>Register callbacks ที่รันหลัง response ส่งออก — เหมาะสำหรับ audit log, metrics, cleanup โดยไม่ block response</p>
+    <pre><code><span class="cm">// ใน public/index.php</span>
+<span class="cl">Pipeline</span>::<span class="fn">after</span>(<span class="kw">function</span> (?\<span class="cl">Throwable</span> <span class="vr">$error</span>): <span class="kw">void</span> {
+    <span class="cm">// ถ้า $error !== null แสดงว่า request ล้มเหลว</span>
+    <span class="cl">AuditLog</span>::<span class="fn">record</span>(<span class="vr">$_SERVER</span>[<span class="st">'REQUEST_URI'</span>], <span class="vr">$error</span>?-&gt;<span class="fn">getMessage</span>());
+});</code></pre>
+
+    <h3>ErrorHandler::reporter() — Custom Reporter <span class="badge-new">NEW v2.2</span></h3>
+    <p>ต่อ error ไปยัง Sentry, Bugsnag, Slack หรือ service ใดก็ได้ โดยไม่กระทบ HTTP response</p>
+    <pre><code><span class="cm">// ใน public/index.php</span>
+<span class="cl">ErrorHandler</span>::<span class="fn">reporter</span>(<span class="kw">function</span> (\<span class="cl">Throwable</span> <span class="vr">$e</span>): <span class="kw">void</span> {
+    <span class="cm">// Send to Sentry, Slack, etc.</span>
+    <span class="cl">Sentry</span>::<span class="fn">captureException</span>(<span class="vr">$e</span>);
+});
+
+<span class="cm">// Log file: storage/logs/app-2026-02-24.log (auto-created)</span>
+<span class="cm">// [2026-02-24 14:23:05] ERROR RuntimeException: User not found in .../api/users/{id}.php:22</span></code></pre>
+
+    <h3>Middleware ทั้งหมดที่มีใน Core</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Alias</th>
+          <th>Class</th>
+          <th>Params</th>
+          <th>การใช้งาน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>cors</code></td>
+          <td><code>CorsMiddleware</code></td>
+          <td>—</td>
+          <td>CORS headers + preflight (global)</td>
+        </tr>
+        <tr>
+          <td><code>auth</code></td>
+          <td><code>AuthMiddleware</code></td>
+          <td><code>role1,role2</code></td>
+          <td>ตรวจ JWT + role อาจระบุหรือไม่ก็ได้</td>
+        </tr>
+        <tr>
+          <td><code>rate</code></td>
+          <td><code>RateLimitMiddleware</code></td>
+          <td><code>max,window</code></td>
+          <td>จำกัด request ต่อ IP (default 60/60s)</td>
+        </tr>
+        <tr>
+          <td><code>log</code></td>
+          <td><code>LogMiddleware</code></td>
+          <td>—</td>
+          <td>บันทึก access log ลงไฟล์ <span class="badge-new">NEW</span></td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- API Reference -->
 

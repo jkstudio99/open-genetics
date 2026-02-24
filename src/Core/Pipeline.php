@@ -15,6 +15,11 @@ namespace OpenGenetics\Core;
  *   Pipeline::send($request)
  *       ->through([CorsMiddleware::class, AuthMiddleware::class])
  *       ->then(fn($req) => $handler($req));
+ *
+ * Post-response hooks (fire after response is sent):
+ *   Pipeline::after(function (\Throwable|null $error): void {
+ *       // audit log, metrics, cleanup
+ *   });
  */
 final class Pipeline
 {
@@ -48,6 +53,7 @@ final class Pipeline
 
     /**
      * Run the pipeline and execute the final destination.
+     * After destination completes, fires all registered after() callbacks.
      */
     public function then(callable $destination): void
     {
@@ -82,7 +88,15 @@ final class Pipeline
             $destination
         );
 
-        $pipeline($this->passable);
+        $error = null;
+        try {
+            $pipeline($this->passable);
+        } catch (\Throwable $e) {
+            $error = $e;
+            throw $e;
+        } finally {
+            self::runAfterCallbacks($error);
+        }
     }
 
     // ─── Global Middleware Registry ───────────────────
@@ -92,6 +106,9 @@ final class Pipeline
 
     /** @var array<string, class-string> Named middleware aliases */
     private static array $namedMiddleware = [];
+
+    /** @var array<callable> Callbacks invoked after the response is sent */
+    private static array $afterCallbacks = [];
 
     /**
      * Register global middleware (runs on every request).
@@ -120,21 +137,46 @@ final class Pipeline
     }
 
     /**
+     * Register a callback to run after the pipeline completes.
+     * Useful for audit logging, metrics, and cleanup.
+     *
+     * Pipeline::after(function (?\Throwable $error): void {
+     *     AuditLog::record($_SERVER['REQUEST_URI'], $error?->getMessage());
+     * });
+     */
+    public static function after(callable $callback): void
+    {
+        self::$afterCallbacks[] = $callback;
+    }
+
+    /**
      * Resolve a middleware name/alias to a class name.
      * Supports "name:param1,param2" syntax.
      */
     public static function resolve(string $name): string
     {
-        // Extract params part
         $baseName = str_contains($name, ':') ? explode(':', $name, 2)[0] : $name;
-        $params = str_contains($name, ':') ? ':' . explode(':', $name, 2)[1] : '';
+        $params   = str_contains($name, ':') ? ':' . explode(':', $name, 2)[1] : '';
 
-        // Check alias first
         if (isset(self::$namedMiddleware[$baseName])) {
             return self::$namedMiddleware[$baseName] . $params;
         }
 
-        // Return as-is (assume fully qualified class name)
         return $name;
+    }
+
+    /**
+     * Fire all registered after-callbacks.
+     * Called in the `finally` block — runs even if an exception was thrown.
+     */
+    private static function runAfterCallbacks(?\Throwable $error): void
+    {
+        foreach (self::$afterCallbacks as $callback) {
+            try {
+                $callback($error);
+            } catch (\Throwable) {
+                // After-callbacks must never crash the response
+            }
+        }
     }
 }
